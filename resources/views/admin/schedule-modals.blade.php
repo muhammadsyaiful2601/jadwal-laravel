@@ -1,0 +1,198 @@
+<!-- Add Modal -->
+<div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content modal-content-custom">
+            <form method="POST" action="{{ url('/admin/manage-schedule/store') }}">
+                @csrf
+                <div class="modal-header-custom d-flex align-items-center justify-content-between">
+                    <h5 class="modal-title" style="font-weight:700;font-size:1rem;">
+                        <i class="fas fa-plus me-2" style="color:var(--corporate-blue);"></i> Tambah Jadwal Baru
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body-custom">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label
+                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Kelas</label>
+                            <input type="text" name="kelas" class="form-control" required
+                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label
+                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Hari</label>
+                            <select name="hari" class="form-control" required
+                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                                <option value="">Pilih Hari</option>
+                                <option value="SENIN">SENIN</option>
+                                <option value="SELASA">SELASA</option>
+                                <option value="RABU">RABU</option>
+                                <option value="KAMIS">KAMIS</option>
+                                <option value="JUMAT">JUMAT</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label
+                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Jam
+                                Ke</label>
+                            <input type="number" name="jam_ke" class="form-control" min="1" max="10"
+                                required
+                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label
+                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Waktu
+                                Mulai</label>
+                            <input type="time" name="waktu_mulai" class="form-control" required
+                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label
+                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Waktu
+                                Selesai</label>
+                            <input type="time" name="waktu_selesai" class="form-control" required
+                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label
+                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Mata
+                                Kuliah</label>
+                            <input type="text" name="mata_kuliah" class="form-control" required
+                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label
+                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Dosen</label>
+                            <input type="text" name="dosen" class="form-control" required
+                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label
+                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Ruang</label>
+                            <select name="ruang" class="form-control" required
+                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                                <option value="">Pilih Ruang</option>
+                                @foreach ($rooms as $room)
+                                    <option value="{{ $room }}">{{ $room }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label
+                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Semester</label>
+                            <select name="semester" class="form-control" required
+                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                                <option value="GANJIL">GANJIL</option>
+                                <option value="GENAP">GENAP</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label
+                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Tahun
+                                Akademik</label>
+                            <input type="text" name="tahun_akademik" class="form-control"
+                                placeholder="Contoh: 2024/2025" required
+                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer-custom"
+                    style="padding:16px 24px;border-top:1px solid var(--zinc-100);display:flex;justify-content:flex-end;gap:10px;">
+                    <button type="button" class="btn-outline-secondary-custom" data-bs-dismiss="modal"
+                        style="padding:8px 20px;">Batal</button>
+                    <button type="submit" class="btn-primary-solid" style="padding:8px 20px;"><i
+                            class="fas fa-save me-2"></i> Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Add Modal -->
+<div class="modal fade" id="bulkAddModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content modal-content-custom">
+            <form method="POST" action="{{ url('/admin/manage-schedule/bulk-store') }}">
+                @csrf
+                <div class="modal-header-custom d-flex align-items-center justify-content-between">
+                    <h5 class="modal-title" style="font-weight:700;font-size:1rem;">
+                        <i class="fas fa-layer-group me-2" style="color:var(--corporate-blue);"></i> Tambah Jadwal
+                        Massal
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body-custom">
+                    <div class="alert alert-info"
+                        style="background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:10px;padding:14px 18px;font-size:0.85rem;">
+                        <i class="fas fa-info-circle me-2"></i> Masukkan data jadwal dalam format CSV dengan kolom:
+                        Kelas, Hari, Jam Ke, Waktu Mulai, Waktu Selesai, Mata Kuliah, Dosen, Ruang, Semester, Tahun
+                        Akademik
+                    </div>
+                    <div class="mb-3">
+                        <label
+                            style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Data
+                            CSV</label>
+                        <textarea name="bulk_data" class="form-control" rows="10"
+                            placeholder="Kelas,Hari,Jam Ke,Waktu Mulai,Waktu Selesai,Mata Kuliah,Dosen,Ruang,Semester,Tahun Akademik&#10;TI-1A,SENIN,1,08:00,09:40,Pemrograman Web,John Doe,R-101,GANJIL,2024/2025"
+                            required
+                            style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer-custom"
+                    style="padding:16px 24px;border-top:1px solid var(--zinc-100);display:flex;justify-content:flex-end;gap:10px;">
+                    <button type="button" class="btn-outline-secondary-custom" data-bs-dismiss="modal"
+                        style="padding:8px 20px;">Batal</button>
+                    <button type="submit" class="btn-primary-solid" style="padding:8px 20px;"><i
+                            class="fas fa-upload me-2"></i> Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete All Modal -->
+<div class="modal fade" id="deleteAllModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-content-custom">
+            <div class="modal-header-custom d-flex align-items-center justify-content-between"
+                style="border-color:#fecaca;">
+                <h5 class="modal-title" style="font-weight:700;font-size:1rem;color:#b91c1c;">
+                    <i class="fas fa-exclamation-triangle me-2"></i> Konfirmasi Penghapusan
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body-custom">
+                <div class="text-center mb-4">
+                    <i class="fas fa-trash-alt"
+                        style="font-size:3rem;color:#fca5a5;margin-bottom:12px;display:block;"></i>
+                    <h5 style="font-weight:700;color:#b91c1c;font-size:1.1rem;">PERINGATAN!</h5>
+                </div>
+                <div
+                    style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:16px;margin-bottom:20px;">
+                    <h6 style="font-size:0.85rem;font-weight:600;color:#991b1b;margin-bottom:8px;"><i
+                            class="fas fa-exclamation-circle me-2"></i>Tindakan ini akan:</h6>
+                    <ul style="margin-bottom:0;padding-left:20px;font-size:0.85rem;color:#991b1b;">
+                        <li>Menghapus <strong>SEMUA {{ count($schedules) }} data</strong> jadwal</li>
+                        <li>Data yang dihapus <strong>TIDAK DAPAT DIPULIHKAN</strong></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer-custom"
+                style="padding:16px 24px;border-top:1px solid var(--zinc-100);display:flex;justify-content:space-between;">
+                <button type="button" class="btn-outline-secondary-custom" data-bs-dismiss="modal"
+                    style="padding:8px 20px;">Batal</button>
+                <form method="POST" action="{{ url('/admin/manage-schedule/delete-all') }}">
+                    @csrf
+                    <button type="submit" class="btn-destructive-outline" style="padding:8px 20px;"><i
+                            class="fas fa-trash-alt me-2"></i> Ya, Hapus Semua!</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
