@@ -892,8 +892,6 @@
         @endif
     </div>
 
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-
     @include('components.admin.sidebar')
 
     <div class="main-content">
@@ -1221,7 +1219,8 @@
                                     <div class="mb-3">
                                         <label
                                             style="font-size:0.82rem;font-weight:500;color:var(--zinc-600);margin-bottom:6px;display:block;">Tanggapan
-                                            (opsional)</label>
+                                            (opsional)
+                                        </label>
                                         <textarea name="response" rows="3"
                                             style="width:100%;padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;outline:none;transition:all 0.15s ease;"
                                             placeholder="Masukkan tanggapan...">{{ $suggestion->response ?? '' }}</textarea>

@@ -543,22 +543,6 @@
             font-size: 0.9rem;
         }
 
-        /* Sidebar Overlay */
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
-
-        .sidebar-overlay.show {
-            display: block;
-        }
-
         /* Responsive */
         @media (max-width: 1200px) {
             .stats-grid {

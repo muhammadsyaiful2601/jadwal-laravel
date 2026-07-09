@@ -76,6 +76,13 @@ class SettingsController extends Controller
             );
         }
 
+        // Invalidate all cache to ensure settings changes are immediately visible
+        if (\Illuminate\Support\Facades\Cache::getStore() instanceof \Illuminate\Cache\NullStore) {
+            // Do nothing if cache is disabled
+        } else {
+            \Illuminate\Support\Facades\Cache::flush();
+        }
+
         $this->logActivity($request->session()->get('user_id'), 'Update Settings', 'Memperbarui pengaturan sistem');
 
         return redirect('/admin/manage-settings')->with('success', 'Pengaturan berhasil diperbarui!');

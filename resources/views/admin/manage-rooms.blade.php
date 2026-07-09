@@ -775,8 +775,6 @@
         @endif
     </div>
 
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-
     @include('components.admin.sidebar')
 
     <div class="main-content">

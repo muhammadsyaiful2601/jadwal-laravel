@@ -3,674 +3,321 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Profil Saya - Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Admin Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
-        .sidebar {
-            background: linear-gradient(135deg, #2c3e50, #4a6491);
-            color: white;
-            min-height: 100vh;
-            position: fixed;
-            width: 250px;
-            z-index: 1000;
+        :root {
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: rgba(255, 255, 255, 0.06);
+            --sidebar-active: rgba(255, 255, 255, 0.12);
+            --canvas-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border-subtle: #e2e8f0;
+            --border-light: #f1f5f9;
+            --accent: #2563eb;
+            --accent-light: #dbeafe;
+            --success-light: #d1fae5;
+            --success-text: #059669;
+            --danger-soft: #fee2e2;
+            --danger-text: #dc2626;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--canvas-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
         }
 
         .main-content {
             margin-left: 250px;
             padding: 20px;
             min-height: 100vh;
-            background-color: #f8f9fa;
-        }
-
-        .navbar-custom {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 15px 0;
-        }
-
-        .sidebar .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            padding: 12px 20px;
-            margin: 5px 10px;
-            border-radius: 10px;
-            transition: all 0.3s;
-        }
-
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        .sidebar .nav-link i {
-            width: 20px;
-            margin-right: 10px;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        .content-wrapper {
-            padding-top: 20px;
         }
 
         .page-header {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .page-header-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .page-header-subtitle {
+            font-size: 0.9375rem;
+            color: var(--text-muted);
+            font-weight: 400;
         }
 
         .card {
-            border-radius: 10px;
-            border: none;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
             margin-bottom: 20px;
         }
 
+        .card-body {
+            padding: 24px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
         .profile-avatar {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin: 0 auto 20px;
+            font-size: 2rem;
+            font-weight: 700;
+            flex-shrink: 0;
         }
 
-        .profile-info-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
+        .profile-info h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .profile-info p {
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .form-label {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .form-control,
+        .form-select {
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.9375rem;
+            color: var(--text-primary);
+            background: white;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-control-plaintext {
             padding: 10px 0;
-            border-bottom: 1px solid #eee;
+            font-size: 0.9375rem;
+            color: var(--text-primary);
         }
 
-        .profile-info-item:last-child {
-            border-bottom: none;
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        .profile-info-item i {
-            width: 20px;
-            margin-right: 10px;
-            color: #6c757d;
+        .btn-primary {
+            background: var(--accent);
+            color: white;
         }
 
-        .password-strength {
-            height: 5px;
-            margin-top: 5px;
-            border-radius: 3px;
-            width: 0%;
-            transition: width 0.3s;
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
         }
 
-        .strength-weak {
-            background-color: #dc3545;
+        .btn-secondary {
+            background: var(--canvas-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
         }
 
-        .strength-medium {
-            background-color: #ffc107;
+        .btn-secondary:hover {
+            background: var(--border-light);
         }
 
-        .strength-strong {
-            background-color: #28a745;
-        }
-
-        /* Mobile responsive */
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: fixed;
-                min-height: 100vh;
-                display: none;
-                z-index: 1050;
-                top: 0;
-                left: 0;
-            }
-
-            .sidebar.mobile-show {
-                display: block;
-            }
-
             .main-content {
                 margin-left: 0;
                 padding: 10px;
-                width: 100%;
-                overflow-x: hidden;
             }
 
-            .navbar-custom {
-                position: sticky;
-                top: 0;
-                z-index: 1030;
-                padding: 10px 0;
-            }
-
-            .page-header {
-                padding: 15px;
-                margin: 0 -10px 15px -10px;
-                width: calc(100% + 20px);
-                border-radius: 0;
-            }
-
-            .page-header .d-flex {
+            .profile-header {
                 flex-direction: column;
-                align-items: flex-start !important;
-            }
-
-            body {
-                overflow-x: hidden;
-                max-width: 100vw;
-            }
-
-            .modal-dialog {
-                margin: 10px !important;
-                max-width: calc(100% - 20px) !important;
-            }
-        }
-
-        @media (max-width: 575.98px) {
-            .main-content {
-                padding: 10px 8px;
-            }
-
-            .page-header h5 {
-                font-size: 1.1rem;
+                text-align: center;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="d-flex">
-        <!-- Sidebar (Desktop) -->
-        <div class="sidebar d-none d-md-block">
-            <div class="p-4">
-                <h3 class="mb-4"><i class="fas fa-calendar-alt"></i> Admin Panel</h3>
-                <div class="user-info mb-4">
-                    <div class="d-flex align-items-center">
-                        <div class="user-avatar me-3">
-                            {{ strtoupper(substr(session('username'), 0, 1)) }}
-                        </div>
-                        <div>
-                            <h6 class="mb-0">{{ session('username') }}</h6>
-                            <small class="text-muted">{{ ucfirst(session('role')) }}</small>
-                        </div>
-                    </div>
+    @include('components.admin.sidebar')
+
+    <div class="main-content">
+        <!-- Mobile Sidebar -->
+        <div class="collapse d-md-none mb-4" id="mobileSidebar">
+            <div class="card">
+                <div class="card-body p-3">
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="{{ url('/admin/dashboard') }}"><i class="fas fa-tachometer-alt"></i>
+                            Dashboard</a>
+                        <a class="nav-link" href="{{ url('/admin/manage-schedule') }}"><i class="fas fa-calendar"></i>
+                            Kelola Jadwal</a>
+                        <a class="nav-link" href="{{ url('/admin/manage-rooms') }}"><i class="fas fa-door-open"></i>
+                            Kelola Ruangan</a>
+                        <a class="nav-link" href="{{ url('/admin/manage-semester') }}"><i
+                                class="fas fa-calendar-alt"></i> Kelola Semester</a>
+                        <a class="nav-link" href="{{ url('/admin/manage-settings') }}"><i class="fas fa-cog"></i>
+                            Pengaturan</a>
+                        <a class="nav-link" href="{{ url('/admin/manage-users') }}"><i class="fas fa-users"></i> Kelola
+                            Admin</a>
+                        <a class="nav-link" href="{{ url('/admin/reports') }}"><i class="fas fa-chart-bar"></i>
+                            Laporan</a>
+                        <a class="nav-link" href="{{ url('/admin/saran') }}"><i class="fas fa-comments"></i> Kritik &
+                            Saran</a>
+                        <a class="nav-link" href="{{ url('/admin/maintenance') }}"><i class="fas fa-tools"></i>
+                            Maintenance</a>
+                        <hr>
+                        <a class="nav-link active" href="{{ url('/admin/profile') }}"><i class="fas fa-user"></i>
+                            Profile</a>
+                        <form action="{{ url('/logout') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="nav-link border-0 bg-transparent w-100 text-start">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </form>
+                    </nav>
                 </div>
             </div>
-            <nav class="nav flex-column">
-                <a class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }}"
-                    href="{{ url('/admin/dashboard') }}">
-                    <i class="fas fa-tachometer-alt"></i> Dashboard
-                </a>
-                <a class="nav-link {{ request()->is('admin/manage-schedule') ? 'active' : '' }}"
-                    href="{{ url('/admin/manage-schedule') }}">
-                    <i class="fas fa-calendar"></i> Kelola Jadwal
-                </a>
-                <a class="nav-link {{ request()->is('admin/manage-rooms') ? 'active' : '' }}"
-                    href="{{ url('/admin/manage-rooms') }}">
-                    <i class="fas fa-door-open"></i> Kelola Ruangan
-                </a>
-                <a class="nav-link {{ request()->is('admin/manage-semester') ? 'active' : '' }}"
-                    href="{{ url('/admin/manage-semester') }}">
-                    <i class="fas fa-calendar-alt"></i> Kelola Semester
-                </a>
-                <a class="nav-link {{ request()->is('admin/manage-settings') ? 'active' : '' }}"
-                    href="{{ url('/admin/manage-settings') }}">
-                    <i class="fas fa-cog"></i> Pengaturan
-                </a>
-                <a class="nav-link {{ request()->is('admin/manage-users') ? 'active' : '' }}"
-                    href="{{ url('/admin/manage-users') }}">
-                    <i class="fas fa-users"></i> Kelola Admin
-                </a>
-                <a class="nav-link {{ request()->is('admin/reports') ? 'active' : '' }}"
-                    href="{{ url('/admin/reports') }}">
-                    <i class="fas fa-chart-bar"></i> Laporan
-                </a>
-                <div class="mt-4"></div>
-                <a class="nav-link {{ request()->is('admin/profile') ? 'active' : '' }}"
-                    href="{{ url('/admin/profile') }}">
-                    <i class="fas fa-user"></i> Profile
-                </a>
-                <form action="{{ url('/logout') }}" method="POST" class="d-inline">
-                    @csrf
-                    <button type="submit" class="nav-link border-0 bg-transparent w-100 text-start">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </form>
-            </nav>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content flex-grow-1">
-            <!-- Navbar -->
-            <nav class="navbar navbar-expand-lg navbar-custom mb-4">
-                <div class="container-fluid">
-                    <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#mobileSidebar">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <div class="d-flex align-items-center">
-                        <h4 class="mb-0">Profil Saya</h4>
+        <!-- Top Bar -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
+                        <button class="btn btn-light d-md-none me-2" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#mobileSidebar">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <h4 class="d-inline">Profile</h4>
                     </div>
-                    <div class="d-flex align-items-center">
-                        <span class="me-3 d-none d-md-block">{{ date('d F Y') }}</span>
-                        <div class="dropdown">
-                            <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                {{ session('username') }}
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ url('/admin/profile') }}">
-                                        <i class="fas fa-user me-2"></i>Profile
-                                    </a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <form action="{{ url('/logout') }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <button type="submit"
-                                            class="dropdown-item text-danger border-0 bg-transparent">
-                                            <i class="fas fa-sign-out-alt me-2"></i>Logout
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-            <!-- Mobile Sidebar -->
-            <div class="collapse d-md-none mb-4" id="mobileSidebar">
-                <div class="card">
-                    <div class="card-body">
-                        <nav class="nav flex-column">
-                            <a class="nav-link" href="{{ url('/admin/dashboard') }}">
-                                <i class="fas fa-tachometer-alt"></i> Dashboard
-                            </a>
-                            <a class="nav-link" href="{{ url('/admin/manage-schedule') }}">
-                                <i class="fas fa-calendar"></i> Kelola Jadwal
-                            </a>
-                            <a class="nav-link" href="{{ url('/admin/manage-rooms') }}">
-                                <i class="fas fa-door-open"></i> Kelola Ruangan
-                            </a>
-                            <a class="nav-link" href="{{ url('/admin/manage-semester') }}">
-                                <i class="fas fa-calendar-alt"></i> Kelola Semester
-                            </a>
-                            <a class="nav-link" href="{{ url('/admin/manage-settings') }}">
-                                <i class="fas fa-cog"></i> Pengaturan
-                            </a>
-                            <a class="nav-link" href="{{ url('/admin/manage-users') }}">
-                                <i class="fas fa-users"></i> Kelola Admin
-                            </a>
-                            <a class="nav-link" href="{{ url('/admin/reports') }}">
-                                <i class="fas fa-chart-bar"></i> Laporan
-                            </a>
-                            <hr>
-                            <a class="nav-link active" href="{{ url('/admin/profile') }}">
-                                <i class="fas fa-user"></i> Profile
-                            </a>
-                            <form action="{{ url('/logout') }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="nav-link border-0 bg-transparent w-100 text-start">
-                                    <i class="fas fa-sign-out-alt"></i> Logout
-                                </button>
-                            </form>
-                        </nav>
+                    <div class="d-flex gap-2">
+                        <span class="text-muted"><i class="far fa-calendar-alt me-1"></i> {{ date('d F Y') }}</span>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Content -->
-            <div class="content-wrapper">
-                <!-- Page Header -->
-                <div class="page-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h5 class="mb-1">Kelola Profil</h5>
-                            <p class="text-muted mb-0">Ubah informasi profil dan password akun Anda</p>
-                        </div>
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert"
+                style="border-radius: 8px;">
+                <i class="fas fa-check-circle me-2"></i>
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert" style="border-radius: 8px;">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        <div class="card">
+            <div class="card-body">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        {{ strtoupper(substr(session('username'), 0, 1)) }}
+                    </div>
+                    <div class="profile-info">
+                        <h4>{{ session('username') }}</h4>
+                        <p>{{ ucfirst(session('role')) }}</p>
                     </div>
                 </div>
 
-                <!-- Notifications -->
-                @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-                        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-
-                @if (session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-                        <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-
-                <div class="row">
-                    <!-- Profile Card -->
-                    <div class="col-lg-4 mb-4">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <div class="profile-avatar">
-                                    {{ strtoupper(substr($user->username, 0, 1)) }}
-                                </div>
-                                <h4 class="mb-2">{{ $user->username }}</h4>
-                                <p class="text-muted mb-3">
-                                    <span
-                                        class="badge bg-{{ $user->role == 'superadmin' ? 'danger' : 'primary' }} p-2">
-                                        <i class="fas fa-user-shield me-1"></i>
-                                        {{ strtoupper($user->role) }}
-                                    </span>
-                                </p>
-
-                                <div class="profile-info text-start">
-                                    <div class="profile-info-item">
-                                        <i class="fas fa-envelope"></i>
-                                        <div>
-                                            <small class="text-muted">Email</small>
-                                            <div>{{ $user->email ?? 'Tidak ada email' }}</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="profile-info-item">
-                                        <i class="fas fa-calendar-plus"></i>
-                                        <div>
-                                            <small class="text-muted">Bergabung</small>
-                                            <div>{{ date('d F Y', strtotime($user->created_at)) }}</div>
-                                        </div>
-                                    </div>
-
-                                    @if ($user->last_login)
-                                        <div class="profile-info-item">
-                                            <i class="fas fa-sign-in-alt"></i>
-                                            <div>
-                                                <small class="text-muted">Login Terakhir</small>
-                                                <div>{{ date('d F Y H:i', strtotime($user->last_login)) }}</div>
-                                            </div>
-                                        </div>
-                                    @endif
-
-                                    <div class="profile-info-item">
-                                        <i class="fas fa-user-check"></i>
-                                        <div>
-                                            <small class="text-muted">Status</small>
-                                            <div>
-                                                <span
-                                                    class="badge bg-{{ $user->is_active ? 'success' : 'secondary' }}">
-                                                    {{ $user->is_active ? 'AKTIF' : 'NONAKTIF' }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="mt-4">
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        <small>Untuk keamanan, pastikan password Anda kuat dan tidak mudah
-                                            ditebak.</small>
-                                    </div>
-                                </div>
-                            </div>
+                <form method="POST" action="{{ url('/admin/profile/update') }}">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" name="username" class="form-control"
+                                value="{{ old('username', $user->username) }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control"
+                                value="{{ old('email', $user->email) }}">
                         </div>
                     </div>
 
-                    <!-- Edit Profile Form -->
-                    <div class="col-lg-8 mb-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-edit me-2"></i>Edit Profil
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <form method="POST" action="{{ url('/admin/profile/update') }}" id="profileForm">
-                                    @csrf
-                                    <div class="row mb-4">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Username</label>
-                                            <input type="text" name="username" class="form-control"
-                                                value="{{ $user->username }}" required minlength="3"
-                                                maxlength="50">
-                                            <small class="text-muted">Username untuk login, minimal 3 karakter</small>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Email</label>
-                                            <input type="email" name="email" class="form-control"
-                                                value="{{ $user->email ?? '' }}">
-                                            <small class="text-muted">Email untuk notifikasi dan reset password</small>
-                                        </div>
-                                    </div>
+                    <hr class="my-4">
 
-                                    <hr class="my-4">
+                    <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem;">Ubah Password</h5>
+                    <p class="text-muted" style="font-size: 0.875rem;">Kosongkan jika tidak ingin mengubah password
+                    </p>
 
-                                    <h5 class="mb-4">
-                                        <i class="fas fa-key me-2"></i>Ubah Password
-                                    </h5>
-                                    <p class="text-muted mb-4">Isi password saat ini dan password baru jika ingin
-                                        mengubah
-                                        password.</p>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Password Saat Ini <span
-                                                    class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <input type="password" name="current_password" id="currentPassword"
-                                                    class="form-control" required>
-                                                <button class="btn btn-outline-secondary" type="button"
-                                                    onclick="togglePassword('currentPassword', this)">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                            </div>
-                                            <small class="text-muted">Harus diisi untuk verifikasi</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mt-2">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Password Baru</label>
-                                            <div class="input-group">
-                                                <input type="password" name="new_password" id="newPassword"
-                                                    class="form-control" minlength="6">
-                                                <button class="btn btn-outline-secondary" type="button"
-                                                    onclick="togglePassword('newPassword', this)">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                            </div>
-                                            <div id="passwordStrength" class="password-strength mt-1"></div>
-                                            <small class="text-muted">Minimal 6 karakter, kosongkan jika tidak ingin
-                                                mengubah</small>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Konfirmasi Password Baru</label>
-                                            <div class="input-group">
-                                                <input type="password" name="confirm_password" id="confirmPassword"
-                                                    class="form-control">
-                                                <button class="btn btn-outline-secondary" type="button"
-                                                    onclick="togglePassword('confirmPassword', this)">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                            </div>
-                                            <div id="passwordMatch" class="mt-1"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-4 pt-3 border-top">
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-save me-2"></i>Simpan Perubahan
-                                        </button>
-                                        <a href="{{ url('/admin/dashboard') }}" class="btn btn-secondary">
-                                            <i class="fas fa-times me-2"></i>Batal
-                                        </a>
-                                        <button type="button" class="btn btn-outline-danger float-end"
-                                            onclick="confirmResetForm()">
-                                            <i class="fas fa-redo me-2"></i>Reset Form
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Password Baru</label>
+                            <input type="password" name="new_password" class="form-control" minlength="6">
                         </div>
-
-                        <!-- Security Info -->
-                        <div class="card mt-4">
-                            <div class="card-header bg-light">
-                                <h6 class="mb-0">
-                                    <i class="fas fa-shield-alt me-2"></i>Tips Keamanan
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <ul class="list-unstyled mb-0">
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        Gunakan password yang kuat dengan kombinasi huruf, angka, dan simbol
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        Jangan gunakan password yang sama untuk akun lain
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        Perbarui password secara berkala setiap 3-6 bulan
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        Jangan membagikan informasi login Anda kepada siapapun
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        Selalu logout setelah menggunakan sistem
-                                    </li>
-                                </ul>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Konfirmasi Password</label>
+                            <input type="password" name="confirm_password" class="form-control" minlength="6">
                         </div>
                     </div>
-                </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Simpan Perubahan
+                        </button>
+                        <a href="{{ url('/admin/dashboard') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Kembali
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function togglePassword(passwordId, button) {
-            const passwordInput = document.getElementById(passwordId);
-            const icon = button.querySelector('i');
-
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.className = 'fas fa-eye-slash';
-            } else {
-                passwordInput.type = 'password';
-                icon.className = 'fas fa-eye';
-            }
-        }
-
-        function checkPasswordStrength(password) {
-            let strength = 0;
-            const strengthBar = document.getElementById('passwordStrength');
-
-            if (password.length >= 6) strength++;
-            if (password.length >= 8) strength++;
-            if (/[A-Z]/.test(password)) strength++;
-            if (/[0-9]/.test(password)) strength++;
-            if (/[^A-Za-z0-9]/.test(password)) strength++;
-
-            // Reset classes
-            strengthBar.className = 'password-strength';
-
-            if (password.length === 0) {
-                strengthBar.style.width = '0%';
-                return;
-            }
-
-            let width = (strength / 5) * 100;
-            strengthBar.style.width = width + '%';
-
-            if (strength <= 2) {
-                strengthBar.classList.add('strength-weak');
-            } else if (strength <= 4) {
-                strengthBar.classList.add('strength-medium');
-            } else {
-                strengthBar.classList.add('strength-strong');
-            }
-        }
-
-        function checkPasswordMatch() {
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const matchDiv = document.getElementById('passwordMatch');
-
-            if (newPassword === '' && confirmPassword === '') {
-                matchDiv.innerHTML = '';
-                return;
-            }
-
-            if (newPassword === confirmPassword) {
-                matchDiv.innerHTML =
-                    '<small class="text-success"><i class="fas fa-check-circle me-1"></i>Password cocok</small>';
-            } else {
-                matchDiv.innerHTML =
-                    '<small class="text-danger"><i class="fas fa-times-circle me-1"></i>Password tidak cocok</small>';
-            }
-        }
-
-        function confirmResetForm() {
-            if (confirm('Apakah Anda yakin ingin mereset form? Semua perubahan yang belum disimpan akan hilang.')) {
-                document.getElementById('profileForm').reset();
-                document.getElementById('passwordStrength').style.width = '0%';
-                document.getElementById('passwordMatch').innerHTML = '';
-            }
-        }
-
-        // Event listeners
-        document.getElementById('newPassword').addEventListener('input', function() {
-            checkPasswordStrength(this.value);
-            checkPasswordMatch();
-        });
-
-        document.getElementById('confirmPassword').addEventListener('input', checkPasswordMatch);
-
-        // Form validation
-        document.getElementById('profileForm').addEventListener('submit', function(e) {
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            if (newPassword !== '' && newPassword !== confirmPassword) {
-                e.preventDefault();
-                alert('Password baru dan konfirmasi tidak cocok!');
-                return false;
-            }
-
-            if (newPassword.length > 0 && newPassword.length < 6) {
-                e.preventDefault();
-                alert('Password baru minimal 6 karakter!');
-                return false;
-            }
-
-            return true;
-        });
-    </script>
 </body>
 
 </html>

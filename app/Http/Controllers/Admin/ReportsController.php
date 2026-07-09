@@ -65,11 +65,43 @@ class ReportsController extends Controller
             ->value('setting_value');
         $isMaintenance = ($maintenanceStatus == '1');
 
+        // Get filter data for reports
+        $prodis = DB::table('schedules')
+            ->distinct()
+            ->pluck('kelas', 'kelas')
+            ->toArray();
+
+        $semesters = DB::table('semester_settings')
+            ->orderByDesc('tahun_akademik')
+            ->orderBy('semester')
+            ->get();
+
+        // Apply filters
+        $query = DB::table('schedules')
+            ->select('schedules.*');
+
+        if ($request->filled('prodi')) {
+            $query->where('schedules.kelas', $request->prodi);
+        }
+
+        if ($request->filled('semester_id')) {
+            $semester = DB::table('semester_settings')->where('id', $request->semester_id)->first();
+            if ($semester) {
+                $query->where('schedules.tahun_akademik', $semester->tahun_akademik)
+                    ->where('schedules.semester', $semester->semester);
+            }
+        }
+
+        $schedules = $query->get();
+
         return view('admin.reports', compact(
             'stats',
             'isMaintenance',
             'currentUserRole',
-            'currentUserId'
+            'currentUserId',
+            'prodis',
+            'semesters',
+            'schedules'
         ));
     }
 }
