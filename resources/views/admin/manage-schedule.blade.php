@@ -994,13 +994,14 @@
                 </div>
                 <div class="actions-bar-right">
                     <button class="btn-destructive-outline" data-bs-toggle="modal" data-bs-target="#deleteAllModal"
-                        {{ count($schedules) == 0 ? 'disabled' : '' }}>
+                        {{ count($schedules) == 0 ? 'disabled' : '' }} id="btnDeleteAll">
                         <i class="fas fa-trash-alt"></i> Hapus Semua
                     </button>
                     <button class="btn-outline-secondary-custom" data-bs-toggle="modal" data-bs-target="#bulkAddModal">
                         <i class="fas fa-layer-group"></i> Tambah Massal
                     </button>
-                    <button class="btn-primary-solid" data-bs-toggle="modal" data-bs-target="#addModal">
+                    <button class="btn-primary-solid" data-bs-toggle="modal" data-bs-target="#addModal"
+                        id="btnAddSchedule">
                         <i class="fas fa-plus"></i> Tambah Jadwal
                     </button>
                 </div>
@@ -1097,7 +1098,7 @@
                             <p>Mulai dengan menambahkan jadwal baru</p>
                             <button class="btn-primary-solid" data-bs-toggle="modal" data-bs-target="#addModal"
                                 style="margin-top:12px;">
-                                <i class="fas fa-plus"></i> Tambah Jadwal Pertama
+                                <i class="fas fa-plus"></i>
                             </button>
                         </div>
                     @else

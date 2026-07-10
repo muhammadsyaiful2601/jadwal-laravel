@@ -79,6 +79,86 @@ class ScheduleController extends Controller
             return redirect('/login');
         }
 
+        if ($request->ajax()) {
+            try {
+                $request->validate([
+                    'kelas' => 'required|string',
+                    'hari' => 'required|string',
+                    'jam_ke' => 'required|integer|min:1|max:10',
+                    'waktu_mulai' => 'required',
+                    'waktu_selesai' => 'required',
+                    'mata_kuliah' => 'required|string',
+                    'dosen' => 'required|string',
+                    'ruang' => 'required|string',
+                    'semester' => 'required|string',
+                    'tahun_akademik' => 'required|string',
+                ]);
+
+                $waktu = $request->input('waktu_mulai') . " - " . $request->input('waktu_selesai');
+
+                // Check conflicts
+                $conflicts = $this->checkScheduleConflict(
+                    $request->input('kelas'),
+                    $request->input('hari'),
+                    $request->input('waktu_mulai'),
+                    $request->input('waktu_selesai'),
+                    $request->input('semester'),
+                    $request->input('tahun_akademik'),
+                    $request->input('dosen'),
+                    $request->input('ruang')
+                );
+
+                if (!empty($conflicts)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => implode("<br>", $conflicts)
+                    ]);
+                }
+
+                $scheduleId = DB::table('schedules')->insertGetId([
+                    'kelas' => $request->input('kelas'),
+                    'hari' => $request->input('hari'),
+                    'jam_ke' => $request->input('jam_ke'),
+                    'waktu' => $waktu,
+                    'mata_kuliah' => $request->input('mata_kuliah'),
+                    'dosen' => $request->input('dosen'),
+                    'ruang' => $request->input('ruang'),
+                    'semester' => $request->input('semester'),
+                    'tahun_akademik' => $request->input('tahun_akademik'),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                // Log activity
+                $this->logActivity(
+                    $request->session()->get('user_id'),
+                    'Tambah Jadwal',
+                    "Kelas: {$request->input('kelas')}, Matkul: {$request->input('mata_kuliah')}, Hari: {$request->input('hari')}"
+                );
+
+                // Get the created schedule
+                $schedule = DB::table('schedules')->where('id', $scheduleId)->first();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Jadwal berhasil ditambahkan!',
+                    'data' => $schedule
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                ]);
+            }
+        }
+
+        // Non-AJAX fallback
+        return $this->storeLegacy($request);
+    }
+
+    // Legacy method for non-AJAX fallback
+    private function storeLegacy(Request $request)
+    {
         $request->validate([
             'kelas' => 'required|string',
             'hari' => 'required|string',
@@ -94,7 +174,6 @@ class ScheduleController extends Controller
 
         $waktu = $request->input('waktu_mulai') . " - " . $request->input('waktu_selesai');
 
-        // Check conflicts
         $conflicts = $this->checkScheduleConflict(
             $request->input('kelas'),
             $request->input('hari'),
@@ -124,7 +203,6 @@ class ScheduleController extends Controller
             'updated_at' => now(),
         ]);
 
-        // Log activity
         $this->logActivity(
             $request->session()->get('user_id'),
             'Tambah Jadwal',
@@ -140,6 +218,77 @@ class ScheduleController extends Controller
             return redirect('/login');
         }
 
+        if ($request->ajax()) {
+            try {
+                $request->validate([
+                    'kelas' => 'required|string',
+                    'hari' => 'required|string',
+                    'jam_ke' => 'required|integer|min:1|max:10',
+                    'waktu_mulai' => 'required',
+                    'waktu_selesai' => 'required',
+                    'mata_kuliah' => 'required|string',
+                    'dosen' => 'required|string',
+                    'ruang' => 'required|string',
+                    'semester' => 'required|string',
+                    'tahun_akademik' => 'required|string',
+                ]);
+
+                $waktu = $request->input('waktu_mulai') . " - " . $request->input('waktu_selesai');
+
+                // Check conflicts (excluding current schedule)
+                $conflicts = $this->checkScheduleConflict(
+                    $request->input('kelas'),
+                    $request->input('hari'),
+                    $request->input('waktu_mulai'),
+                    $request->input('waktu_selesai'),
+                    $request->input('semester'),
+                    $request->input('tahun_akademik'),
+                    $request->input('dosen'),
+                    $request->input('ruang'),
+                    $id
+                );
+
+                if (!empty($conflicts)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => implode("<br>", $conflicts)
+                    ]);
+                }
+
+                DB::table('schedules')->where('id', $id)->update([
+                    'kelas' => $request->input('kelas'),
+                    'hari' => $request->input('hari'),
+                    'jam_ke' => $request->input('jam_ke'),
+                    'waktu' => $waktu,
+                    'mata_kuliah' => $request->input('mata_kuliah'),
+                    'dosen' => $request->input('dosen'),
+                    'ruang' => $request->input('ruang'),
+                    'semester' => $request->input('semester'),
+                    'tahun_akademik' => $request->input('tahun_akademik'),
+                    'updated_at' => now(),
+                ]);
+
+                $this->logActivity($request->session()->get('user_id'), 'Edit Jadwal', "ID: $id");
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Jadwal berhasil diperbarui!'
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                ]);
+            }
+        }
+
+        // Non-AJAX fallback
+        return $this->updateLegacy($request, $id);
+    }
+
+    // Legacy method for non-AJAX fallback
+    private function updateLegacy(Request $request, $id)
+    {
         $request->validate([
             'kelas' => 'required|string',
             'hari' => 'required|string',
@@ -155,7 +304,6 @@ class ScheduleController extends Controller
 
         $waktu = $request->input('waktu_mulai') . " - " . $request->input('waktu_selesai');
 
-        // Check conflicts (excluding current schedule)
         $conflicts = $this->checkScheduleConflict(
             $request->input('kelas'),
             $request->input('hari'),
@@ -196,6 +344,25 @@ class ScheduleController extends Controller
             return redirect('/login');
         }
 
+        if ($request->ajax()) {
+            try {
+                DB::table('schedules')->where('id', $id)->delete();
+
+                $this->logActivity($request->session()->get('user_id'), 'Hapus Jadwal', "ID: $id");
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Jadwal berhasil dihapus!'
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                ]);
+            }
+        }
+
+        // Non-AJAX fallback
         DB::table('schedules')->where('id', $id)->delete();
 
         $this->logActivity($request->session()->get('user_id'), 'Hapus Jadwal', "ID: $id");
@@ -209,6 +376,27 @@ class ScheduleController extends Controller
             return redirect('/login');
         }
 
+        if ($request->ajax()) {
+            try {
+                $totalData = DB::table('schedules')->count();
+
+                DB::table('schedules')->delete();
+
+                $this->logActivity($request->session()->get('user_id'), 'Hapus Semua Jadwal', "Semua jadwal dihapus, total: $totalData data");
+
+                return response()->json([
+                    'success' => true,
+                    'message' => "Semua jadwal ($totalData data) berhasil dihapus!"
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                ]);
+            }
+        }
+
+        // Non-AJAX fallback
         $totalData = DB::table('schedules')->count();
 
         DB::table('schedules')->delete();

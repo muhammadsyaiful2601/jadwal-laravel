@@ -51,6 +51,124 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        // Check if AJAX request
+        if ($request->ajax()) {
+            $credentials = $request->validate([
+                'username' => 'required|string',
+                'password' => 'required|string',
+            ]);
+
+            $username = $credentials['username'];
+            $password = $credentials['password'];
+
+            // Find user
+            $user = DB::table('users')->where('username', $username)->first();
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Username tidak ditemukan'
+                ]);
+            }
+
+            // Check if account is inactive
+            if (!$user->is_active) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akun ' . $username . ' telah dinonaktifkan'
+                ]);
+            }
+
+            // Check if account is locked
+            if ($user->locked_until && strtotime($user->locked_until) > time()) {
+                $remaining = strtotime($user->locked_until) - time();
+                $formatted = $this->formatLockoutTime($remaining);
+
+                return response()->json([
+                    'success' => false,
+                    'locked' => true,
+                    'message' => "Akun '$username' terkunci. Silakan coba lagi dalam {$formatted}",
+                    'lockout_time' => $remaining,
+                    'multiplier' => $user->lockout_multiplier ?? 1,
+                    'attempts_info' => $this->getRemainingAttemptsInfo($user->id)
+                ]);
+            }
+
+            // Verify password
+            if (Hash::check($password, $user->password)) {
+                // Reset failed attempts
+                DB::table('users')->where('id', $user->id)->update([
+                    'failed_attempts' => 0,
+                    'locked_until' => null,
+                    'lockout_multiplier' => 1,
+                    'last_failed_attempt' => null,
+                    'last_login' => now(),
+                ]);
+
+                // Manual login
+                Auth::loginUsingId($user->id);
+                session([
+                    'user_id' => $user->id,
+                    'username' => $user->username,
+                    'role' => $user->role,
+                ]);
+
+                // Log activity
+                DB::table('activity_logs')->insert([
+                    'user_id' => $user->id,
+                    'action' => 'Login',
+                    'description' => 'Login berhasil',
+                    'ip_address' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                    'created_at' => now(),
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'redirect' => url('/admin/dashboard')
+                ]);
+            } else {
+                // Handle failed login
+                $result = $this->handleFailedLogin($user->id);
+
+                if ($result && isset($result['locked']) && $result['locked']) {
+                    $formatted = $this->formatLockoutTime($result['duration']);
+                    return response()->json([
+                        'success' => false,
+                        'locked' => true,
+                        'message' => "Terlalu banyak percobanan gagal. Akun '$username' terkunci selama {$formatted}",
+                        'lockout_time' => $result['duration'],
+                        'multiplier' => $result['multiplier'] ?? 1,
+                        'attempts_info' => $this->getRemainingAttemptsInfo($user->id)
+                    ]);
+                }
+
+                $attemptsInfo = $this->getRemainingAttemptsInfo($user->id);
+                $attemptsLeft = $attemptsInfo['attempts_left'] ?? 0;
+
+                $errorMsg = "Password salah!";
+                if ($attemptsLeft <= 2) {
+                    $errorMsg .= " Percobaan tersisa: {$attemptsLeft}. Akun akan terkunci setelah percobaan terakhir.";
+                } else {
+                    $errorMsg .= " Percobaan tersisa: {$attemptsLeft}";
+                }
+
+                return response()->json([
+                    'success' => false,
+                    'message' => $errorMsg,
+                    'show_progress' => true,
+                    'attempts_info' => $attemptsInfo
+                ]);
+            }
+        }
+
+        // Non-AJAX fallback
+        return $this->loginLegacy($request);
+    }
+
+    // Legacy method for non-AJAX fallback
+    private function loginLegacy(Request $request)
+    {
         $credentials = $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
@@ -59,28 +177,19 @@ class LoginController extends Controller
         $username = $credentials['username'];
         $password = $credentials['password'];
 
-        // Cari user
         $user = DB::table('users')->where('username', $username)->first();
 
         if (!$user) {
-            return back()
-                ->withInput($request->only('username'))
-                ->with('error', 'Username tidak ditemukan');
+            return back()->withInput($request->only('username'))->with('error', 'Username tidak ditemukan');
         }
 
-        // Cek apakah akun tidak aktif
         if (!$user->is_active) {
-            return back()
-                ->withInput($request->only('username'))
-                ->with('inactive_account', true)
-                ->with('error', 'Akun ' . $username . ' telah dinonaktifkan');
+            return back()->withInput($request->only('username'))->with('inactive_account', true)->with('error', 'Akun ' . $username . ' telah dinonaktifkan');
         }
 
-        // Cek apakah akun terkunci
         if ($user->locked_until && strtotime($user->locked_until) > time()) {
             $remaining = strtotime($user->locked_until) - time();
             $formatted = $this->formatLockoutTime($remaining);
-
             $multiplierInfo = $this->getLockoutMultiplierInfo($user->id);
             $multiplier = $multiplierInfo['multiplier'] ?? 1;
 
@@ -93,9 +202,7 @@ class LoginController extends Controller
                 ->with('attempts_info', $this->getRemainingAttemptsInfo($user->id));
         }
 
-        // Verifikasi password
         if (Hash::check($password, $user->password)) {
-            // Reset failed attempts
             DB::table('users')->where('id', $user->id)->update([
                 'failed_attempts' => 0,
                 'locked_until' => null,
@@ -104,7 +211,6 @@ class LoginController extends Controller
                 'last_login' => now(),
             ]);
 
-            // Login manual
             Auth::loginUsingId($user->id);
             session([
                 'user_id' => $user->id,
@@ -112,7 +218,6 @@ class LoginController extends Controller
                 'role' => $user->role,
             ]);
 
-            // Log activity
             DB::table('activity_logs')->insert([
                 'user_id' => $user->id,
                 'action' => 'Login',
@@ -124,14 +229,13 @@ class LoginController extends Controller
 
             return redirect('/admin/dashboard');
         } else {
-            // Handle failed login
             $result = $this->handleFailedLogin($user->id);
 
             if ($result && isset($result['locked']) && $result['locked']) {
                 $formatted = $this->formatLockoutTime($result['duration']);
                 return back()
                     ->withInput($request->only('username'))
-                    ->with('error', "Terlalu banyak percobaan gagal. Akun '$username' terkunci selama {$formatted}")
+                    ->with('error', "Terlalu banyak percobanan gagal. Akun '$username' terkunci selama {$formatted}")
                     ->with('lockout_username', $username)
                     ->with('lockout_time', $result['duration'])
                     ->with('multiplier', $result['multiplier'] ?? 1)
@@ -158,6 +262,31 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+        // Handle AJAX logout
+        if ($request->ajax()) {
+            if (Auth::check()) {
+                DB::table('activity_logs')->insert([
+                    'user_id' => Auth::id(),
+                    'action' => 'Logout',
+                    'description' => 'Logout berhasil',
+                    'ip_address' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                    'created_at' => now(),
+                ]);
+            }
+
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Logout berhasil',
+                'redirect' => url('/login')
+            ]);
+        }
+
+        // Non-AJAX fallback
         if (Auth::check()) {
             DB::table('activity_logs')->insert([
                 'user_id' => Auth::id(),

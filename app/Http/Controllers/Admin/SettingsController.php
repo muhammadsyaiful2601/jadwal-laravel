@@ -57,6 +57,9 @@ class SettingsController extends Controller
             'running_text_color',
             'running_text_bg_color',
             'max_login_attempts',
+            'header_logo_type',
+            'header_title_1',
+            'header_title_2',
         ];
 
         foreach ($settingsToUpdate as $key) {

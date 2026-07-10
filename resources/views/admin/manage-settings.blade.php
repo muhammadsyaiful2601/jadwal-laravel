@@ -694,7 +694,48 @@
                     </div>
                 </div>
 
-                <!-- Card 2: Running Text -->
+                <!-- Card 2: Header Configuration -->
+                <div class="settings-card">
+                    <div class="settings-card-title">
+                        <i class="fas fa-header"></i> Header Halaman Utama
+                    </div>
+                    <div class="form-group-custom full" style="margin-bottom:20px;">
+                        <label>Tipe Logo Header</label>
+                        <select class="form-control-modern" name="header_logo_type">
+                            <option value="kampus"
+                                {{ ($settings['header_logo_type'] ?? 'kampus') == 'kampus' ? 'selected' : '' }}>
+                                Logo Kampus
+                            </option>
+                            <option value="jurusan"
+                                {{ ($settings['header_logo_type'] ?? '') == 'jurusan' ? 'selected' : '' }}>
+                                Logo Jurusan
+                            </option>
+                            <option value="none"
+                                {{ ($settings['header_logo_type'] ?? '') == 'none' ? 'selected' : '' }}>
+                                Tanpa Logo
+                            </option>
+                        </select>
+                        <span class="form-hint">Pilih logo yang akan ditampilkan di header halaman utama</span>
+                    </div>
+
+                    <div class="form-group-custom full" style="margin-bottom:20px;">
+                        <label>Judul Header (Baris 1)</label>
+                        <input type="text" name="header_title_1" class="form-control-modern"
+                            value="{{ $settings['header_title_1'] ?? ($settings['institusi_nama'] ?? '') }}"
+                            placeholder="Contoh: Politeknik Negeri Padang">
+                        <span class="form-hint">Judul utama di header (default: Nama Institusi)</span>
+                    </div>
+
+                    <div class="form-group-custom full">
+                        <label>Sub-Judul Header (Baris 2)</label>
+                        <input type="text" name="header_title_2" class="form-control-modern"
+                            value="{{ $settings['header_title_2'] ?? ($settings['institusi_lokasi'] ?? '') }}"
+                            placeholder="Contoh: PSDKU Tanah Datar">
+                        <span class="form-hint">Sub-judul di header (default: Lokasi Institusi)</span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Running Text -->
                 <div class="settings-card">
                     <div class="settings-card-title">
                         <i class="fas fa-scroll"></i> Running Text / Marquee

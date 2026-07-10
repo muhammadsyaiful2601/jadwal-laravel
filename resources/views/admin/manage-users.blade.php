@@ -9,27 +9,26 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
     <style>
         :root {
-            --sidebar-bg: #0f172a;
-            --sidebar-hover: rgba(255, 255, 255, 0.06);
-            --sidebar-active: rgba(255, 255, 255, 0.12);
-            --canvas-bg: #f8fafc;
+            --canvas-bg: #f1f5f9;
             --card-bg: #ffffff;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #64748b;
-            --border-subtle: #e2e8f0;
-            --border-light: #f1f5f9;
-            --accent: #2563eb;
-            --accent-hover: #1d4ed8;
-            --accent-light: #dbeafe;
-            --success-light: #d1fae5;
-            --success-text: #059669;
-            --danger-soft: #fee2e2;
-            --danger-text: #dc2626;
-            --warning-soft: #fef3c7;
-            --warning-text: #b45309;
+            --card-radius: 16px;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --corporate-blue: #1d4ed8;
+            --corporate-blue-hover: #1e3a8a;
+            --zinc-900: #18181b;
+            --zinc-800: #27272a;
+            --zinc-700: #3f3f46;
+            --zinc-600: #52525b;
+            --zinc-500: #71717a;
+            --zinc-400: #a1a1aa;
+            --zinc-300: #d4d4d8;
+            --zinc-200: #e4e4e7;
+            --zinc-100: #f4f4f5;
+            --zinc-50: #fafafa;
         }
 
         * {
@@ -41,93 +40,161 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--canvas-bg);
-            color: var(--text-primary);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Main Content */
         .main-content {
-            margin-left: 250px;
-            padding: 20px;
+            margin-left: 260px;
             min-height: 100vh;
-            background: var(--canvas-bg);
+            padding: 0;
         }
 
         /* Top Bar */
-        .topbar {
+        .top-bar {
             background: var(--card-bg);
-            padding: 16px 28px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            padding: 16px 32px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--zinc-100);
+            position: sticky;
+            top: 0;
+            z-index: 500;
         }
 
-        .topbar-title h4 {
-            font-size: 1.25rem;
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .top-bar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--zinc-600);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .top-bar-left h4 {
+            font-size: 1.2rem;
             font-weight: 700;
-            margin: 0;
-            letter-spacing: -0.02em;
+            color: var(--zinc-800);
+            margin-bottom: 0;
+            letter-spacing: -0.3px;
         }
 
-        .topbar-right {
+        .top-bar-right {
             display: flex;
             align-items: center;
             gap: 20px;
         }
 
-        .topbar-date {
-            font-size: 0.875rem;
-            color: var(--text-muted);
+        .top-bar-date {
+            font-size: 0.85rem;
+            color: var(--zinc-500);
             font-weight: 500;
+        }
+
+        .top-bar-right .dropdown-toggle {
+            background: var(--zinc-50);
+            border: 1px solid var(--zinc-200);
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--zinc-700);
             display: flex;
             align-items: center;
             gap: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
         }
 
-        .topbar-profile {
+        .top-bar-right .dropdown-toggle:hover {
+            background: var(--zinc-100);
+            border-color: var(--zinc-300);
+        }
+
+        .top-bar-right .dropdown-toggle::after {
+            display: none;
+        }
+
+        .top-bar-right .dropdown-menu {
+            border-radius: 12px;
+            border: 1px solid var(--zinc-200);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            padding: 6px;
+            min-width: 180px;
+        }
+
+        .top-bar-right .dropdown-item {
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            color: var(--zinc-700);
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 6px 14px 6px 6px;
-            border-radius: 100px;
-            border: 1px solid var(--border-subtle);
-            background: white;
-            cursor: pointer;
-            transition: all 0.2s ease;
         }
 
-        .topbar-profile:hover {
-            background: var(--canvas-bg);
-            border-color: #cbd5e1;
+        .top-bar-right .dropdown-item:hover {
+            background: var(--zinc-50);
         }
 
-        .topbar-profile .user-avatar {
-            width: 32px;
-            height: 32px;
-            font-size: 0.8rem;
+        .top-bar-right .dropdown-item.text-danger:hover {
+            background: #fef2f2;
         }
 
-        .topbar-profile span {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-primary);
+        .top-bar-right .dropdown-divider {
+            margin: 4px 0;
+            border-color: var(--zinc-100);
         }
 
-        .topbar-profile i {
+        .maintenance-badge-top {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fef2f2;
+            color: #b91c1c;
             font-size: 0.75rem;
-            color: var(--text-muted);
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid #fecaca;
+        }
+
+        .content-wrapper {
+            padding: 28px 32px;
+        }
+
+        .page-title-section {
+            margin-bottom: 28px;
+        }
+
+        .page-title-section h4 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--zinc-800);
+            margin-bottom: 4px;
+            letter-spacing: -0.3px;
+        }
+
+        .page-title-section p {
+            font-size: 0.88rem;
+            color: var(--zinc-500);
+            margin-bottom: 0;
         }
 
         /* Cards */
         .card {
             background: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid var(--border-subtle);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.02);
             margin-bottom: 20px;
         }
 
@@ -135,40 +202,214 @@
             padding: 24px;
         }
 
-        /* Page Header */
-        .page-header {
-            margin-bottom: 24px;
+        /* Table Card */
+        .table-card {
+            background: var(--card-bg);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            margin-bottom: 28px;
         }
 
-        .page-header-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: 4px;
-            letter-spacing: -0.02em;
+        .table-card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--zinc-100);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
-        .page-header-subtitle {
-            font-size: 0.9375rem;
-            color: var(--text-muted);
-            font-weight: 400;
-        }
-
-        .account-info {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            font-weight: 500;
-            margin-top: 8px;
+        .table-card-header h5 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--zinc-800);
+            margin-bottom: 0;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .account-info i {
-            color: #6366f1;
-            font-size: 0.875rem;
+        .table-card-header h5 i {
+            color: var(--zinc-400);
+            font-size: 0.9rem;
         }
 
-        /* Buttons */
+        .table-card-body {
+            padding: 0;
+        }
+
+        /* User Info Cell */
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-cell .avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .user-cell .username {
+            font-weight: 600;
+            color: var(--zinc-800);
+        }
+
+        /* Badges */
+        .badge {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-you {
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 2px 8px;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-left: 6px;
+        }
+
+        .badge-role {
+            padding: 3px 12px;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            border-radius: 6px;
+            background: var(--zinc-100);
+            color: var(--zinc-700);
+            letter-spacing: 0.02em;
+        }
+
+        .badge-role.superadmin {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid var(--zinc-200);
+        }
+
+        .badge-status {
+            padding: 3px 10px;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            border-radius: 6px;
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .badge-protected {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #fef3c7;
+            color: #b45309;
+            padding: 2px 8px;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-left: 4px;
+            cursor: help;
+        }
+
+        .badge-lockout {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 2px 8px;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-left: 4px;
+        }
+
+        .status-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--zinc-500);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-size: 0.875rem;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background: var(--zinc-50);
+            border-color: var(--zinc-200);
+            color: var(--zinc-800);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .action-btn.edit {
+            color: #475569;
+        }
+
+        .action-btn.edit:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+
+        .action-btn.password {
+            color: #475569;
+        }
+
+        .action-btn.password:hover {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1e40af;
+        }
+
+        .action-btn.danger {
+            color: #dc2626;
+        }
+
+        .action-btn.danger:hover {
+            background: #fee2e2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 4px;
+        }
+
         .btn-add-admin {
             background: #1e293b;
             color: white;
@@ -197,425 +438,147 @@
             box-shadow: none;
         }
 
-        /* Table Controls */
-        .table-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border-light);
-        }
-
-        .table-controls-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .show-entries {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .show-entries select {
-            border: 1px solid var(--border-subtle);
-            border-radius: 6px;
-            padding: 4px 28px 4px 10px;
-            font-size: 0.875rem;
-            color: var(--text-primary);
-            background: white;
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 8px center;
-            background-size: 14px;
-        }
-
-        .table-search {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .table-search label {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            font-weight: 500;
-            margin-bottom: 0;
-        }
-
-        .table-search input {
-            border: 1px solid var(--border-subtle);
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-size: 0.875rem;
-            width: 220px;
-            color: var(--text-primary);
-            transition: all 0.2s ease;
-        }
-
-        .table-search input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        /* Table */
-        .table {
+        .table-clean {
             width: 100%;
-            margin-bottom: 0;
+            border-collapse: collapse;
+            font-size: 0.85rem;
         }
 
-        .table thead th {
-            font-size: 0.75rem;
+        .table-clean thead {
+            background: var(--zinc-50);
+        }
+
+        .table-clean thead th {
+            padding: 12px 24px;
             font-weight: 600;
-            color: var(--text-muted);
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            padding: 12px 16px;
-            background: var(--canvas-bg);
-            border-bottom: 1px solid var(--border-subtle);
-            border-top: none;
+            letter-spacing: 0.4px;
+            color: var(--zinc-500);
+            border-bottom: 1px solid var(--zinc-100);
+            text-align: left;
+            white-space: nowrap;
         }
 
-        .table tbody td {
-            padding: 16px;
-            font-size: 0.875rem;
-            color: var(--text-primary);
-            border-bottom: 1px solid var(--border-light);
+        .table-clean tbody tr {
+            transition: background 0.12s ease;
+        }
+
+        .table-clean tbody tr:hover {
+            background: var(--zinc-50);
+        }
+
+        .table-clean tbody tr:not(:last-child) td {
+            border-bottom: 1px solid var(--zinc-100);
+        }
+
+        .table-clean tbody td {
+            padding: 12px 24px;
+            color: var(--zinc-700);
+            font-weight: 400;
             vertical-align: middle;
         }
 
-        .table tbody tr {
-            transition: background 0.15s ease;
+        .table-clean tbody tr:nth-child(even) {
+            background: rgba(0, 0, 0, 0.015);
         }
 
-        .table tbody tr:hover {
-            background: var(--canvas-bg);
-        }
-
-        .table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        /* User Info Cell */
-        .user-cell {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-cell .avatar {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 0.75rem;
-            flex-shrink: 0;
-        }
-
-        .user-cell .username {
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        /* Badges */
-        .badge {
-            font-size: 0.6875rem;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 6px;
-        }
-
-        .badge-you {
-            background: var(--accent-light);
-            color: var(--accent);
-            padding: 2px 8px;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            border-radius: 4px;
-            margin-left: 6px;
-        }
-
-        .badge-role {
-            padding: 3px 12px;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            border-radius: 6px;
-            background: var(--canvas-bg);
-            color: var(--text-secondary);
-            letter-spacing: 0.02em;
-        }
-
-        .badge-role.superadmin {
-            background: #f1f5f9;
-            color: #475569;
-            border: 1px solid #e2e8f0;
-        }
-
-        .badge-status {
-            padding: 3px 10px;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            border-radius: 6px;
-            background: var(--success-light);
-            color: var(--success-text);
-        }
-
-        .badge-protected {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: #fef3c7;
-            color: var(--warning-text);
-            padding: 2px 8px;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            border-radius: 4px;
-            margin-left: 4px;
-            cursor: help;
-        }
-
-        .badge-lockout {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: var(--danger-soft);
-            color: var(--danger-text);
-            padding: 2px 8px;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            border-radius: 4px;
-            margin-left: 4px;
-        }
-
-        .status-group {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 4px;
-        }
-
-        /* Action Buttons */
-        .action-btn {
-            width: 32px;
-            height: 32px;
-            padding: 0;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            border: 1px solid transparent;
-            background: transparent;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.15s ease;
-            font-size: 0.875rem;
-        }
-
-        .action-btn:hover {
-            background: var(--canvas-bg);
-            border-color: var(--border-subtle);
-            color: var(--text-primary);
-        }
-
-        .action-btn:disabled {
-            opacity: 0.35;
-            cursor: not-allowed;
-        }
-
-        .action-btn.danger:hover {
-            background: var(--danger-soft);
-            border-color: #fecaca;
-            color: var(--danger-text);
-        }
-
-        .action-group {
-            display: flex;
-            gap: 4px;
-        }
-
-        /* Pagination */
-        .pagination-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 20px;
-            border-top: 1px solid var(--border-light);
-        }
-
-        .pagination-info {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .pagination {
-            gap: 6px;
-            margin: 0;
-        }
-
-        .pagination .page-link {
-            border: 1px solid var(--border-subtle);
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            background: white;
-            transition: all 0.15s ease;
-        }
-
-        .pagination .page-item.active .page-link {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: white;
-        }
-
-        .pagination .page-link:hover {
-            background: var(--canvas-bg);
-            border-color: #cbd5e1;
-            color: var(--text-primary);
+        .table-clean tbody tr:nth-child(even):hover {
+            background: var(--zinc-50);
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
             .main-content {
                 margin-left: 0;
-                padding: 10px;
             }
 
-            .topbar {
-                padding: 12px 16px;
+            .top-bar-toggle {
+                display: block;
             }
 
-            .topbar-right .topbar-date {
-                display: none;
+            .top-bar {
+                padding: 14px 20px;
+            }
+
+            .content-wrapper {
+                padding: 20px;
             }
         }
 
-        @media (max-width: 575.98px) {
-            .main-content {
-                padding: 10px 8px;
+        @media (max-width: 576px) {
+            .content-wrapper {
+                padding: 16px;
             }
 
-            .page-header-title {
-                font-size: 1.125rem;
+            .top-bar {
+                padding: 12px 16px;
+            }
+
+            .top-bar-date {
+                display: none;
             }
         }
     </style>
 </head>
 
 <body>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
     @include('components.admin.sidebar')
 
-    <div class="main-content flex-grow-1">
-        <!-- Mobile Sidebar -->
-        <div class="collapse d-md-none mb-4" id="mobileSidebar">
-            <div class="card">
-                <div class="card-body p-3">
-                    <nav class="nav flex-column">
-                        <a class="nav-link" href="{{ url('/admin/dashboard') }}">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                        </a>
-                        <a class="nav-link" href="{{ url('/admin/manage-schedule') }}">
-                            <i class="fas fa-calendar"></i> Kelola Jadwal
-                        </a>
-                        <a class="nav-link" href="{{ url('/admin/manage-rooms') }}">
-                            <i class="fas fa-door-open"></i> Kelola Ruangan
-                        </a>
-                        <a class="nav-link" href="{{ url('/admin/manage-semester') }}">
-                            <i class="fas fa-calendar-alt"></i> Kelola Semester
-                        </a>
-                        <a class="nav-link" href="{{ url('/admin/manage-settings') }}">
-                            <i class="fas fa-cog"></i> Pengaturan
-                        </a>
-                        <a class="nav-link active" href="{{ url('/admin/manage-users') }}">
-                            <i class="fas fa-users"></i> Kelola Admin
-                        </a>
-                        <a class="nav-link" href="{{ url('/admin/reports') }}">
-                            <i class="fas fa-chart-bar"></i> Laporan
-                        </a>
-                        <a class="nav-link" href="{{ url('/admin/saran') }}">
-                            <i class="fas fa-comments"></i> Kritik & Saran
-                        </a>
-                        <a class="nav-link" href="{{ url('/admin/maintenance') }}">
-                            <i class="fas fa-tools"></i> Maintenance
-                        </a>
-                        <hr>
-                        <a class="nav-link" href="{{ url('/admin/profile') }}">
-                            <i class="fas fa-user"></i> Profile
-                        </a>
-                        <form action="{{ url('/logout') }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="nav-link border-0 bg-transparent w-100 text-start">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </button>
-                        </form>
-                    </nav>
-                </div>
-            </div>
-        </div>
-
-        <!-- Top Bar -->
-        <div class="topbar">
-            <div class="topbar-title">
-                <button class="btn btn-light d-md-none me-2" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#mobileSidebar">
+    <div class="main-content">
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <button class="top-bar-toggle" onclick="toggleSidebar()">
                     <i class="fas fa-bars"></i>
                 </button>
                 <h4>Kelola Admin</h4>
                 @if (!$isSuperAdmin)
-                    <span class="badge bg-info ms-2">Mode Terbatas</span>
+                    <span class="maintenance-badge-top"><i class="fas fa-info-circle"></i> Mode Terbatas</span>
                 @endif
             </div>
-            <div class="topbar-right">
-                <span class="topbar-date"><i class="far fa-calendar-alt me-1"></i> {{ date('d F Y') }}</span>
+            <div class="top-bar-right">
+                <span class="top-bar-date"><i class="far fa-calendar-alt me-1"></i> {{ date('d F Y') }}</span>
                 <div class="dropdown">
-                    <button class="topbar-profile dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <div class="user-avatar">
-                            {{ strtoupper(substr(session('username'), 0, 1)) }}
-                        </div>
-                        <span>{{ session('username') }}</span>
-                        <i class="fas fa-chevron-down"></i>
+                    <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle"></i>
+                        {{ session('username') }}
+                        <i class="fas fa-chevron-down" style="font-size:0.7rem; opacity:0.6;"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{{ url('/admin/profile') }}">
-                                <i class="fas fa-user me-2"></i>Profile
-                            </a></li>
+                        <li><a class="dropdown-item" href="{{ url('/admin/profile') }}"><i class="fas fa-user"></i>
+                                Profile</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <form action="{{ url('/logout') }}" method="POST" class="d-inline">
+                            <form action="{{ url('/logout') }}" method="POST">
                                 @csrf
-                                <button type="submit" class="dropdown-item text-danger border-0 bg-transparent">
-                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                <button type="submit" class="dropdown-item text-danger border-0 bg-transparent w-100"
+                                    style="display:flex; align-items:center; gap:10px;">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
                                 </button>
                             </form>
                         </li>
                     </ul>
                 </div>
             </div>
-        </div>
+        </header>
 
-        <!-- Content -->
         <div class="content-wrapper">
             <!-- Page Header -->
-            <div class="page-header">
-                <h1 class="page-header-title">Daftar Admin</h1>
-                <p class="page-header-subtitle">Kelola pengguna dengan akses admin</p>
-                <div class="account-info">
-                    <i class="fas fa-info-circle"></i>
-                    {{ $active_count ?? 0 }} akun aktif dari {{ count($users) }} total akun
-                </div>
+            <div class="page-title-section">
+                <h4>Daftar Admin</h4>
+                <p>Kelola pengguna dengan akses admin</p>
             </div>
 
             @if (session('success'))
@@ -651,195 +614,187 @@
                 </div>
             @endif
 
+            <!-- Action Button Row -->
+            <div class="d-flex justify-content-end mb-3">
+                @if ($isSuperAdmin)
+                    <button class="btn-add-admin" data-bs-toggle="modal" data-bs-target="#addModal">
+                        <i class="fas fa-plus"></i> Tambah Admin
+                    </button>
+                @endif
+            </div>
+
             <!-- Data Table -->
-            <div class="card">
+            <div class="table-card">
                 <!-- Desktop View - Table -->
                 <div class="table-responsive d-none d-md-block">
-                    <div class="table-controls">
-                        <div class="table-controls-left">
-                            <span class="show-entries">Show</span>
-                            <select>
-                                <option>10</option>
-                                <option>25</option>
-                                <option>50</option>
-                            </select>
-                            <span class="show-entries">entries</span>
-                        </div>
-                        <div class="table-search">
-                            <label>Search:</label>
-                            <input type="text" id="searchInput" placeholder="Cari admin...">
-                        </div>
+                    <div class="table-card-header">
+                        <h5><i class="fas fa-users"></i> Daftar Admin</h5>
                     </div>
-                    <table class="table" id="usersTableDesktop" style="margin-bottom: 0;">
-                        <thead>
-                            <tr>
-                                <th style="width: 50px;">No</th>
-                                <th>Username</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                                <th>Terakhir Login</th>
-                                <th style="width: 130px;">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php $no = 1; @endphp
-                            @foreach ($users as $user)
-                                @php
-                                    $is_protected = false;
-                                    $protection_reason = '';
-                                    $can_edit = true;
-                                    $can_delete = true;
-                                    $can_change_password = false;
-                                    $is_locked = false;
-                                    $lockout_info = '';
+                    <div class="table-card-body">
+                        <table class="table-clean" id="usersTableDesktop">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">No</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Terakhir Login</th>
+                                    <th style="width: 130px;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php $no = 1; @endphp
+                                @foreach ($users as $user)
+                                    @php
+                                        $is_protected = false;
+                                        $protection_reason = '';
+                                        $can_edit = true;
+                                        $can_delete = true;
+                                        $can_change_password = false;
+                                        $is_locked = false;
+                                        $lockout_info = '';
 
-                                    if (
-                                        isset($user->locked_until) &&
-                                        $user->locked_until &&
-                                        strtotime($user->locked_until) > time()
-                                    ) {
-                                        $is_locked = true;
-                                        $remaining = strtotime($user->locked_until) - time();
-                                        $lockout_info = $this->formatLockoutTime($remaining);
-                                    }
-
-                                    if (!$isSuperAdmin) {
-                                        if ($user->role == 'superadmin') {
-                                            $is_protected = true;
-                                            $protection_reason = 'Superadmin - hanya dapat dilihat';
-                                            $can_edit = false;
-                                            $can_delete = false;
-                                            $can_change_password = false;
+                                        if (
+                                            isset($user->locked_until) &&
+                                            $user->locked_until &&
+                                            strtotime($user->locked_until) > time()
+                                        ) {
+                                            $is_locked = true;
+                                            $remaining = strtotime($user->locked_until) - time();
+                                            $lockout_info = $this->formatLockoutTime($remaining);
                                         }
 
-                                        if ($user->id != $currentUserId) {
-                                            $can_delete = false;
-                                        }
+                                        if (!$isSuperAdmin) {
+                                            if ($user->role == 'superadmin') {
+                                                $is_protected = true;
+                                                $protection_reason = 'Superadmin - hanya dapat dilihat';
+                                                $can_edit = false;
+                                                $can_delete = false;
+                                                $can_change_password = false;
+                                            }
 
-                                        if ($user->id == $currentUserId) {
+                                            if ($user->id != $currentUserId) {
+                                                $can_delete = false;
+                                            }
+
+                                            if ($user->id == $currentUserId) {
+                                                $can_change_password = true;
+                                            }
+                                        } else {
                                             $can_change_password = true;
                                         }
-                                    } else {
-                                        $can_change_password = true;
-                                    }
 
-                                    if ($user->other_active_count == 0 && $user->is_active) {
-                                        $is_protected = true;
-                                        $protection_reason = 'Akun aktif terakhir';
-                                        $can_delete = false;
-                                    }
-                                @endphp
-                                <tr>
-                                    <td>{{ $no++ }}</td>
-                                    <td>
-                                        <div class="user-cell">
-                                            <div class="avatar">{{ strtoupper(substr($user->username, 0, 1)) }}</div>
-                                            <span class="username">{{ $user->username }}</span>
-                                            @if ($user->id == $currentUserId)
-                                                <span class="badge-you">Anda</span>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td>{{ $user->email ?? '-' }}</td>
-                                    <td>
-                                        <span
-                                            class="badge-role {{ $user->role == 'superadmin' ? 'superadmin' : '' }}">
-                                            {{ strtoupper($user->role) }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="status-group">
-                                            <span
-                                                class="badge-status">{{ $user->is_active ? 'AKTIF' : 'NONAKTIF' }}</span>
-                                            @if ($is_protected && $user->is_active)
-                                                <span class="badge-protected" data-bs-toggle="tooltip"
-                                                    title="{{ $protection_reason }}">
-                                                    <i class="fas fa-shield-alt"></i>
-                                                </span>
-                                            @endif
-                                            @if ($is_locked)
-                                                <span class="badge-lockout"
-                                                    title="Terkunci sampai {{ date('d/m/Y H:i', strtotime($user->locked_until)) }}">
-                                                    <i class="fas fa-lock"></i> Terkunci
-                                                </span>
-                                            @elseif($user->failed_attempts > 0)
-                                                <span class="badge-lockout"
-                                                    title="Percobaan gagal: {{ $user->failed_attempts }}">
-                                                    <i class="fas fa-exclamation-triangle"></i>
-                                                    {{ $user->failed_attempts }}
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td>{{ $user->last_login ? date('d/m/Y H:i', strtotime($user->last_login)) : '-' }}
-                                    </td>
-                                    <td>
-                                        <div class="action-group">
-                                            <button class="action-btn" onclick="editUser({{ json_encode($user) }})"
-                                                {{ !$can_edit ? 'disabled' : '' }}
-                                                @if (!$can_edit) title="{{ $protection_reason }}" @endif>
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-
-                                            @if ($can_change_password)
-                                                <a href="{{ url('/admin/change-password?id=' . $user->id) }}"
-                                                    class="action-btn" title="Ganti Password">
-                                                    <i class="fas fa-key"></i>
-                                                </a>
-                                            @else
-                                                <button class="action-btn" disabled
-                                                    title="Hanya dapat mengganti password sendiri">
-                                                    <i class="fas fa-key"></i>
-                                                </button>
-                                            @endif
-
-                                            @if ($isSuperAdmin)
-                                                @if ($is_locked)
-                                                    <a href="{{ url('/admin/manage-users?cancel_lockout=' . $user->id) }}"
-                                                        class="action-btn"
-                                                        onclick="return confirm('Batalkan lockout untuk akun ini?')"
-                                                        title="Batalkan Lockout">
-                                                        <i class="fas fa-unlock-alt"></i>
-                                                    </a>
-                                                @elseif($user->failed_attempts > 0)
-                                                    <a href="{{ url('/admin/manage-users?reset_lockout=' . $user->id) }}"
-                                                        class="action-btn"
-                                                        onclick="return confirm('Reset lockout untuk akun ini?')"
-                                                        title="Reset Lockout">
-                                                        <i class="fas fa-redo"></i>
-                                                    </a>
+                                        if ($user->other_active_count == 0 && $user->is_active) {
+                                            $is_protected = true;
+                                            $protection_reason = 'Akun aktif terakhir';
+                                            $can_delete = false;
+                                        }
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $no++ }}</td>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="avatar">{{ strtoupper(substr($user->username, 0, 1)) }}
+                                                </div>
+                                                <span class="username">{{ $user->username }}</span>
+                                                @if ($user->id == $currentUserId)
+                                                    <span class="badge-you">Anda</span>
                                                 @endif
-                                            @endif
-
-                                            @if ($can_delete && $isSuperAdmin)
-                                                <a href="{{ url('/admin/manage-users?delete=' . $user->id) }}"
-                                                    class="action-btn danger"
-                                                    onclick="return confirm('Yakin hapus admin ini?')">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                            @else
-                                                <button class="action-btn" disabled
-                                                    title="Hanya superadmin yang dapat menghapus">
-                                                    <i class="fas fa-trash"></i>
+                                            </div>
+                                        </td>
+                                        <td>{{ $user->email ?? '-' }}</td>
+                                        <td>
+                                            <span
+                                                class="badge-role {{ $user->role == 'superadmin' ? 'superadmin' : '' }}">
+                                                {{ strtoupper($user->role) }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="status-group">
+                                                <span
+                                                    class="badge-status">{{ $user->is_active ? 'AKTIF' : 'NONAKTIF' }}</span>
+                                                @if ($is_protected && $user->is_active)
+                                                    <span class="badge-protected" data-bs-toggle="tooltip"
+                                                        title="{{ $protection_reason }}">
+                                                        <i class="fas fa-shield-alt"></i>
+                                                    </span>
+                                                @endif
+                                                @if ($is_locked)
+                                                    <span class="badge-lockout"
+                                                        title="Terkunci sampai {{ date('d/m/Y H:i', strtotime($user->locked_until)) }}">
+                                                        <i class="fas fa-lock"></i> Terkunci
+                                                    </span>
+                                                @elseif($user->failed_attempts > 0)
+                                                    <span class="badge-lockout"
+                                                        title="Percobaan gagal: {{ $user->failed_attempts }}">
+                                                        <i class="fas fa-exclamation-triangle"></i>
+                                                        {{ $user->failed_attempts }}
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td>{{ $user->last_login ? date('d/m/Y H:i', strtotime($user->last_login)) : '-' }}
+                                        </td>
+                                        <td>
+                                            <div class="action-group">
+                                                <button class="action-btn edit"
+                                                    onclick="editUser({{ json_encode($user) }})"
+                                                    {{ !$can_edit ? 'disabled' : '' }}
+                                                    @if (!$can_edit) title="{{ $protection_reason }}" @endif
+                                                    title="Edit Admin">
+                                                    <i class="fas fa-edit"></i>
                                                 </button>
-                                            @endif
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    <div class="pagination-wrapper">
-                        <span class="pagination-info">Showing 1 to {{ count($users) }} of {{ count($users) }}
-                            entries</span>
-                        <nav>
-                            <ul class="pagination">
-                                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
-                            </ul>
-                        </nav>
+
+                                                @if ($can_change_password)
+                                                    <a href="{{ url('/admin/change-password?id=' . $user->id) }}"
+                                                        class="action-btn password" title="Ganti Password">
+                                                        <i class="fas fa-key"></i>
+                                                    </a>
+                                                @else
+                                                    <button class="action-btn password" disabled
+                                                        title="Hanya dapat mengganti password sendiri">
+                                                        <i class="fas fa-key"></i>
+                                                    </button>
+                                                @endif
+
+                                                @if ($isSuperAdmin)
+                                                    @if ($is_locked)
+                                                        <a href="{{ url('/admin/manage-users?cancel_lockout=' . $user->id) }}"
+                                                            class="action-btn"
+                                                            onclick="return confirm('Batalkan lockout untuk akun ini?')"
+                                                            title="Batalkan Lockout">
+                                                            <i class="fas fa-unlock-alt"></i>
+                                                        </a>
+                                                    @elseif($user->failed_attempts > 0)
+                                                        <a href="{{ url('/admin/manage-users?reset_lockout=' . $user->id) }}"
+                                                            class="action-btn"
+                                                            onclick="return confirm('Reset lockout untuk akun ini?')"
+                                                            title="Reset Lockout">
+                                                            <i class="fas fa-redo"></i>
+                                                        </a>
+                                                    @endif
+                                                @endif
+
+                                                @if ($can_delete && $isSuperAdmin)
+                                                    <a href="{{ url('/admin/manage-users?delete=' . $user->id) }}"
+                                                        class="action-btn danger"
+                                                        onclick="return confirm('Yakin hapus admin ini?')"
+                                                        title="Hapus Admin">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                @else
+                                                    <button class="action-btn danger" disabled
+                                                        title="Hanya superadmin yang dapat menghapus">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -888,7 +843,7 @@
                                 $can_delete = false;
                             }
                         @endphp
-                        <div class="card mb-3" style="border: 1px solid var(--border-subtle); border-radius: 10px;">
+                        <div class="card mb-3" style="border: 1px solid var(--zinc-200); border-radius: 12px;">
                             <div class="card-body" style="padding: 16px;">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                     <div class="user-cell">
@@ -908,7 +863,7 @@
                                 </div>
 
                                 <div class="mb-2">
-                                    <small style="color: var(--text-muted); font-weight: 500;">Email:</small>
+                                    <small style="color: var(--zinc-500); font-weight: 500;">Email:</small>
                                     <div class="small" style="font-weight: 400;">{{ $user->email ?? '-' }}</div>
                                 </div>
 
@@ -922,7 +877,7 @@
                                             </span>
                                         @endif
                                     </div>
-                                    <small style="color: var(--text-muted); font-weight: 500;">
+                                    <small style="color: var(--zinc-500); font-weight: 500;">
                                         {{ $user->last_login ? date('d/m/Y H:i', strtotime($user->last_login)) : '-' }}
                                     </small>
                                 </div>
@@ -999,7 +954,7 @@
                     <form method="POST" action="{{ url('/admin/manage-users/store') }}">
                         @csrf
                         <div class="modal-header"
-                            style="border-bottom: 1px solid var(--border-light); padding: 20px 24px;">
+                            style="border-bottom: 1px solid var(--zinc-100); padding: 20px 24px;">
                             <h5 class="modal-title" style="font-weight: 700; font-size: 1.125rem;">Tambah Admin Baru
                             </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -1009,35 +964,34 @@
                                 <label
                                     style="font-weight: 600; font-size: 0.875rem; margin-bottom: 6px; display: block;">Username</label>
                                 <input type="text" name="username" class="form-control" required
-                                    style="border-radius: 8px; border: 1px solid var(--border-subtle); padding: 8px 12px;">
+                                    style="border-radius: 8px; border: 1px solid var(--zinc-200); padding: 8px 12px;">
                             </div>
                             <div class="mb-3">
                                 <label
                                     style="font-weight: 600; font-size: 0.875rem; margin-bottom: 6px; display: block;">Password</label>
                                 <input type="password" name="password" class="form-control" required minlength="6"
-                                    style="border-radius: 8px; border: 1px solid var(--border-subtle); padding: 8px 12px;">
-                                <small style="color: var(--text-muted); font-size: 0.75rem;">Minimal 6 karakter</small>
+                                    style="border-radius: 8px; border: 1px solid var(--zinc-200); padding: 8px 12px;">
+                                <small style="color: var(--zinc-500); font-size: 0.75rem;">Minimal 6 karakter</small>
                             </div>
                             <div class="mb-3">
                                 <label
                                     style="font-weight: 600; font-size: 0.875rem; margin-bottom: 6px; display: block;">Email</label>
                                 <input type="email" name="email" class="form-control"
-                                    style="border-radius: 8px; border: 1px solid var(--border-subtle); padding: 8px 12px;">
+                                    style="border-radius: 8px; border: 1px solid var(--zinc-200); padding: 8px 12px;">
                             </div>
                             <div class="mb-3">
                                 <label
                                     style="font-weight: 600; font-size: 0.875rem; margin-bottom: 6px; display: block;">Role</label>
                                 <select name="role" class="form-select" required
-                                    style="border-radius: 8px; border: 1px solid var(--border-subtle); padding: 8px 12px;">
+                                    style="border-radius: 8px; border: 1px solid var(--zinc-200); padding: 8px 12px;">
                                     <option value="admin">Admin</option>
                                     <option value="superadmin">Superadmin</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="modal-footer"
-                            style="border-top: 1px solid var(--border-light); padding: 16px 24px;">
+                        <div class="modal-footer" style="border-top: 1px solid var(--zinc-100); padding: 16px 24px;">
                             <button type="button" class="btn" data-bs-dismiss="modal"
-                                style="background: var(--canvas-bg); color: var(--text-secondary); border: 1px solid var(--border-subtle); border-radius: 8px; font-weight: 600; padding: 8px 16px;">Batal</button>
+                                style="background: var(--zinc-50); color: var(--zinc-700); border: 1px solid var(--zinc-200); border-radius: 8px; font-weight: 600; padding: 8px 16px;">Batal</button>
                             <button type="submit" class="btn"
                                 style="background: #1e293b; color: white; border: none; border-radius: 8px; font-weight: 600; padding: 8px 16px;">Simpan</button>
                         </div>
@@ -1054,8 +1008,7 @@
                 style="border: none; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
                 <form method="POST" action="{{ url('/admin/manage-users/update') }}">
                     @csrf
-                    <div class="modal-header"
-                        style="border-bottom: 1px solid var(--border-light); padding: 20px 24px;">
+                    <div class="modal-header" style="border-bottom: 1px solid var(--zinc-100); padding: 20px 24px;">
                         <h5 class="modal-title" style="font-weight: 700; font-size: 1.125rem;">Edit Admin</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
@@ -1065,20 +1018,20 @@
                             <label
                                 style="font-weight: 600; font-size: 0.875rem; margin-bottom: 6px; display: block;">Username</label>
                             <input type="text" name="username" id="edit_username" class="form-control" required
-                                style="border-radius: 8px; border: 1px solid var(--border-subtle); padding: 8px 12px;">
+                                style="border-radius: 8px; border: 1px solid var(--zinc-200); padding: 8px 12px;">
                         </div>
                         <div class="mb-3">
                             <label
                                 style="font-weight: 600; font-size: 0.875rem; margin-bottom: 6px; display: block;">Email</label>
                             <input type="email" name="email" id="edit_email" class="form-control"
-                                style="border-radius: 8px; border: 1px solid var(--border-subtle); padding: 8px 12px;">
+                                style="border-radius: 8px; border: 1px solid var(--zinc-200); padding: 8px 12px;">
                         </div>
 
                         <div class="mb-3">
                             <label
                                 style="font-weight: 600; font-size: 0.875rem; margin-bottom: 6px; display: block;">Role</label>
                             <select name="role" id="edit_role" class="form-select" required
-                                style="border-radius: 8px; border: 1px solid var(--border-subtle); padding: 8px 12px;">
+                                style="border-radius: 8px; border: 1px solid var(--zinc-200); padding: 8px 12px;">
                                 <option value="admin">Admin</option>
                                 <option value="superadmin">Superadmin</option>
                             </select>
@@ -1107,9 +1060,9 @@
                             </small>
                         </div>
                     </div>
-                    <div class="modal-footer" style="border-top: 1px solid var(--border-light); padding: 16px 24px;">
+                    <div class="modal-footer" style="border-top: 1px solid var(--zinc-100); padding: 16px 24px;">
                         <button type="button" class="btn" data-bs-dismiss="modal"
-                            style="background: var(--canvas-bg); color: var(--text-secondary); border: 1px solid var(--border-subtle); border-radius: 8px; font-weight: 600; padding: 8px 16px;">Batal</button>
+                            style="background: var(--zinc-50); color: var(--zinc-700); border: 1px solid var(--zinc-200); border-radius: 8px; font-weight: 600; padding: 8px 16px;">Batal</button>
                         <button type="submit" class="btn"
                             style="background: #1e293b; color: white; border: none; border-radius: 8px; font-weight: 600; padding: 8px 16px;">Update</button>
                     </div>
@@ -1124,19 +1077,25 @@
     <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
     <script>
         $(document).ready(function() {
-            if ($(window).width() >= 768) {
-                $('#usersTableDesktop').DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/1.13.1/i18n/id.json"
-                    },
-                    "pageLength": 10,
-                    "autoWidth": false,
-                    "columnDefs": [{
-                        "orderable": false,
-                        "targets": [6]
-                    }]
-                });
-            }
+            $('#usersTableDesktop').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.1/i18n/id.json",
+                    "search": "Cari:",
+                    "lengthMenu": "Tampilkan _MENU_ entri",
+                    "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                    "paginate": {
+                        "previous": "Sebelumnya",
+                        "next": "Selanjutnya"
+                    }
+                },
+                "pageLength": 10,
+                "autoWidth": false,
+                "columnDefs": [{
+                    "orderable": false,
+                    "targets": [6]
+                }],
+                "dom": '<"row"<"col-sm-12"tr>>rt<"row"<"col-sm-5"i><"col-sm-7"p>>'
+            });
 
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
@@ -1186,18 +1145,7 @@
 
             if (user.role === 'superadmin' && !isSuperAdmin) {
                 protectionInfo.classList.remove('d-none');
-                protectionMessage.textContent = 'Admin biasa tidak dapat mengedit akun superadmin.';
-
-                document.getElementById('edit_username').disabled = true;
-                document.getElementById('edit_email').disabled = true;
-                roleSelect.disabled = true;
-                isActiveCheckbox.disabled = true;
-
-                if (user.is_active == 0) {
-                    protectionMessage.textContent = 'Admin biasa dapat mengaktifkan akun superadmin yang non-aktif.';
-                    isActiveCheckbox.disabled = false;
-                    isActiveCheckbox.checked = true;
-                }
+                protectionMessage.textContent = 'Superadmin - hanya dapat dilihat';
             }
 
             if (user.other_active_count == 0 && user.is_active == 1) {

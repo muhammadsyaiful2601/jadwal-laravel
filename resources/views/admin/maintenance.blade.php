@@ -11,24 +11,23 @@
         rel="stylesheet">
     <style>
         :root {
-            --sidebar-bg: #0f172a;
-            --sidebar-hover: rgba(255, 255, 255, 0.06);
-            --sidebar-active: rgba(255, 255, 255, 0.12);
-            --canvas-bg: #f8fafc;
+            --canvas-bg: #f1f5f9;
             --card-bg: #ffffff;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #64748b;
-            --border-subtle: #e2e8f0;
-            --border-light: #f1f5f9;
-            --accent: #2563eb;
-            --accent-light: #dbeafe;
-            --success-light: #d1fae5;
-            --success-text: #059669;
-            --danger-soft: #fee2e2;
-            --danger-text: #dc2626;
-            --warning-soft: #fef3c7;
-            --warning-text: #b45309;
+            --card-radius: 16px;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --corporate-blue: #1d4ed8;
+            --corporate-blue-hover: #1e3a8a;
+            --zinc-900: #18181b;
+            --zinc-800: #27272a;
+            --zinc-700: #3f3f46;
+            --zinc-600: #52525b;
+            --zinc-500: #71717a;
+            --zinc-400: #a1a1aa;
+            --zinc-300: #d4d4d8;
+            --zinc-200: #e4e4e7;
+            --zinc-100: #f4f4f5;
+            --zinc-50: #fafafa;
         }
 
         * {
@@ -40,42 +39,216 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--canvas-bg);
-            color: var(--text-primary);
-            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .main-content {
-            margin-left: 250px;
-            padding: 20px;
+            margin-left: 260px;
             min-height: 100vh;
+            padding: 0;
         }
 
-        .page-header {
-            margin-bottom: 24px;
+        /* Top Bar */
+        .top-bar {
+            background: var(--card-bg);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--zinc-100);
+            position: sticky;
+            top: 0;
+            z-index: 500;
         }
 
-        .page-header-title {
-            font-size: 1.5rem;
-            font-weight: 800;
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .top-bar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--zinc-600);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .top-bar-left h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--zinc-800);
+            margin-bottom: 0;
+            letter-spacing: -0.3px;
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .top-bar-date {
+            font-size: 0.85rem;
+            color: var(--zinc-500);
+            font-weight: 500;
+        }
+
+        .top-bar-right .dropdown-toggle {
+            background: var(--zinc-50);
+            border: 1px solid var(--zinc-200);
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--zinc-700);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .top-bar-right .dropdown-toggle:hover {
+            background: var(--zinc-100);
+            border-color: var(--zinc-300);
+        }
+
+        .top-bar-right .dropdown-toggle::after {
+            display: none;
+        }
+
+        .top-bar-right .dropdown-menu {
+            border-radius: 12px;
+            border: 1px solid var(--zinc-200);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            padding: 6px;
+            min-width: 180px;
+        }
+
+        .top-bar-right .dropdown-item {
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            color: var(--zinc-700);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .top-bar-right .dropdown-item:hover {
+            background: var(--zinc-50);
+        }
+
+        .top-bar-right .dropdown-item.text-danger:hover {
+            background: #fef2f2;
+        }
+
+        .top-bar-right .dropdown-divider {
+            margin: 4px 0;
+            border-color: var(--zinc-100);
+        }
+
+        .maintenance-badge-top {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fef2f2;
+            color: #b91c1c;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid #fecaca;
+        }
+
+        .content-wrapper {
+            padding: 28px 32px;
+        }
+
+        .page-title-section {
+            margin-bottom: 28px;
+        }
+
+        .page-title-section h4 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--zinc-800);
             margin-bottom: 4px;
+            letter-spacing: -0.3px;
         }
 
-        .page-header-subtitle {
-            font-size: 0.9375rem;
-            color: var(--text-muted);
-            font-weight: 400;
+        .page-title-section p {
+            font-size: 0.88rem;
+            color: var(--zinc-500);
+            margin-bottom: 0;
         }
 
+        /* Cards */
         .card {
             background: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid var(--border-subtle);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.02);
             margin-bottom: 20px;
         }
 
         .card-body {
             padding: 24px;
+        }
+
+        /* Table Card */
+        .table-card {
+            background: var(--card-bg);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            margin-bottom: 28px;
+        }
+
+        .table-card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--zinc-100);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .table-card-header h5 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--zinc-800);
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-card-header h5 i {
+            color: var(--zinc-400);
+            font-size: 0.9rem;
+        }
+
+        .table-card-body {
+            padding: 0;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-box i {
+            color: var(--corporate-blue);
         }
 
         .btn {
@@ -86,25 +259,30 @@
             border: none;
             cursor: pointer;
             transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
         }
 
-        .btn-primary {
-            background: var(--accent);
+        .btn-primary-custom {
+            background: var(--corporate-blue);
             color: white;
         }
 
-        .btn-primary:hover {
-            background: #1d4ed8;
+        .btn-primary-custom:hover {
+            background: var(--corporate-blue-hover);
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.15);
         }
 
-        .btn-danger {
+        .btn-danger-custom {
             background: #dc2626;
             color: white;
         }
 
-        .btn-danger:hover {
+        .btn-danger-custom:hover {
             background: #b91c1c;
         }
 
@@ -119,7 +297,7 @@
         }
 
         .toggle-switch.active {
-            background: #059669;
+            background: #16a34a;
         }
 
         .toggle-switch::after {
@@ -150,197 +328,221 @@
         }
 
         .status-online {
-            background: var(--success-light);
-            color: var(--success-text);
+            background: #d1fae5;
+            color: #059669;
         }
 
         .status-offline {
-            background: var(--danger-soft);
-            color: var(--danger-text);
+            background: #fee2e2;
+            color: #dc2626;
         }
 
-        .info-box {
-            background: #eff6ff;
-            border: 1px solid #dbeafe;
-            border-radius: 8px;
-            padding: 16px 20px;
-            margin-bottom: 20px;
-        }
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
 
-        .info-box i {
-            color: var(--accent);
-        }
+            .sidebar.show {
+                transform: translateX(0);
+            }
 
-        @media (max-width: 768px) {
             .main-content {
                 margin-left: 0;
-                padding: 10px;
+            }
+
+            .top-bar-toggle {
+                display: block;
+            }
+
+            .top-bar {
+                padding: 14px 20px;
+            }
+
+            .content-wrapper {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .content-wrapper {
+                padding: 16px;
+            }
+
+            .top-bar {
+                padding: 12px 16px;
+            }
+
+            .top-bar-date {
+                display: none;
             }
         }
     </style>
 </head>
 
 <body>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
     @include('components.admin.sidebar')
 
     <div class="main-content">
-        <!-- Mobile Sidebar -->
-        <div class="collapse d-md-none mb-4" id="mobileSidebar">
-            <div class="card">
-                <div class="card-body p-3">
-                    <nav class="nav flex-column">
-                        <a class="nav-link" href="{{ url('/admin/dashboard') }}"><i class="fas fa-tachometer-alt"></i>
-                            Dashboard</a>
-                        <a class="nav-link" href="{{ url('/admin/manage-schedule') }}"><i class="fas fa-calendar"></i>
-                            Kelola Jadwal</a>
-                        <a class="nav-link" href="{{ url('/admin/manage-rooms') }}"><i class="fas fa-door-open"></i>
-                            Kelola Ruangan</a>
-                        <a class="nav-link" href="{{ url('/admin/manage-semester') }}"><i
-                                class="fas fa-calendar-alt"></i> Kelola Semester</a>
-                        <a class="nav-link" href="{{ url('/admin/manage-settings') }}"><i class="fas fa-cog"></i>
-                            Pengaturan</a>
-                        <a class="nav-link" href="{{ url('/admin/manage-users') }}"><i class="fas fa-users"></i> Kelola
-                            Admin</a>
-                        <a class="nav-link" href="{{ url('/admin/reports') }}"><i class="fas fa-chart-bar"></i>
-                            Laporan</a>
-                        <a class="nav-link" href="{{ url('/admin/saran') }}"><i class="fas fa-comments"></i> Kritik &
-                            Saran</a>
-                        <a class="nav-link active" href="{{ url('/admin/maintenance') }}"><i class="fas fa-tools"></i>
-                            Maintenance</a>
-                        <hr>
-                        <a class="nav-link" href="{{ url('/admin/profile') }}"><i class="fas fa-user"></i> Profile</a>
-                        <form action="{{ url('/logout') }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="nav-link border-0 bg-transparent w-100 text-start">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </button>
-                        </form>
-                    </nav>
-                </div>
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <button class="top-bar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h4>Maintenance</h4>
+                @if ($isMaintenance)
+                    <span class="maintenance-badge-top"><i class="fas fa-tools"></i> Maintenance Mode</span>
+                @endif
             </div>
-        </div>
-
-        <!-- Top Bar -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                    <div>
-                        <button class="btn btn-light d-md-none me-2" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#mobileSidebar">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                        <h4 class="d-inline">Maintenance</h4>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <span class="text-muted"><i class="far fa-calendar-alt me-1"></i> {{ date('d F Y') }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="page-header">
-            <h1 class="page-header-title">Maintenance Mode</h1>
-            <p class="page-header-subtitle">Kelola mode maintenance aplikasi</p>
-        </div>
-
-        <div class="info-box">
-            <div class="d-flex align-items-start gap-2">
-                <i class="fas fa-info-circle mt-1"></i>
-                <div>
-                    <strong>Informasi:</strong>
-                    <p class="mb-0" style="font-size: 0.875rem;">Saat mode maintenance aktif, aplikasi akan
-                        menampilkan halaman maintenance kepada semua pengguna kecuali admin. Fitur meliputi penjadwalan
-                        backup database, pembersihan cache/log, dan pengaturan timeout sesi.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem;">Backup Database</h5>
-                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 16px;">Backup database untuk menyimpan
-                    data penting.</p>
-
-                <div class="d-flex gap-2 flex-wrap">
-                    <form method="POST" action="{{ url('/admin/maintenance/backup') }}" class="d-inline">
-                        @csrf
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-download me-1"></i> Backup Sekarang
-                        </button>
-                    </form>
-                    <button class="btn btn-secondary" disabled>
-                        <i class="fas fa-history me-1"></i> Lihat Riwayat Backup
+            <div class="top-bar-right">
+                <span class="top-bar-date"><i class="far fa-calendar-alt me-1"></i> {{ date('d F Y') }}</span>
+                <div class="dropdown">
+                    <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle"></i>
+                        {{ session('username') }}
+                        <i class="fas fa-chevron-down" style="font-size:0.7rem; opacity:0.6;"></i>
                     </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{{ url('/admin/profile') }}"><i class="fas fa-user"></i>
+                                Profile</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <form action="{{ url('/logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="dropdown-item text-danger border-0 bg-transparent w-100"
+                                    style="display:flex; align-items:center; gap:10px;">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
                 </div>
+            </div>
+        </header>
 
-                <hr class="my-4">
+        <div class="content-wrapper">
+            <div class="page-title-section">
+                <h4>Maintenance Mode</h4>
+                <p>Kelola mode maintenance aplikasi</p>
+            </div>
 
-                <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem;">Pembersihan Data</h5>
-                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 16px;">Hapus cache, log, dan data
-                    sementara untuk mengoptimalkan kinerja aplikasi.</p>
-
-                <div class="d-flex gap-2 flex-wrap">
-                    <form method="POST" action="{{ url('/admin/maintenance/clear-cache') }}" class="d-inline">
-                        @csrf
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-broom me-1"></i> Clear Cache
-                        </button>
-                    </form>
-                    <form method="POST" action="{{ url('/admin/maintenance/clear-logs') }}" class="d-inline">
-                        @csrf
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-file-alt me-1"></i> Clear Logs
-                        </button>
-                    </form>
+            <div class="info-box">
+                <div class="d-flex align-items-start gap-2">
+                    <i class="fas fa-info-circle mt-1"></i>
+                    <div>
+                        <strong>Informasi:</strong>
+                        <p class="mb-0" style="font-size: 0.875rem;">Saat mode maintenance aktif, aplikasi akan
+                            menampilkan halaman maintenance kepada semua pengguna kecuali admin. Fitur meliputi
+                            penjadwalan
+                            backup database, pembersihan cache/log, dan pengaturan timeout sesi.</p>
+                    </div>
                 </div>
+            </div>
 
-                <hr class="my-4">
+            <div class="table-card">
+                <div class="table-card-header">
+                    <h5><i class="fas fa-database"></i> Backup Database</h5>
+                </div>
+                <div class="table-card-body">
+                    <div style="padding: 24px;">
+                        <p style="font-size: 0.875rem; color: var(--zinc-600); margin-bottom: 16px;">Backup database
+                            untuk menyimpan
+                            data penting.</p>
 
-                <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem;">Pengaturan Sesi</h5>
-                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 16px;">Atur batas waktu sesi login
-                    untuk keamanan.</p>
-
-                <form method="POST" action="{{ url('/admin/maintenance/session') }}" class="d-inline">
-                    @csrf
-                    <div class="row align-items-end">
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Timeout Sesi (menit)</label>
-                            <input type="number" name="session_timeout" class="form-control"
-                                value="{{ $settings['session_timeout'] ?? 60 }}" min="5" max="480">
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-1"></i> Simpan
+                        <div class="d-flex gap-2 flex-wrap">
+                            <form method="POST" action="{{ url('/admin/maintenance/backup') }}" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-primary-custom">
+                                    <i class="fas fa-download me-1"></i> Backup Sekarang
+                                </button>
+                            </form>
+                            <button class="btn btn-secondary-custom" disabled>
+                                <i class="fas fa-history me-1"></i> Lihat Riwayat Backup
                             </button>
                         </div>
+
+                        <hr class="my-4">
+
+                        <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem;"><i
+                                class="fas fa-broom me-2"></i>Pembersihan Data</h5>
+                        <p style="font-size: 0.875rem; color: var(--zinc-600); margin-bottom: 16px;">Hapus cache, log,
+                            dan data
+                            sementara untuk mengoptimalkan kinerja aplikasi.</p>
+
+                        <div class="d-flex gap-2 flex-wrap">
+                            <form method="POST" action="{{ url('/admin/maintenance/clear-cache') }}" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-primary-custom">
+                                    <i class="fas fa-broom me-1"></i> Clear Cache
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url('/admin/maintenance/clear-logs') }}" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-primary-custom">
+                                    <i class="fas fa-file-alt me-1"></i> Clear Logs
+                                </button>
+                            </form>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem;"><i
+                                class="fas fa-clock me-2"></i>Pengaturan Sesi</h5>
+                        <p style="font-size: 0.875rem; color: var(--zinc-600); margin-bottom: 16px;">Atur batas waktu
+                            sesi login
+                            untuk keamanan.</p>
+
+                        <form method="POST" action="{{ url('/admin/maintenance/session') }}" class="d-inline">
+                            @csrf
+                            <div class="row align-items-end">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Timeout Sesi (menit)</label>
+                                    <input type="number" name="session_timeout" class="form-control"
+                                        value="{{ $settings['session_timeout'] ?? 60 }}" min="5" max="480">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <button type="submit" class="btn btn-primary-custom">
+                                        <i class="fas fa-save me-1"></i> Simpan
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <hr class="my-4">
+
+                        <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem;"><i
+                                class="fas fa-cog me-2"></i>Mode Maintenance</h5>
+                        <p style="font-size: 0.875rem; color: var(--zinc-600); margin-bottom: 16px;">Aktifkan atau
+                            nonaktifkan mode
+                            maintenance.</p>
+
+                        <form method="POST" action="{{ url('/admin/maintenance/toggle') }}" id="maintenanceForm">
+                            @csrf
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="toggle-switch {{ $isMaintenance ? 'active' : '' }}"
+                                    id="maintenanceToggle" style="cursor: pointer;" tabindex="0" role="switch"
+                                    aria-checked="{{ $isMaintenance ? 'true' : 'false' }}"></div>
+                                <span
+                                    class="status-indicator {{ $isMaintenance ? 'status-offline' : 'status-online' }}"
+                                    id="maintenanceStatus">
+                                    <i
+                                        class="fas {{ $isMaintenance ? 'fa-exclamation-circle' : 'fa-check-circle' }}"></i>
+                                    {{ $isMaintenance ? 'Maintenance Aktif' : 'Aplikasi Online' }}
+                                </span>
+                            </div>
+
+                            <div class="mt-3">
+                                <button type="submit" class="btn btn-primary-custom" id="applyMaintenance">
+                                    <i class="fas fa-save me-1"></i> Terapkan Perubahan
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                </form>
-
-                <hr class="my-4">
-
-                <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem;">Mode Maintenance</h5>
-                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 16px;">Aktifkan atau nonaktifkan mode
-                    maintenance.</p>
-
-                <form method="POST" action="{{ url('/admin/maintenance/toggle') }}" id="maintenanceForm">
-                    @csrf
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="toggle-switch {{ $isMaintenance ? 'active' : '' }}" id="maintenanceToggle"
-                            style="cursor: pointer;" tabindex="0" role="switch"
-                            aria-checked="{{ $isMaintenance ? 'true' : 'false' }}"></div>
-                        <span class="status-indicator {{ $isMaintenance ? 'status-offline' : 'status-online' }}"
-                            id="maintenanceStatus">
-                            <i class="fas {{ $isMaintenance ? 'fa-exclamation-circle' : 'fa-check-circle' }}"></i>
-                            {{ $isMaintenance ? 'Maintenance Aktif' : 'Aplikasi Online' }}
-                        </span>
-                    </div>
-
-                    <div class="mt-3">
-                        <button type="submit" class="btn btn-primary" id="applyMaintenance">
-                            <i class="fas fa-save me-1"></i> Terapkan Perubahan
-                        </button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>

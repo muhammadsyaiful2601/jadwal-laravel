@@ -2,7 +2,7 @@
 <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content modal-content-custom">
-            <form method="POST" action="{{ url('/admin/manage-schedule/store') }}">
+            <form method="POST" action="{{ url('/admin/manage-schedule/store') }}" id="addScheduleForm">
                 @csrf
                 <div class="modal-header-custom d-flex align-items-center justify-content-between">
                     <h5 class="modal-title" style="font-weight:700;font-size:1rem;">
@@ -106,13 +106,99 @@
                     style="padding:16px 24px;border-top:1px solid var(--zinc-100);display:flex;justify-content:flex-end;gap:10px;">
                     <button type="button" class="btn-outline-secondary-custom" data-bs-dismiss="modal"
                         style="padding:8px 20px;">Batal</button>
-                    <button type="submit" class="btn-primary-solid" style="padding:8px 20px;"><i
-                            class="fas fa-save me-2"></i> Simpan</button>
+                    <button type="submit" class="btn-primary-solid" style="padding:8px 20px;" id="btnSaveSchedule">
+                        <i class="fas fa-save me-2"></i> Simpan</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    // Notification function
+    function showNotification(type, message) {
+        const container = document.getElementById('notification-container');
+        const alertClass = type === 'success' ? 'alert-flash success' : 'alert-flash error';
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+
+        container.innerHTML = '<div class="' + alertClass + '"><i class="fas ' + icon + '"></i> ' + message + '</div>';
+
+        setTimeout(function() {
+            container.style.transition = 'opacity 0.5s ease';
+            container.style.opacity = '0';
+            setTimeout(() => {
+                container.style.display = 'none';
+            }, 500);
+        }, 5000);
+    }
+
+    $(document).ready(function() {
+        $('#addScheduleForm').on('submit', function(e) {
+            e.preventDefault();
+
+            var btn = $('#btnSaveSchedule');
+            var originalText = btn.html();
+            btn.prop('disabled', true);
+            btn.html('<i class="fas fa-spinner fa-spin me-2"></i> Menyimpan...');
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        showNotification('success', response.message);
+                        $('#addModal').modal('hide');
+                        $('#addScheduleForm')[0].reset();
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        showNotification('error', response.message);
+                    }
+                },
+                error: function() {
+                    showNotification('error', 'Terjadi kesalahan. Silakan coba lagi.');
+                },
+                complete: function() {
+                    btn.prop('disabled', false);
+                    btn.html(originalText);
+                }
+            });
+        });
+
+        // Delete All AJAX
+        $('#btnDeleteAll').on('click', function() {
+            if (!confirm('Yakin hapus SEMUA data jadwal? Tindakan ini tidak dapat dibatalkan.')) {
+                return false;
+            }
+
+            var btn = $(this);
+            var originalText = btn.html();
+
+            $.ajax({
+                url: '{{ url('/admin/manage-schedule/delete-all') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        showNotification('success', response.message);
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        showNotification('error', response.message);
+                    }
+                },
+                error: function() {
+                    showNotification('error', 'Terjadi kesalahan. Silakan coba lagi.');
+                }
+            });
+        });
+    });
+</script>
 
 <!-- Bulk Add Modal -->
 <div class="modal fade" id="bulkAddModal" tabindex="-1" aria-hidden="true">

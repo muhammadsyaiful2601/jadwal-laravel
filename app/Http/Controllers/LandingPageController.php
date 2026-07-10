@@ -71,6 +71,11 @@ class LandingPageController extends Controller
         $programStudi = Setting::getValue('program_studi', 'D3 Sistem Informasi');
         $fakultas = Setting::getValue('fakultas', 'Fakultas Teknik');
 
+        // Get header settings
+        $headerLogotype = Setting::getValue('header_logo_type', 'kampus');
+        $headerTitle1 = Setting::getValue('header_title_1', $institusiNama);
+        $headerTitle2 = Setting::getValue('header_title_2', $institusiLokasi);
+
         // Check maintenance mode
         $maintenanceMode = Setting::getValue('maintenance_mode', '0');
         $maintenanceMessage = Setting::getValue('maintenance_message', '');
@@ -267,6 +272,9 @@ class LandingPageController extends Controller
             'ruanganMap',
             'hariSekarang',
             'hariSekarangTeks',
+            'headerLogotype',
+            'headerTitle1',
+            'headerTitle2'
         ));
     }
 }

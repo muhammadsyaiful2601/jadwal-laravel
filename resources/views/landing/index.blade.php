@@ -160,14 +160,21 @@
         .header-content {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             gap: 24px;
+            flex-wrap: wrap;
         }
 
         .logo-section {
             display: flex;
             align-items: center;
             gap: 16px;
+            flex-shrink: 0;
+        }
+
+        .institution-info {
+            text-align: center;
+            flex: 1;
         }
 
         .logo-img {
@@ -190,6 +197,23 @@
             font-weight: 500;
             color: var(--gray-600);
             margin: 4px 0 0 0;
+        }
+
+        .institution-info .institution-sub {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin: 6px 0 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .institution-info .institution-divider {
+            color: var(--gray-300);
+            font-weight: 400;
         }
 
         .header-actions {
@@ -1170,16 +1194,17 @@
                     <img src="{{ asset('jadwal-kampus/assets/images/logo_kampus.png') }}" alt="Logo Kampus"
                         class="logo-img"
                         onerror="this.onerror=null; this.src='https://via.placeholder.com/56x56/1e293b/ffffff?text=LOGO'">
-                    <div class="institution-info">
-                        <h1>{{ $institusiNama }}</h1>
-                        <h2>{{ $institusiLokasi }}</h2>
-                    </div>
                 </div>
-                <div class="header-actions">
-                    <button class="btn-reset" onclick="handleResetFilter()">
-                        <i class="fas fa-undo"></i>
-                        Reset Filter
-                    </button>
+                <div class="institution-info">
+                    <h1>{{ $headerTitle1 ?? $institusiNama }}</h1>
+                    <h2>{{ $headerTitle2 ?? $institusiLokasi }}</h2>
+                    <p class="institution-sub">{{ $programStudi }}<span class="institution-divider">|</span>Tahun
+                        Akademik {{ $tahunAkademik }}</p>
+                </div>
+                <div class="logo-section">
+                    <img src="{{ asset('jadwal-kampus/assets/images/logo_jurusan.png') }}" alt="Logo Jurusan"
+                        class="logo-img"
+                        onerror="this.onerror=null; this.src='https://via.placeholder.com/56x56/1e293b/ffffff?text=LOGO'">
                 </div>
             </div>
         </div>
@@ -1323,12 +1348,13 @@
 
         <!-- Running Text / Marquee -->
         @if (($runningTextEnabled ?? '0') == '1' && !empty($runningTextContent))
-            <div class="running-text-bar" style="background-color: {{ $runningTextBgColor ?? '#4361ee' }}; color: {{ $runningTextColor ?? '#ffffff' }}; border-radius: 12px; overflow: hidden; margin-bottom: 28px;">
-                <marquee behavior="scroll" direction="left" style="display: block; padding: 14px 20px; font-weight: 600; font-size: 0.95rem; width: 100%;"
-                    @if(($runningTextSpeed ?? 'normal') == 'slow') scrollamount="3"
+            <div class="running-text-bar"
+                style="background-color: {{ $runningTextBgColor ?? '#4361ee' }}; color: {{ $runningTextColor ?? '#ffffff' }}; border-radius: 12px; overflow: hidden; margin-bottom: 28px;">
+                <marquee behavior="scroll" direction="left"
+                    style="display: block; padding: 14px 20px; font-weight: 600; font-size: 0.95rem; width: 100%;"
+                    @if (($runningTextSpeed ?? 'normal') == 'slow') scrollamount="3"
                     @elseif(($runningTextSpeed ?? 'normal') == 'fast') scrollamount="8"
-                    @else scrollamount="5"
-                    @endif>
+                    @else scrollamount="5" @endif>
                     {!! $runningTextContent ?? '' !!}
                 </marquee>
             </div>

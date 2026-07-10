@@ -759,6 +759,12 @@
                         <span id="buttonText">Login ke Dashboard</span>
                     </button>
 
+                    <!-- Error Alert for AJAX -->
+                    <div id="loginError" style="display:none; margin-bottom:20px;" class="alert-modern alert-error">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <span id="loginErrorText"></span>
+                    </div>
+
                     @if ($superadminExists)
                         <div class="register-section">
                             <small>
@@ -867,6 +873,152 @@
                 }
             });
         @endif
+
+        // AJAX Login
+        $(document).ready(function() {
+            $('#loginForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const loginButton = $('#loginButton');
+                const buttonText = $('#buttonText');
+                const errorDiv = $('#loginError');
+                const errorText = $('#loginErrorText');
+
+                // Disable button and show loading
+                loginButton.prop('disabled', true);
+                buttonText.html('<i class="fas fa-spinner fa-spin"></i> Sedang login...');
+                errorDiv.hide();
+
+                $.ajax({
+                    url: '{{ url('/login') }}',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            // Redirect to dashboard
+                            window.location.href = response.redirect;
+                        } else {
+                            // Show error
+                            errorText.text(response.message);
+                            errorDiv.show();
+
+                            // Handle lockout
+                            if (response.locked) {
+                                const lockoutPopup = $('.alert-lockout');
+                                if (lockoutPopup.length) {
+                                    lockoutPopup.show();
+                                }
+
+                                // Update lockout UI
+                                if (response.lockout_time) {
+                                    startLockoutCountdown(response.lockout_time, response
+                                        .multiplier, response.attempts_info);
+                                }
+                            }
+
+                            // Handle attempts progress
+                            if (response.show_progress && response.attempts_info) {
+                                updateAttemptsProgress(response.attempts_info);
+                            }
+
+                            // Re-enable button
+                            loginButton.prop('disabled', false);
+                            buttonText.html(
+                                '<i class="fas fa-sign-in-alt"></i> Login ke Dashboard');
+                        }
+                    },
+                    error: function(xhr) {
+                        errorText.text('Terjadi kesalahan. Silakan coba lagi.');
+                        errorDiv.show();
+                        loginButton.prop('disabled', false);
+                        buttonText.html(
+                        '<i class="fas fa-sign-in-alt"></i> Login ke Dashboard');
+                    }
+                });
+            });
+
+            // Hide error when typing
+            $('#username, #password').on('input', function() {
+                $('#loginError').hide();
+            });
+        });
+
+        function updateAttemptsProgress(attemptsInfo) {
+            const attemptsBox = $('.attempts-box');
+            if (attemptsBox.length === 0 && attemptsInfo) {
+                // Create attempts box if it doesn't exist
+                const progressHtml = `
+                    <div class="attempts-box" style="margin-bottom:24px;">
+                        <div class="attempts-header">
+                            <small>Status Percobaan Login</small>
+                            <small>${attemptsInfo.attempts_left} / ${attemptsInfo.max_attempts}</small>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill ${getProgressBarClass(attemptsInfo.percentage)}"
+                                style="width: ${attemptsInfo.percentage}%"></div>
+                        </div>
+                        <div class="attempts-footer">
+                            ${attemptsInfo.percentage >= 80 ?
+                                '<i class="fas fa-exclamation-triangle text-danger me-1"></i><strong class="text-danger">Hampir terkunci!</strong>' :
+                              attemptsInfo.percentage >= 60 ?
+                                '<i class="fas fa-exclamation-circle text-warning me-1"></i><span class="text-warning">Peringatan!</span>' :
+                                '<i class="fas fa-info-circle text-info me-1"></i><span>Percobaan tersisa</span>'}
+                        </div>
+                    </div>
+                `;
+                $('.alert-error, .alert-session').after(progressHtml);
+            }
+        }
+
+        function getProgressBarClass(percentage) {
+            if (percentage >= 80) return 'locked';
+            if (percentage >= 60) return 'danger';
+            if (percentage >= 40) return 'warning';
+            if (percentage >= 20) return 'caution';
+            return 'safe';
+        }
+
+        function startLockoutCountdown(seconds, multiplier, attemptsInfo) {
+            let lockoutSeconds = seconds;
+            const countdownDisplay = $('#countdownDisplay');
+            const loginButton = $('#loginButton');
+            const usernameInput = $('#username');
+            const passwordInput = $('#password');
+
+            function formatTime(secs) {
+                if (secs < 60) {
+                    return secs + ' detik';
+                } else if (secs < 3600) {
+                    const minutes = Math.floor(secs / 60);
+                    const s = secs % 60;
+                    return minutes + ' menit ' + (s > 0 ? s + ' detik' : '');
+                } else {
+                    const hours = Math.floor(secs / 3600);
+                    const minutes = Math.floor((secs % 3600) / 60);
+                    return hours + ' jam ' + (minutes > 0 ? minutes + ' menit' : '');
+                }
+            }
+
+            function updateCountdown() {
+                if (lockoutSeconds <= 0) {
+                    countdownDisplay.textContent = 'Akun terbuka!';
+                    loginButton.prop('disabled', false);
+                    usernameInput.removeClass('input-locked');
+                    passwordInput.removeClass('input-locked');
+
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                    return;
+                }
+
+                countdownDisplay.text(formatTime(lockoutSeconds));
+                lockoutSeconds--;
+                setTimeout(updateCountdown, 1000);
+            }
+
+            updateCountdown();
+        }
 
         // Prevent form resubmission on refresh
         if (window.history.replaceState) {
