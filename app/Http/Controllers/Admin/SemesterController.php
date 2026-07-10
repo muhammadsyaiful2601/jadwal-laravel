@@ -44,6 +44,11 @@ class SemesterController extends Controller
             return redirect('/login');
         }
 
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
         $request->validate([
             'tahun_akademik' => 'required|string|regex:/^\d{4}\/\d{4}$/',
             'semester' => 'required|string|in:GANJIL,GENAP',
@@ -85,6 +90,11 @@ class SemesterController extends Controller
             return redirect('/login');
         }
 
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
         $semester = DB::table('semester_settings')->where('id', $id)->first();
 
         if (!$semester) {
@@ -113,6 +123,11 @@ class SemesterController extends Controller
     {
         if (!$request->session()->has('user_id')) {
             return redirect('/login');
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
         }
 
         $semester = DB::table('semester_settings')->where('id', $id)->first();

@@ -611,12 +611,12 @@
             <div class="geo-line-2"></div>
 
             <div class="left-content">
-                <img src="{{ asset('jadwal-kampus/assets/images/logo_kampus.png') }}"
-                    alt="Logo Politeknik Negeri Padang" class="left-logo"
-                    onerror="this.onerror=null; this.src='https://via.placeholder.com/100x100/1e293b/ffffff?text=PNP'">
+                <img src="{{ asset('jadwal-kampus/assets/images/SI.png') }}" alt="Logo Sistem Informasi"
+                    class="left-logo"
+                    onerror="this.onerror=null; this.src='https://via.placeholder.com/100x100/1e293b/ffffff?text=SI'">
 
                 <h1>Selamat Datang</h1>
-                <p class="subtitle">Sistem Informasi Jadwal Kuliah<br>Politeknik Negeri Padang</p>
+                <p class="subtitle">Sistem Informasi Jadwal Kuliah<br>Politeknik Negeri Padang<br> PSDKU Tanah Datar</p>
 
                 <div class="feature-list">
                     <div class="feature-item">
@@ -636,12 +636,6 @@
                             <i class="fas fa-users-cog"></i>
                         </div>
                         <span>Kelola Data Pengguna</span>
-                    </div>
-                    <div class="feature-item">
-                        <div class="icon-box">
-                            <i class="fas fa-file-alt"></i>
-                        </div>
-                        <span>Cetak Laporan Terintegrasi</span>
                     </div>
                 </div>
             </div>

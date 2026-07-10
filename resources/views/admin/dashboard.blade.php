@@ -743,11 +743,20 @@
                         </div>
                     </div>
                     <div class="system-status-right">
-                        <a href="{{ url('/admin/maintenance') }}"
-                            class="btn-maintenance {{ $isMaintenance ? 'success' : 'primary' }}">
-                            <i class="fas fa-cog"></i>
-                            {{ $isMaintenance ? 'Nonaktifkan Maintenance' : 'Kelola Maintenance' }}
-                        </a>
+                        @if ($superadminVerified)
+                            <a href="{{ url('/admin/maintenance') }}"
+                                class="btn-maintenance {{ $isMaintenance ? 'success' : 'primary' }}">
+                                <i class="fas fa-cog"></i>
+                                {{ $isMaintenance ? 'Nonaktifkan Maintenance' : 'Kelola Maintenance' }}
+                            </a>
+                        @else
+                            <span class="btn-maintenance {{ $isMaintenance ? 'success' : 'primary' }}"
+                                style="opacity: 0.4; cursor: not-allowed; pointer-events: none;"
+                                title="Verifikasi email terlebih dahulu">
+                                <i class="fas fa-cog"></i>
+                                {{ $isMaintenance ? 'Nonaktifkan Maintenance' : 'Kelola Maintenance' }}
+                            </span>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -789,24 +798,6 @@
                                 @endforelse
                             </tbody>
                         </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="quick-actions-card">
-                <div class="table-card-header">
-                    <h5><i class="fas fa-bolt"></i> Aksi Cepat</h5>
-                </div>
-                <div class="quick-actions-body">
-                    <div class="quick-actions-grid">
-                        <a href="{{ url('/admin/manage-schedule?action=add') }}"
-                            class="quick-action-btn primary-solid"><i class="fas fa-plus"></i> Tambah Jadwal</a>
-                        <a href="{{ url('/admin/manage-rooms?action=add') }}" class="quick-action-btn"><i
-                                class="fas fa-plus"></i> Tambah Ruangan</a>
-                        <a href="{{ url('/admin/maintenance') }}" class="quick-action-btn"><i
-                                class="fas fa-cog"></i> Maintenance</a>
-                        <a href="{{ url('/admin/export') }}" class="quick-action-btn"><i
-                                class="fas fa-download"></i> Export Jadwal</a>
                     </div>
                 </div>
             </div>

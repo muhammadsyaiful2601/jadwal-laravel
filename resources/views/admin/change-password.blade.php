@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan - Admin Panel</title>
+    <title>Ganti Password - Admin Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
@@ -226,89 +226,66 @@
             padding: 0;
         }
 
-        .table-clean {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 24px;
         }
 
-        .table-clean thead {
-            background: var(--zinc-50);
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            flex-shrink: 0;
         }
 
-        .table-clean thead th {
-            padding: 12px 24px;
-            font-weight: 600;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
+        .profile-info h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .profile-info p {
             color: var(--zinc-500);
-            border-bottom: 1px solid var(--zinc-100);
-            text-align: left;
-            white-space: nowrap;
+            margin: 0;
         }
 
-        .table-clean tbody tr {
-            transition: background 0.12s ease;
-        }
-
-        .table-clean tbody tr:hover {
-            background: var(--zinc-50);
-        }
-
-        .table-clean tbody tr:not(:last-child) td {
-            border-bottom: 1px solid var(--zinc-100);
-        }
-
-        .table-clean tbody td {
-            padding: 12px 24px;
-            color: var(--zinc-700);
-            font-weight: 400;
-            vertical-align: middle;
-        }
-
-        .table-clean tbody tr:nth-child(even) {
-            background: rgba(0, 0, 0, 0.015);
-        }
-
-        .table-clean tbody tr:nth-child(even):hover {
-            background: var(--zinc-50);
-        }
-
-        .filter-section {
-            display: flex;
-            gap: 12px;
-            align-items: flex-end;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .filter-group label {
-            font-size: 0.875rem;
+        .form-label {
             font-weight: 600;
+            font-size: 0.875rem;
             color: var(--zinc-700);
+            margin-bottom: 6px;
         }
 
-        .form-select,
-        .form-control {
+        .form-control,
+        .form-select {
             border: 1px solid var(--zinc-200);
             border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 0.875rem;
+            padding: 10px 14px;
+            font-size: 0.9375rem;
             color: var(--zinc-800);
             background: white;
         }
 
-        .form-select:focus,
-        .form-control:focus {
+        .form-control:focus,
+        .form-select:focus {
             outline: none;
             border-color: var(--corporate-blue);
             box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+        }
+
+        .form-control-plaintext {
+            padding: 10px 0;
+            font-size: 0.9375rem;
+            color: var(--zinc-800);
         }
 
         .btn {
@@ -345,21 +322,6 @@
 
         .btn-secondary-custom:hover {
             background: var(--zinc-100);
-        }
-
-        .btn-success-custom {
-            background: #16a34a;
-            color: white;
-        }
-
-        .btn-success-custom:hover {
-            background: #15803d;
-        }
-
-        .export-section {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
         }
 
         /* Responsive */
@@ -416,7 +378,7 @@
                 <button class="top-bar-toggle" onclick="toggleSidebar()">
                     <i class="fas fa-bars"></i>
                 </button>
-                <h4>Laporan</h4>
+                <h4>Ganti Password</h4>
             </div>
             <div class="top-bar-right">
                 <span class="top-bar-date"><i class="far fa-calendar-alt me-1"></i> {{ date('d F Y') }}</span>
@@ -448,8 +410,8 @@
 
         <div class="content-wrapper">
             <div class="page-title-section">
-                <h4>Laporan Jadwal</h4>
-                <p>Kelola dan export laporan jadwal kuliah</p>
+                <h4>Ganti Password</h4>
+                <p>Ubah password akun superadmin Anda</p>
             </div>
 
             @if (session('success'))
@@ -461,105 +423,86 @@
                 </div>
             @endif
 
-            <div class="table-card">
-                <div class="table-card-header">
-                    <h5><i class="fas fa-filter"></i> Filter Laporan</h5>
+            @if (session('error'))
+                <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert"
+                    style="border-radius: 8px;">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
-                <div class="table-card-body">
-                    <form method="GET" action="{{ url('/admin/reports') }}" style="padding: 24px;">
-                        <div class="filter-section">
-                            <div class="filter-group">
-                                <label>Kelas</label>
-                                <select name="prodi" class="form-select">
-                                    <option value="">Semua Kelas</option>
-                                    @foreach ($prodis as $kelas)
-                                        <option value="{{ $kelas }}"
-                                            {{ request('prodi') == $kelas ? 'selected' : '' }}>
-                                            {{ $kelas }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="filter-group">
-                                <label>Semester</label>
-                                <select name="semester_id" class="form-select">
-                                    <option value="">Semua Semester</option>
-                                    @foreach ($semesters as $semester)
-                                        <option value="{{ $semester->id }}"
-                                            {{ request('semester_id') == $semester->id ? 'selected' : '' }}>
-                                            {{ $semester->tahun_akademik }} - {{ ucfirst($semester->semester) }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary-custom">
-                                <i class="fas fa-filter me-1"></i> Terapkan Filter
-                            </button>
-                        </div>
-                    </form>
-
-                    <div style="padding: 0 24px 24px;">
-                        <div class="export-section">
-                            <a href="{{ url('/admin/reports/export?format=pdf' . (request('prodi') ? '&prodi=' . request('prodi') : '') . (request('semester_id') ? '&semester_id=' . request('semester_id') : '')) }}"
-                                class="btn btn-danger">
-                                <i class="fas fa-file-pdf me-1"></i> Export PDF
-                            </a>
-                            <a href="{{ url('/admin/reports/export?format=excel' . (request('prodi') ? '&prodi=' . request('prodi') : '') . (request('semester_id') ? '&semester_id=' . request('semester_id') : '')) }}"
-                                class="btn btn-success-custom">
-                                <i class="fas fa-file-excel me-1"></i> Export Excel
-                            </a>
-                            <button onclick="window.print()" class="btn btn-secondary-custom">
-                                <i class="fas fa-print me-1"></i> Print
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @endif
 
             <div class="table-card">
                 <div class="table-card-header">
-                    <h5><i class="fas fa-table"></i> Data Jadwal</h5>
+                    <h5><i class="fas fa-lock"></i> Ubah Password</h5>
                 </div>
                 <div class="table-card-body">
-                    <div style="overflow-x: auto;">
-                        <table class="table-clean">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Kelas</th>
-                                    <th>Hari</th>
-                                    <th>Jam Ke</th>
-                                    <th>Waktu</th>
-                                    <th>Mata Kuliah</th>
-                                    <th>Dosen</th>
-                                    <th>Ruangan</th>
-                                    <th>Semester</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php $no = 1; @endphp
-                                @forelse($schedules as $schedule)
-                                    <tr>
-                                        <td>{{ $no++ }}</td>
-                                        <td>{{ $schedule->kelas }}</td>
-                                        <td>{{ $schedule->hari }}</td>
-                                        <td>{{ $schedule->jam_ke }}</td>
-                                        <td>{{ $schedule->waktu }}</td>
-                                        <td>{{ $schedule->mata_kuliah }}</td>
-                                        <td>{{ $schedule->dosen }}</td>
-                                        <td>{{ $schedule->ruang }}</td>
-                                        <td>{{ $schedule->semester }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="9"
-                                            style="text-align:center; color:var(--zinc-400); padding:32px;">
-                                            <i class="fas fa-inbox me-2"></i>Tidak ada data jadwal
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                    <div style="padding: 24px;">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                {{ strtoupper(substr(session('username'), 0, 1)) }}
+                            </div>
+                            <div class="profile-info">
+                                <h4>{{ session('username') }}</h4>
+                                <p>{{ ucfirst(session('role')) }}</p>
+                            </div>
+                        </div>
+
+                        @if ($user->email_verified_at)
+                            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert"
+                                style="border-radius: 8px;">
+                                <i class="fas fa-check-circle me-2"></i>
+                                <strong>Status Email:</strong> Terverifikasi
+                                ({{ date('d F Y H:i', strtotime($user->email_verified_at)) }})
+                            </div>
+                        @else
+                            <div class="alert alert-warning alert-dismissible fade show mb-4" role="alert"
+                                style="border-radius: 8px;">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Status Email:</strong> Belum Terverifikasi. Verifikasi email Anda untuk
+                                mengakses semua fitur.
+                            </div>
+                        @endif
+
+                        <form method="POST" action="{{ url('/admin/change-password') }}">
+                            @csrf
+                            <div class="mb-3">
+                                <label class="form-label">Password Saat Ini</label>
+                                <input type="password" name="current_password" class="form-control" required>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem;">
+                                <i class="fas fa-key me-2"></i>Password Baru
+                            </h5>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Password Baru</label>
+                                    <input type="password" name="new_password" class="form-control" minlength="6"
+                                        required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Konfirmasi Password</label>
+                                    <input type="password" name="confirm_password" class="form-control" minlength="6"
+                                        required>
+                                </div>
+                            </div>
+
+                            <p style="font-size: 0.875rem; color: var(--zinc-500); margin-bottom: 16px;">
+                                <i class="fas fa-info-circle me-1"></i> Password minimal 6 karakter
+                            </p>
+
+                            <div class="d-flex gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary-custom">
+                                    <i class="fas fa-save me-1"></i> Ubah Password
+                                </button>
+                                <a href="{{ url('/admin/profile') }}" class="btn btn-secondary-custom">
+                                    <i class="fas fa-arrow-left me-1"></i> Kembali
+                                </a>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -456,9 +456,16 @@
                         <div class="d-flex gap-2 flex-wrap">
                             <form method="POST" action="{{ url('/admin/maintenance/backup') }}" class="d-inline">
                                 @csrf
-                                <button type="submit" class="btn btn-primary-custom">
-                                    <i class="fas fa-download me-1"></i> Backup Sekarang
-                                </button>
+                                @if ($superadminVerified)
+                                    <button type="submit" class="btn btn-primary-custom">
+                                        <i class="fas fa-download me-1"></i> Backup Sekarang
+                                    </button>
+                                @else
+                                    <button type="button" class="btn btn-primary-custom" disabled
+                                        style="opacity:0.4;cursor:not-allowed;">
+                                        <i class="fas fa-download me-1"></i> Backup Sekarang
+                                    </button>
+                                @endif
                             </form>
                             <button class="btn btn-secondary-custom" disabled>
                                 <i class="fas fa-history me-1"></i> Lihat Riwayat Backup
@@ -476,15 +483,29 @@
                         <div class="d-flex gap-2 flex-wrap">
                             <form method="POST" action="{{ url('/admin/maintenance/clear-cache') }}" class="d-inline">
                                 @csrf
-                                <button type="submit" class="btn btn-primary-custom">
-                                    <i class="fas fa-broom me-1"></i> Clear Cache
-                                </button>
+                                @if ($superadminVerified)
+                                    <button type="submit" class="btn btn-primary-custom">
+                                        <i class="fas fa-broom me-1"></i> Clear Cache
+                                    </button>
+                                @else
+                                    <button type="button" class="btn btn-primary-custom" disabled
+                                        style="opacity:0.4;cursor:not-allowed;">
+                                        <i class="fas fa-broom me-1"></i> Clear Cache
+                                    </button>
+                                @endif
                             </form>
                             <form method="POST" action="{{ url('/admin/maintenance/clear-logs') }}" class="d-inline">
                                 @csrf
-                                <button type="submit" class="btn btn-primary-custom">
-                                    <i class="fas fa-file-alt me-1"></i> Clear Logs
-                                </button>
+                                @if ($superadminVerified)
+                                    <button type="submit" class="btn btn-primary-custom">
+                                        <i class="fas fa-file-alt me-1"></i> Clear Logs
+                                    </button>
+                                @else
+                                    <button type="button" class="btn btn-primary-custom" disabled
+                                        style="opacity:0.4;cursor:not-allowed;">
+                                        <i class="fas fa-file-alt me-1"></i> Clear Logs
+                                    </button>
+                                @endif
                             </form>
                         </div>
 
@@ -502,11 +523,20 @@
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Timeout Sesi (menit)</label>
                                     <input type="number" name="session_timeout" class="form-control"
-                                        value="{{ $settings['session_timeout'] ?? 60 }}" min="5" max="480">
+                                        value="{{ $settings['session_timeout'] ?? 60 }}" min="5"
+                                        max="480">
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <button type="submit" class="btn btn-primary-custom">
-                                        <i class="fas fa-save me-1"></i> Simpan
+                                    @if ($superadminVerified)
+                                        <button type="submit" class="btn btn-primary-custom">
+                                            <i class="fas fa-save me-1"></i> Simpan
+                                        </button>
+                                    @else
+                                        <button type="button" class="btn btn-primary-custom" disabled
+                                            style="opacity:0.4;cursor:not-allowed;">
+                                            <i class="fas fa-save me-1"></i> Simpan
+                                        </button>
+                                    @endif
                                     </button>
                                 </div>
                             </div>
@@ -536,8 +566,16 @@
                             </div>
 
                             <div class="mt-3">
-                                <button type="submit" class="btn btn-primary-custom" id="applyMaintenance">
-                                    <i class="fas fa-save me-1"></i> Terapkan Perubahan
+                                @if ($superadminVerified)
+                                    <button type="submit" class="btn btn-primary-custom" id="applyMaintenance">
+                                        <i class="fas fa-save me-1"></i> Terapkan Perubahan
+                                    </button>
+                                @else
+                                    <button type="button" class="btn btn-primary-custom" disabled
+                                        style="opacity:0.4;cursor:not-allowed;" id="applyMaintenance">
+                                        <i class="fas fa-save me-1"></i> Terapkan Perubahan
+                                    </button>
+                                @endif
                                 </button>
                             </div>
                         </form>

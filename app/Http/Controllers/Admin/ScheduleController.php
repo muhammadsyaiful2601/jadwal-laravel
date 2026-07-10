@@ -79,6 +79,11 @@ class ScheduleController extends Controller
             return redirect('/login');
         }
 
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
         if ($request->ajax()) {
             try {
                 $request->validate([
@@ -218,6 +223,11 @@ class ScheduleController extends Controller
             return redirect('/login');
         }
 
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
         if ($request->ajax()) {
             try {
                 $request->validate([
@@ -344,6 +354,11 @@ class ScheduleController extends Controller
             return redirect('/login');
         }
 
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
         if ($request->ajax()) {
             try {
                 DB::table('schedules')->where('id', $id)->delete();
@@ -374,6 +389,11 @@ class ScheduleController extends Controller
     {
         if (!$request->session()->has('user_id')) {
             return redirect('/login');
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
         }
 
         if ($request->ajax()) {
@@ -410,6 +430,11 @@ class ScheduleController extends Controller
     {
         if (!$request->session()->has('user_id')) {
             return redirect('/login');
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
         }
 
         $request->validate([

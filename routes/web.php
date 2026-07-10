@@ -1,11 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\MaintenanceController;
-use App\Http\Controllers\Admin\PrintReportController;
 use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\RoomController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\SemesterController;
@@ -72,12 +69,13 @@ Route::get('/admin/manage-users/reset-lockout', [UserController::class, 'resetLo
 Route::get('/admin/manage-users/cancel-lockout', [UserController::class, 'cancelLockout']);
 Route::get('/admin/manage-users/send-verification', [UserController::class, 'sendVerification']);
 
-// Reports routes
-Route::get('/admin/reports', [ReportsController::class, 'index']);
-
 // Profile routes
 Route::get('/admin/profile', [ProfileController::class, 'index']);
 Route::post('/admin/profile/update', [ProfileController::class, 'update']);
+
+// Change Password routes (superadmin only)
+Route::get('/admin/change-password', [ProfileController::class, 'changePassword']);
+Route::post('/admin/change-password', [ProfileController::class, 'updatePassword']);
 
 // Forgot Password routes
 Route::get('/forgot-password', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'showForgotForm']);
@@ -89,15 +87,6 @@ Route::post('/reset-password', [\App\Http\Controllers\Auth\ForgotPasswordControl
 Route::post('/admin/profile/send-verification', [\App\Http\Controllers\Auth\VerificationController::class, 'sendVerificationEmail']);
 Route::post('/admin/profile/update-email', [\App\Http\Controllers\Auth\VerificationController::class, 'updateEmail']);
 Route::get('/verify-email/{token}', [\App\Http\Controllers\Auth\VerificationController::class, 'verifyEmail']);
-
-// Print Report routes
-Route::get('/admin/print-report', [PrintReportController::class, 'index']);
-
-// Export routes
-Route::get('/admin/export', [ExportController::class, 'export']);
-
-// Report Export routes (PDF & Excel)
-Route::get('/admin/reports/export', [\App\Http\Controllers\Admin\ReportExportController::class, 'export']);
 
 // Suggestion (Kritik & Saran) routes
 Route::get('/admin/saran', [SuggestionController::class, 'index']);

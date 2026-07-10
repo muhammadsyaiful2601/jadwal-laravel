@@ -48,6 +48,11 @@ class MaintenanceController extends Controller
             return redirect('/login');
         }
 
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
         $isMaintenance = Setting::getValue('maintenance_mode', '0') == '1';
         $newStatus = $isMaintenance ? '0' : '1';
 

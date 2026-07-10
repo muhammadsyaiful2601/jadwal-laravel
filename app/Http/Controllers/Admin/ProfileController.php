@@ -41,6 +41,11 @@ class ProfileController extends Controller
             return redirect('/login');
         }
 
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
         $userId = $request->session()->get('user_id');
         $user = DB::table('users')->where('id', $userId)->first();
 
@@ -96,5 +101,105 @@ class ProfileController extends Controller
         ]);
 
         return redirect('/admin/profile')->with('success', 'Profile berhasil diperbarui!');
+    }
+
+    public function changePassword(Request $request)
+    {
+        if (!$request->session()->has('user_id')) {
+            return redirect('/login');
+        }
+
+        // Hanya superadmin yang bisa akses
+        $role = $request->session()->get('role');
+        if ($role !== 'superadmin') {
+            return redirect('/admin/dashboard')->with('error', 'Akses ditolak. Hanya superadmin yang dapat mengakses halaman ini.');
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
+        $userId = $request->session()->get('user_id');
+        $user = DB::table('users')->where('id', $userId)->first();
+
+        // Get maintenance status
+        $maintenanceStatus = DB::table('settings')
+            ->where('setting_key', 'maintenance_mode')
+            ->value('setting_value');
+        $isMaintenance = ($maintenanceStatus == '1');
+
+        $currentUserRole = $request->session()->get('role');
+        $currentUserId = $request->session()->get('user_id');
+
+        return view('admin.change-password', compact(
+            'user',
+            'isMaintenance',
+            'currentUserRole',
+            'currentUserId'
+        ));
+    }
+
+    public function updatePassword(Request $request)
+    {
+        if (!$request->session()->has('user_id')) {
+            return redirect('/login');
+        }
+
+        // Hanya superadmin yang bisa akses
+        $role = $request->session()->get('role');
+        if ($role !== 'superadmin') {
+            return redirect('/admin/dashboard')->with('error', 'Akses ditolak. Hanya superadmin yang dapat mengakses fitur ini.');
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
+        $userId = $request->session()->get('user_id');
+        $user = DB::table('users')->where('id', $userId)->first();
+
+        if (!$user) {
+            return redirect('/login')->with('error', 'User tidak ditemukan');
+        }
+
+        $current_password = $request->input('current_password');
+        $new_password = $request->input('new_password');
+        $confirm_password = $request->input('confirm_password');
+
+        // Validasi password saat ini
+        if (empty($current_password)) {
+            return redirect('/admin/change-password')->with('error', 'Password saat ini harus diisi!');
+        } else if (!Hash::check($current_password, $user->password)) {
+            return redirect('/admin/change-password')->with('error', 'Password saat ini salah!');
+        }
+
+        // Validasi password baru
+        if (empty($new_password)) {
+            return redirect('/admin/change-password')->with('error', 'Password baru harus diisi!');
+        } else if (strlen($new_password) < 6) {
+            return redirect('/admin/change-password')->with('error', 'Password baru minimal 6 karakter!');
+        } else if ($new_password !== $confirm_password) {
+            return redirect('/admin/change-password')->with('error', 'Password baru dan konfirmasi tidak cocok!');
+        }
+
+        // Update password
+        DB::table('users')->where('id', $userId)->update([
+            'password' => Hash::make($new_password),
+            'updated_at' => now(),
+        ]);
+
+        // Log activity
+        DB::table('activity_logs')->insert([
+            'user_id' => $userId,
+            'action' => 'Change Password',
+            'description' => 'Ganti password melalui halaman khusus',
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'created_at' => now(),
+        ]);
+
+        return redirect('/admin/change-password')->with('success', 'Password berhasil diubah!');
     }
 }

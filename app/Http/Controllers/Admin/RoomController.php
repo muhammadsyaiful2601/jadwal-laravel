@@ -42,6 +42,11 @@ class RoomController extends Controller
             return redirect('/login');
         }
 
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
         if ($request->ajax()) {
             try {
                 $request->validate([
@@ -157,6 +162,11 @@ class RoomController extends Controller
     {
         if (!$request->session()->has('user_id')) {
             return redirect('/login');
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
         }
 
         if ($request->ajax()) {
@@ -298,6 +308,11 @@ class RoomController extends Controller
     {
         if (!$request->session()->has('user_id')) {
             return redirect('/login');
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
         }
 
         if ($request->ajax()) {

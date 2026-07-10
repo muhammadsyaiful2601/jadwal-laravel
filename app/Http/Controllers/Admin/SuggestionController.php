@@ -14,6 +14,11 @@ class SuggestionController extends Controller
             return redirect('/login');
         }
 
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
         $currentUserRole = $request->session()->get('role');
         $currentUserId = $request->session()->get('user_id');
         $currentUsername = $request->session()->get('username');
@@ -92,6 +97,11 @@ class SuggestionController extends Controller
     {
         if (!$request->session()->has('user_id')) {
             return redirect('/login');
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
         }
 
         $userId = $request->session()->get('user_id');

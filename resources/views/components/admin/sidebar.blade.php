@@ -3,41 +3,53 @@
         <h3><i class="fas fa-calendar-alt"></i> Admin Panel</h3>
     </div>
 
+    @if (!$superadminVerified)
+        <div class="sidebar-verification-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div class="sidebar-verification-text">
+                <strong>Email Belum Terverifikasi</strong>
+                <small>Verifikasi email Anda untuk mengakses semua fitur</small>
+            </div>
+            <a href="{{ url('/admin/profile') }}" class="btn-verify-now">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+    @endif
+
     <nav class="sidebar-nav">
         <span class="nav-section-label">Menu Utama</span>
-        <a class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }}" href="{{ url('/admin/dashboard') }}">
+        <a class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }} {{ !$superadminVerified ? 'disabled-link' : '' }}"
+            href="{{ !$superadminVerified ? '#' : url('/admin/dashboard') }}">
             <i class="fas fa-tachometer-alt"></i> Dashboard
         </a>
-        <a class="nav-link {{ request()->is('admin/manage-schedule') ? 'active' : '' }}"
-            href="{{ url('/admin/manage-schedule') }}">
+        <a class="nav-link {{ request()->is('admin/manage-schedule') ? 'active' : '' }} {{ !$superadminVerified ? 'disabled-link' : '' }}"
+            href="{{ !$superadminVerified ? '#' : url('/admin/manage-schedule') }}">
             <i class="fas fa-calendar"></i> Kelola Jadwal
         </a>
-        <a class="nav-link {{ request()->is('admin/manage-rooms') ? 'active' : '' }}"
-            href="{{ url('/admin/manage-rooms') }}">
+        <a class="nav-link {{ request()->is('admin/manage-rooms') ? 'active' : '' }} {{ !$superadminVerified ? 'disabled-link' : '' }}"
+            href="{{ !$superadminVerified ? '#' : url('/admin/manage-rooms') }}">
             <i class="fas fa-door-open"></i> Kelola Ruangan
         </a>
-        <a class="nav-link {{ request()->is('admin/manage-semester') ? 'active' : '' }}"
-            href="{{ url('/admin/manage-semester') }}">
+        <a class="nav-link {{ request()->is('admin/manage-semester') ? 'active' : '' }} {{ !$superadminVerified ? 'disabled-link' : '' }}"
+            href="{{ !$superadminVerified ? '#' : url('/admin/manage-semester') }}">
             <i class="fas fa-calendar-alt"></i> Kelola Semester
         </a>
 
         <span class="nav-section-label">Pengaturan</span>
-        <a class="nav-link {{ request()->is('admin/manage-settings') ? 'active' : '' }}"
-            href="{{ url('/admin/manage-settings') }}">
+        <a class="nav-link {{ request()->is('admin/manage-settings') ? 'active' : '' }} {{ !$superadminVerified ? 'disabled-link' : '' }}"
+            href="{{ !$superadminVerified ? '#' : url('/admin/manage-settings') }}">
             <i class="fas fa-cog"></i> Pengaturan
         </a>
-        <a class="nav-link {{ request()->is('admin/manage-users') ? 'active' : '' }}"
-            href="{{ url('/admin/manage-users') }}">
+        <a class="nav-link {{ request()->is('admin/manage-users') ? 'active' : '' }} {{ !$superadminVerified ? 'disabled-link' : '' }}"
+            href="{{ !$superadminVerified ? '#' : url('/admin/manage-users') }}">
             <i class="fas fa-users"></i> Kelola Admin
         </a>
-        <a class="nav-link {{ request()->is('admin/reports') ? 'active' : '' }}" href="{{ url('/admin/reports') }}">
-            <i class="fas fa-chart-bar"></i> Laporan
-        </a>
-        <a class="nav-link {{ request()->is('admin/saran') ? 'active' : '' }}" href="{{ url('/admin/saran') }}">
+        <a class="nav-link {{ request()->is('admin/saran') ? 'active' : '' }} {{ !$superadminVerified ? 'disabled-link' : '' }}"
+            href="{{ url('/admin/saran') }}">
             <i class="fas fa-comments"></i> Kritik & Saran
         </a>
-        <a class="nav-link {{ request()->is('admin/maintenance') ? 'active' : '' }}"
-            href="{{ url('/admin/maintenance') }}">
+        <a class="nav-link {{ request()->is('admin/maintenance') ? 'active' : '' }} {{ !$superadminVerified ? 'disabled-link' : '' }}"
+            href="{{ !$superadminVerified ? '#' : url('/admin/maintenance') }}">
             <i class="fas fa-tools"></i> Maintenance
         </a>
     </nav>
@@ -227,5 +239,78 @@
         text-align: center;
         font-size: 0.95rem;
         flex-shrink: 0;
+    }
+
+    /* Verification Warning */
+    .sidebar-verification-warning {
+        background: rgba(245, 158, 11, 0.15);
+        border-left: 3px solid #f59e0b;
+        margin: 8px 12px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    .sidebar-verification-warning>i:first-child {
+        color: #f59e0b;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+
+    .sidebar-verification-text {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .sidebar-verification-text strong {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #fbbf24;
+        line-height: 1.3;
+    }
+
+    .sidebar-verification-text small {
+        display: block;
+        font-size: 0.65rem;
+        color: rgba(255, 255, 255, 0.5);
+        line-height: 1.3;
+        margin-top: 2px;
+    }
+
+    .btn-verify-now {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #fbbf24;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        flex-shrink: 0;
+        transition: all 0.15s ease;
+        font-size: 0.75rem;
+    }
+
+    .btn-verify-now:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #fcd34d;
+    }
+
+    /* Disabled Link */
+    .sidebar-nav .nav-link.disabled-link {
+        opacity: 0.4;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    .sidebar-nav .nav-link.disabled-link:hover {
+        background: transparent;
+        color: rgba(255, 255, 255, 0.65);
     }
 </style>

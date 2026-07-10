@@ -59,6 +59,11 @@ class UserController extends Controller
             return redirect('/login');
         }
 
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
         // Only superadmin can add admin
         if ($request->session()->get('role') !== 'superadmin') {
             return redirect('/admin/manage-users')->with('error', 'Hanya superadmin yang dapat menambah admin baru.');
@@ -109,6 +114,11 @@ class UserController extends Controller
             return redirect('/login');
         }
 
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
         // Only superadmin can send verification
         if ($request->session()->get('role') !== 'superadmin') {
             return redirect('/admin/manage-users')->with('error', 'Hanya superadmin yang dapat mengirim verifikasi.');
@@ -157,6 +167,11 @@ class UserController extends Controller
     {
         if (!$request->session()->has('user_id')) {
             return redirect('/login');
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
         }
 
         $userId = (int) $request->input('id');
@@ -248,6 +263,11 @@ class UserController extends Controller
             return redirect('/login');
         }
 
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
         // Only superadmin can delete
         if ($request->session()->get('role') !== 'superadmin') {
             return redirect('/admin/manage-users')->with('error', 'Hanya superadmin yang dapat menghapus admin.');
@@ -289,6 +309,11 @@ class UserController extends Controller
             return redirect('/login');
         }
 
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
         // Only superadmin can reset lockout
         if ($request->session()->get('role') !== 'superadmin') {
             return redirect('/admin/manage-users')->with('error', 'Hanya superadmin yang dapat mereset lockout.');
@@ -313,6 +338,11 @@ class UserController extends Controller
     {
         if (!$request->session()->has('user_id')) {
             return redirect('/login');
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
         }
 
         // Only superadmin can cancel lockout

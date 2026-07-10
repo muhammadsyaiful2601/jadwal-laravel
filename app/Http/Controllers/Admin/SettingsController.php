@@ -43,6 +43,11 @@ class SettingsController extends Controller
             return redirect('/login');
         }
 
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
         // Update all settings from form
         $settingsToUpdate = [
             'tahun_akademik',
@@ -97,6 +102,11 @@ class SettingsController extends Controller
             return redirect('/login');
         }
 
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
         // Check if superadmin
         if ($request->session()->get('role') !== 'superadmin') {
             return redirect('/admin/manage-settings')->with('error', 'Akses ditolak! Hanya superadmin yang dapat melakukan aksi ini.');
@@ -128,6 +138,11 @@ class SettingsController extends Controller
             return redirect('/login');
         }
 
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
         // Check if superadmin
         if ($request->session()->get('role') !== 'superadmin') {
             return redirect('/admin/manage-settings')->with('error', 'Akses ditolak! Hanya superadmin yang dapat melakukan aksi ini.');
@@ -148,6 +163,11 @@ class SettingsController extends Controller
     {
         if (!$request->session()->has('user_id')) {
             return redirect('/login');
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
         }
 
         // Check if superadmin
