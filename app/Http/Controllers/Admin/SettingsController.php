@@ -155,10 +155,152 @@ class SettingsController extends Controller
             return redirect('/admin/manage-settings')->with('error', 'Akses ditolak! Hanya superadmin yang dapat melakukan aksi ini.');
         }
 
-        // For now, just show a message (actual backup implementation would require additional packages)
-        $this->logActivity($request->session()->get('user_id'), 'Backup Database', 'Mencoba backup database');
+        try {
+            $dbHost = env('DB_HOST', '127.0.0.1');
+            $dbPort = env('DB_PORT', '3306');
+            $dbName = env('DB_DATABASE', 'jadwal_kampus');
+            $dbUser = env('DB_USERNAME', 'root');
+            $dbPass = env('DB_PASSWORD', '');
 
-        return redirect('/admin/manage-settings')->with('info', 'Fitur backup database sedang dalam pengembangan. Silakan hubungi administrator sistem.');
+            $backupDir = storage_path('app/backups');
+            if (!is_dir($backupDir)) {
+                mkdir($backupDir, 0755, true);
+            }
+
+            $filename = 'backup_' . $dbName . '_' . date('Y-m-d_His') . '.sql';
+            $filePath = $backupDir . '/' . $filename;
+
+            // Build mysqldump command
+            $command = sprintf(
+                'mysqldump --host=%s --port=%s --user=%s %s %s > "%s" 2>&1',
+                escapeshellarg($dbHost),
+                escapeshellarg($dbPort),
+                escapeshellarg($dbUser),
+                !empty($dbPass) ? '--password=' . escapeshellarg($dbPass) : '',
+                escapeshellarg($dbName),
+                $filePath
+            );
+
+            // On Windows, try finding mysqldump in common paths
+            if (PHP_OS_FAMILY === 'Windows') {
+                // Try default XAMPP/WAMP MySQL paths
+                $possiblePaths = [
+                    'C:\\xampp\\mysql\\bin\\mysqldump.exe',
+                    'C:\\wamp64\\bin\\mysql\\mysql*\\bin\\mysqldump.exe',
+                    'C:\\wamp\\bin\\mysql\\mysql*\\bin\\mysqldump.exe',
+                    'C:\\laragon\\bin\\mysql\\mysql*\\bin\\mysqldump.exe',
+                ];
+
+                $mysqldumpPath = null;
+                foreach ($possiblePaths as $path) {
+                    if (strpos($path, '*') !== false) {
+                        // Use glob to find version folders
+                        $globPath = str_replace('mysql*', 'mysql*', $path);
+                        $matches = glob($path);
+                        if (!empty($matches)) {
+                            $mysqldumpPath = $matches[0];
+                            break;
+                        }
+                    } elseif (file_exists($path)) {
+                        $mysqldumpPath = $path;
+                        break;
+                    }
+                }
+
+                if ($mysqldumpPath) {
+                    $command = sprintf(
+                        '"%s" --host=%s --port=%s --user=%s %s %s > "%s" 2>&1',
+                        $mysqldumpPath,
+                        escapeshellarg($dbHost),
+                        escapeshellarg($dbPort),
+                        escapeshellarg($dbUser),
+                        !empty($dbPass) ? '--password=' . escapeshellarg($dbPass) : '',
+                        escapeshellarg($dbName),
+                        $filePath
+                    );
+                }
+            }
+
+            $output = null;
+            $returnVar = null;
+            exec($command, $output, $returnVar);
+
+            if ($returnVar !== 0) {
+                // Fallback: try PHP-based backup using PDO
+                return $this->phpBackup($dbName, $backupDir, $filename, $request);
+            }
+
+            if (!file_exists($filePath) || filesize($filePath) === 0) {
+                throw new \Exception('File backup gagal dibuat atau kosong.');
+            }
+
+            $this->logActivity($request->session()->get('user_id'), 'Backup Database', 'Backup database berhasil: ' . $filename);
+
+            return response()->download($filePath)->deleteFileAfterSend(true);
+        } catch (\Exception $e) {
+            // Fallback: PHP-based backup
+            return $this->phpBackup($dbName ?? env('DB_DATABASE', 'jadwal_kampus'), $backupDir ?? storage_path('app/backups'), $filename ?? 'backup_fallback_' . date('Y-m-d_His') . '.sql', $request);
+        }
+    }
+
+    private function phpBackup($dbName, $backupDir, $filename, $request)
+    {
+        try {
+            if (!is_dir($backupDir)) {
+                mkdir($backupDir, 0755, true);
+            }
+
+            $filePath = $backupDir . '/' . $filename;
+            $tables = DB::select('SHOW TABLES');
+            $tableKey = 'Tables_in_' . $dbName;
+
+            $sql = "-- PHP Database Backup\n";
+            $sql .= "-- Database: " . $dbName . "\n";
+            $sql .= "-- Tanggal: " . date('Y-m-d H:i:s') . "\n\n";
+            $sql .= "SET FOREIGN_KEY_CHECKS=0;\n\n";
+
+            foreach ($tables as $table) {
+                $tableName = $table->$tableKey;
+
+                // Get create table
+                $createTable = DB::select("SHOW CREATE TABLE `$tableName`");
+                $sql .= "\n\n-- Table structure for table `$tableName`\n";
+                $sql .= "DROP TABLE IF EXISTS `$tableName`;\n";
+                $createStmt = $createTable[0]->{'Create Table'};
+                $sql .= $createStmt . ";\n\n";
+
+                // Get data
+                $rows = DB::table($tableName)->get();
+                if (count($rows) > 0) {
+                    $sql .= "-- Data for table `$tableName`\n";
+                    $columns = array_keys((array)$rows[0]);
+                    $colNames = '`' . implode('`, `', $columns) . '`';
+
+                    $values = [];
+                    foreach ($rows as $row) {
+                        $row = (array)$row;
+                        $escapedValues = array_map(function ($val) {
+                            if ($val === null) return 'NULL';
+                            return "'" . str_replace("'", "''", $val) . "'";
+                        }, $row);
+                        $values[] = '(' . implode(', ', $escapedValues) . ')';
+                    }
+
+                    $sql .= "INSERT INTO `$tableName` ($colNames) VALUES\n";
+                    $sql .= implode(",\n", $values) . ";\n";
+                }
+            }
+
+            $sql .= "\nSET FOREIGN_KEY_CHECKS=1;\n";
+
+            file_put_contents($filePath, $sql);
+
+            $this->logActivity($request->session()->get('user_id'), 'Backup Database (PHP)', 'Backup database berhasil: ' . $filename);
+
+            return response()->download($filePath)->deleteFileAfterSend(true);
+        } catch (\Exception $e) {
+            return redirect('/admin/manage-settings')->with('error', 'Gagal backup database: ' . $e->getMessage());
+        }
     }
 
     private function logActivity($userId, $action, $description)

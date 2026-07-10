@@ -3,16 +3,6 @@
         <h3><i class="fas fa-calendar-alt"></i> Admin Panel</h3>
     </div>
 
-    <div class="sidebar-profile">
-        <div class="sidebar-avatar">
-            {{ strtoupper(substr(session('username'), 0, 1)) }}
-        </div>
-        <div class="sidebar-profile-info">
-            <h6>{{ session('username') }}</h6>
-            <small>{{ ucfirst(session('role')) }}</small>
-        </div>
-    </div>
-
     <nav class="sidebar-nav">
         <span class="nav-section-label">Menu Utama</span>
         <a class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }}" href="{{ url('/admin/dashboard') }}">
@@ -56,7 +46,7 @@
         <a class="nav-link {{ request()->is('admin/profile') ? 'active' : '' }}" href="{{ url('/admin/profile') }}">
             <i class="fas fa-user"></i> Profile
         </a>
-        <form action="{{ url('/logout') }}" method="POST" style="display:block;">
+        <form action="{{ url('/logout') }}" method="POST" style="display:block; margin:0;">
             @csrf
             <button type="submit" class="nav-link">
                 <i class="fas fa-sign-out-alt"></i> Logout

@@ -25,9 +25,7 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-// Register Superadmin routes
-Route::get('/register-superadmin', [RegisterSuperadminController::class, 'showRegisterForm'])->name('register.superadmin');
-Route::post('/register-superadmin', [RegisterSuperadminController::class, 'register']);
+
 
 // Admin Dashboard
 Route::get('/admin/dashboard', [DashboardController::class, 'index']);
@@ -72,6 +70,7 @@ Route::post('/admin/manage-users/update', [UserController::class, 'update']);
 Route::get('/admin/manage-users/delete', [UserController::class, 'destroy']);
 Route::get('/admin/manage-users/reset-lockout', [UserController::class, 'resetLockout']);
 Route::get('/admin/manage-users/cancel-lockout', [UserController::class, 'cancelLockout']);
+Route::get('/admin/manage-users/send-verification', [UserController::class, 'sendVerification']);
 
 // Reports routes
 Route::get('/admin/reports', [ReportsController::class, 'index']);
@@ -80,11 +79,25 @@ Route::get('/admin/reports', [ReportsController::class, 'index']);
 Route::get('/admin/profile', [ProfileController::class, 'index']);
 Route::post('/admin/profile/update', [ProfileController::class, 'update']);
 
+// Forgot Password routes
+Route::get('/forgot-password', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'showForgotForm']);
+Route::post('/forgot-password', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'sendResetLink']);
+Route::get('/reset-password/{token}', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'showResetForm']);
+Route::post('/reset-password', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'resetPassword']);
+
+// Email Verification routes
+Route::post('/admin/profile/send-verification', [\App\Http\Controllers\Auth\VerificationController::class, 'sendVerificationEmail']);
+Route::post('/admin/profile/update-email', [\App\Http\Controllers\Auth\VerificationController::class, 'updateEmail']);
+Route::get('/verify-email/{token}', [\App\Http\Controllers\Auth\VerificationController::class, 'verifyEmail']);
+
 // Print Report routes
 Route::get('/admin/print-report', [PrintReportController::class, 'index']);
 
 // Export routes
 Route::get('/admin/export', [ExportController::class, 'export']);
+
+// Report Export routes (PDF & Excel)
+Route::get('/admin/reports/export', [\App\Http\Controllers\Admin\ReportExportController::class, 'export']);
 
 // Suggestion (Kritik & Saran) routes
 Route::get('/admin/saran', [SuggestionController::class, 'index']);

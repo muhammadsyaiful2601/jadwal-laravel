@@ -703,7 +703,26 @@
                                                 @endif
                                             </div>
                                         </td>
-                                        <td>{{ $user->email ?? '-' }}</td>
+                                        <td>
+                                            @if ($user->email ?? false)
+                                                {{ $user->email }}
+                                                @if ($user->role !== 'superadmin' && $isSuperAdmin)
+                                                    @if ($user->email_verified_at)
+                                                        <span class="badge-status"
+                                                            style="background: #d1fae5; color: #059669; font-size: 0.65rem; padding: 2px 6px; margin-left: 4px;">
+                                                            <i class="fas fa-check-circle"></i> Terverifikasi
+                                                        </span>
+                                                    @else
+                                                        <span class="badge-status"
+                                                            style="background: #fef3c7; color: #b45309; font-size: 0.65rem; padding: 2px 6px; margin-left: 4px;">
+                                                            <i class="fas fa-clock"></i> Belum Verifikasi
+                                                        </span>
+                                                    @endif
+                                                @endif
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
                                         <td>
                                             <span
                                                 class="badge-role {{ $user->role == 'superadmin' ? 'superadmin' : '' }}">
@@ -772,6 +791,14 @@
                                                             onclick="return confirm('Reset lockout untuk akun ini?')"
                                                             title="Reset Lockout">
                                                             <i class="fas fa-redo"></i>
+                                                        </a>
+                                                    @endif
+                                                    @if ($user->role !== 'superadmin' && !$user->email_verified_at && $user->email)
+                                                        <a href="{{ url('/admin/manage-users/send-verification?verify=' . $user->id) }}"
+                                                            class="action-btn" style="color: #16a34a;"
+                                                            onclick="return confirm('Kirim link verifikasi ke email {{ $user->email }}?')"
+                                                            title="Kirim Verifikasi">
+                                                            <i class="fas fa-paper-plane"></i>
                                                         </a>
                                                     @endif
                                                 @endif

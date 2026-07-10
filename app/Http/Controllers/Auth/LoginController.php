@@ -79,6 +79,14 @@ class LoginController extends Controller
                 ]);
             }
 
+            // Check if email is verified (for non-superadmin accounts)
+            if ($user->role !== 'superadmin' && !$user->email_verified_at) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akun ' . $username . ' belum terverifikasi. Silakan hubungi superadmin untuk verifikasi email.'
+                ]);
+            }
+
             // Check if account is locked
             if ($user->locked_until && strtotime($user->locked_until) > time()) {
                 $remaining = strtotime($user->locked_until) - time();
@@ -185,6 +193,11 @@ class LoginController extends Controller
 
         if (!$user->is_active) {
             return back()->withInput($request->only('username'))->with('inactive_account', true)->with('error', 'Akun ' . $username . ' telah dinonaktifkan');
+        }
+
+        // Check if email is verified (for non-superadmin accounts)
+        if ($user->role !== 'superadmin' && !$user->email_verified_at) {
+            return back()->withInput($request->only('username'))->with('error', 'Akun ' . $username . ' belum terverifikasi. Silakan hubungi superadmin untuk verifikasi email.');
         }
 
         if ($user->locked_until && strtotime($user->locked_until) > time()) {

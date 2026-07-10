@@ -766,10 +766,11 @@
                     </div>
 
                     @if ($superadminExists)
-                        <div class="register-section">
+                        <div class="register-section mb-2">
                             <small>
-                                Belum punya akun? <a href="{{ url('/register-superadmin') }}"
-                                    class="register-link">Daftar Superadmin</a>
+                                <a href="{{ url('/forgot-password') }}" class="register-link">
+                                    <i class="fas fa-key me-1"></i> Lupa Password?
+                                </a>
                             </small>
                         </div>
                     @endif
@@ -932,7 +933,7 @@
                         errorDiv.show();
                         loginButton.prop('disabled', false);
                         buttonText.html(
-                        '<i class="fas fa-sign-in-alt"></i> Login ke Dashboard');
+                            '<i class="fas fa-sign-in-alt"></i> Login ke Dashboard');
                     }
                 });
             });

@@ -448,6 +448,21 @@
                             </div>
                         </div>
 
+                        @if (session('role') == 'superadmin')
+                            <div class="alert {{ $user->email_verified_at ? 'alert-success' : 'alert-warning' }} alert-dismissible fade show mb-4"
+                                role="alert" style="border-radius: 8px;">
+                                <i
+                                    class="fas {{ $user->email_verified_at ? 'fa-check-circle' : 'fa-exclamation-triangle' }} me-2"></i>
+                                <strong>Status Email:</strong>
+                                @if ($user->email_verified_at)
+                                    Terverifikasi ({{ date('d F Y H:i', strtotime($user->email_verified_at)) }})
+                                @else
+                                    Belum Terverifikasi
+                                @endif
+                            </div>
+                        @endif
+
+
                         <form method="POST" action="{{ url('/admin/profile/update') }}">
                             @csrf
                             <div class="row">
@@ -458,8 +473,17 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Email</label>
-                                    <input type="email" name="email" class="form-control"
-                                        value="{{ old('email', $user->email) }}">
+                                    <div class="input-group">
+                                        <input type="email" name="email" class="form-control"
+                                            value="{{ old('email', $user->email) }}">
+                                        @if (session('role') == 'superadmin' && !$user->email_verified_at)
+                                            <button type="button" class="btn btn-outline-primary"
+                                                style="border-radius: 0 8px 8px 0; border: 1px solid var(--zinc-200);"
+                                                onclick="showVerificationModal()">
+                                                <i class="fas fa-envelope"></i> Verifikasi
+                                            </button>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
 
@@ -478,7 +502,8 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Konfirmasi Password</label>
-                                    <input type="password" name="confirm_password" class="form-control" minlength="6">
+                                    <input type="password" name="confirm_password" class="form-control"
+                                        minlength="6">
                                 </div>
                             </div>
 
@@ -497,9 +522,66 @@
         </div>
     </div>
 
+    <!-- Verification Modal -->
+    <div class="modal fade" id="verificationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content"
+                style="border-radius: 16px; border: none; box-shadow: 0 20px 60px rgba(0,0,0,0.15);">
+                <div class="modal-header" style="border-bottom: 1px solid var(--zinc-100); padding: 20px 24px;">
+                    <h5 class="modal-title" style="font-weight: 700; font-size: 1.1rem;">
+                        <i class="fas fa-envelope me-2" style="color: var(--corporate-blue);"></i>Verifikasi Email
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="padding: 24px;">
+                    <p style="color: var(--zinc-600); font-size: 0.95rem; margin-bottom: 20px;">
+                        Pilih salah satu opsi di bawah ini:
+                    </p>
+
+                    @if (!empty($user->email))
+                        <div class="d-grid gap-2 mb-3">
+                            <form method="POST" action="{{ url('/admin/profile/send-verification') }}">
+                                @csrf
+                                <button type="submit" class="btn btn-primary-custom w-100" style="padding: 12px;">
+                                    <i class="fas fa-paper-plane me-2"></i> Kirim Link Verifikasi ke Email Saat Ini
+                                </button>
+                            </form>
+                        </div>
+                    @endif
+
+                    <hr style="border-color: var(--zinc-200);">
+
+                    <h6 style="font-weight: 600; color: var(--zinc-700); margin-bottom: 12px;">
+                        <i class="fas fa-plus-circle me-1"></i> Buat Email Baru
+                    </h6>
+                    <form method="POST" action="{{ url('/admin/profile/update-email') }}">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label">Email Baru</label>
+                            <input type="email" name="new_email" class="form-control"
+                                placeholder="Masukkan email baru" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password <span style="color: #dc2626;">*</span></label>
+                            <input type="password" name="password" class="form-control"
+                                placeholder="Masukkan password untuk konfirmasi" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary-custom w-100" style="padding: 12px;">
+                            <i class="fas fa-save me-2"></i> Simpan Email Baru
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        function showVerificationModal() {
+            new bootstrap.Modal(document.getElementById('verificationModal')).show();
+        }
+
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('show');
             document.getElementById('sidebarOverlay').classList.toggle('show');

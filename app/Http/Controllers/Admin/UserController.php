@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\VerificationEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -64,7 +67,7 @@ class UserController extends Controller
         $request->validate([
             'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|string|min:6',
-            'email' => 'nullable|email|max:255|unique:users,email',
+            'email' => 'required|email|max:255|unique:users,email',
             'role' => 'required|in:admin,superadmin',
         ]);
 
@@ -88,6 +91,7 @@ class UserController extends Controller
             'role' => $role,
             'is_active' => true,
             'failed_attempts' => 0,
+            'email_verified_at' => null,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -96,7 +100,57 @@ class UserController extends Controller
 
         $this->logActivity($request->session()->get('user_id'), 'Tambah Admin', $username);
 
-        return redirect('/admin/manage-users')->with('success', 'Admin berhasil ditambahkan!');
+        return redirect('/admin/manage-users')->with('success', 'Admin berhasil ditambahkan! Silakan kirim link verifikasi ke email admin.');
+    }
+
+    public function sendVerification(Request $request)
+    {
+        if (!$request->session()->has('user_id')) {
+            return redirect('/login');
+        }
+
+        // Only superadmin can send verification
+        if ($request->session()->get('role') !== 'superadmin') {
+            return redirect('/admin/manage-users')->with('error', 'Hanya superadmin yang dapat mengirim verifikasi.');
+        }
+
+        $targetId = (int) $request->query('verify');
+        $targetUser = DB::table('users')->where('id', $targetId)->first();
+
+        if (!$targetUser) {
+            return redirect('/admin/manage-users')->with('error', 'User tidak ditemukan.');
+        }
+
+        if ($targetUser->email_verified_at) {
+            return redirect('/admin/manage-users')->with('error', 'Email user ini sudah terverifikasi.');
+        }
+
+        if (empty($targetUser->email)) {
+            return redirect('/admin/manage-users')->with('error', 'User ini belum memiliki email.');
+        }
+
+        // Generate token
+        $token = Str::random(60);
+
+        // Simpan token
+        DB::table('users')->where('id', $targetId)->update([
+            'email_verified_token' => $token,
+            'updated_at' => now(),
+        ]);
+
+        // Buat link verifikasi
+        $verificationUrl = url('/verify-email/' . $token);
+
+        try {
+            // Kirim email verifikasi
+            Mail::to($targetUser->email)->send(new VerificationEmail($verificationUrl, $targetUser->username));
+
+            $this->logActivity($request->session()->get('user_id'), 'Kirim Verifikasi', 'Mengirim verifikasi email ke ' . $targetUser->username);
+
+            return redirect('/admin/manage-users')->with('success', 'Link verifikasi berhasil dikirim ke email ' . $targetUser->email);
+        } catch (\Exception $e) {
+            return redirect('/admin/manage-users')->with('error', 'Gagal mengirim email: ' . $e->getMessage());
+        }
     }
 
     public function update(Request $request)
