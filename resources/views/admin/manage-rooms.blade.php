@@ -892,9 +892,9 @@
                                         <td><span class="room-name">{{ $room->nama_ruang }}</span></td>
                                         <td>
                                             @if ($room->foto_path)
-                                                <img src="{{ asset('uploads/rooms/' . $room->foto_path) }}"
+                                                <img src="{{ asset('storage/uploads/rooms/' . $room->foto_path) }}"
                                                     class="photo-thumb" alt="Foto {{ $room->nama_ruang }}"
-                                                    onclick="viewPhoto('{{ asset('uploads/rooms/' . $room->foto_path) }}', '{{ $room->nama_ruang }}')"
+                                                    onclick="viewPhoto('{{ asset('storage/uploads/rooms/' . $room->foto_path) }}', '{{ $room->nama_ruang }}')"
                                                     title="Klik untuk perbesar">
                                             @else
                                                 <span class="photo-none"><i class="fas fa-image"></i></span>
@@ -1182,10 +1182,10 @@
             if (room.foto_path) {
                 currentFotoDiv.innerHTML = `
                     <p style="font-size:0.8rem;color:var(--zinc-500);margin-bottom:6px;">Foto saat ini:</p>
-                    <img src="{{ asset('uploads/rooms/') }}/${room.foto_path}"
+                    <img src="{{ asset('storage/uploads/rooms/') }}/${room.foto_path}"
                          class="foto-preview"
                          alt="Foto ${room.nama_ruang}"
-                         onclick="viewPhoto('{{ asset('uploads/rooms/') }}/${room.foto_path}', '${room.nama_ruang}')"
+                         onclick="viewPhoto('{{ asset('storage/uploads/rooms/') }}/${room.foto_path}', '${room.nama_ruang}')"
                          style="cursor:pointer;">
                 `;
             } else {
@@ -1193,6 +1193,10 @@
             }
 
             document.getElementById('editFotoPreview').innerHTML = '';
+
+            // Update form action with room ID
+            const editForm = document.getElementById('editForm');
+            editForm.action = "{{ url('/admin/manage-rooms/update') }}/" + room.id;
 
             const modal = new bootstrap.Modal(document.getElementById('editModal'));
             modal.show();

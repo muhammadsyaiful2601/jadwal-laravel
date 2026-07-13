@@ -30,10 +30,16 @@ class SettingsController extends Controller
         // Check if superadmin
         $isSuperAdmin = $request->session()->get('role') === 'superadmin';
 
+        // Session timeout settings
+        $sessionTimeoutMinutes = $settings['session_timeout_minutes'] ?? 30;
+        $sessionAutoLogoutEnabled = $settings['session_auto_logout_enabled'] ?? '1';
+
         return view('admin.manage-settings', compact(
             'settings',
             'isMaintenance',
-            'isSuperAdmin'
+            'isSuperAdmin',
+            'sessionTimeoutMinutes',
+            'sessionAutoLogoutEnabled'
         ));
     }
 
@@ -62,6 +68,8 @@ class SettingsController extends Controller
             'running_text_color',
             'running_text_bg_color',
             'max_login_attempts',
+            'session_timeout_minutes',
+            'session_auto_logout_enabled',
             'header_logo_type',
             'header_title_1',
             'header_title_2',
@@ -73,6 +81,11 @@ class SettingsController extends Controller
             // Handle checkbox for running_text_enabled
             if ($key === 'running_text_enabled') {
                 $value = $request->has('running_text_enabled') ? '1' : '0';
+            }
+
+            // Handle checkbox for session_auto_logout_enabled
+            if ($key === 'session_auto_logout_enabled') {
+                $value = $request->has('session_auto_logout_enabled') ? '1' : '0';
             }
 
             DB::table('settings')->updateOrInsert(

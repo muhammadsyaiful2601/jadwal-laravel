@@ -158,10 +158,15 @@ class RoomController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id = null)
     {
         if (!$request->session()->has('user_id')) {
             return redirect('/login');
+        }
+
+        // If ID is not in route, get it from POST data
+        if (!$id) {
+            $id = $request->input('id');
         }
 
         $check = $this->checkSuperadminVerified($request);

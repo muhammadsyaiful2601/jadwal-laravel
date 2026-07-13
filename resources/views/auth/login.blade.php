@@ -664,7 +664,8 @@
                     <div class="alert-modern alert-session">
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         <strong>Sesi Berakhir!</strong><br>
-                        <small>Sesi Anda telah berakhir. Silakan login kembali untuk melanjutkan.</small>
+                        <small>Sesi Anda telah berakhir karena tidak ada aktivitas selama
+                            {{ $sessionTimeoutMinutes ?? 30 }} menit. Silakan login kembali untuk melanjutkan.</small>
                     </div>
                 @endif
 

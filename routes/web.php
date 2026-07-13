@@ -43,7 +43,7 @@ Route::post('/admin/manage-schedule/store-bulk', [ScheduleController::class, 'st
 // Room routes
 Route::get('/admin/manage-rooms', [RoomController::class, 'index']);
 Route::post('/admin/manage-rooms/store', [RoomController::class, 'store']);
-Route::post('/admin/manage-rooms/update/{id}', [RoomController::class, 'update']);
+Route::post('/admin/manage-rooms/update/{id?}', [RoomController::class, 'update']);
 Route::get('/admin/manage-rooms/delete/{id}', [RoomController::class, 'destroy']);
 Route::get('/admin/manage-rooms/delete-photo/{id}', [RoomController::class, 'deletePhoto']);
 

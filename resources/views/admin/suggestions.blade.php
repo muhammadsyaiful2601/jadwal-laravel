@@ -1035,7 +1035,7 @@
                             <table class="table-clean">
                                 <thead>
                                     <tr>
-                                        <th width="5%">#</th>
+                                        <th width="5%">No</th>
                                         <th width="18%">Pengirim</th>
                                         <th width="22%">Pesan</th>
                                         <th width="12%">Status</th>

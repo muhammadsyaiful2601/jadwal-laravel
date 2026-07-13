@@ -25,6 +25,9 @@ class LoginController extends Controller
         $maxLoginAttempts = Setting::getValue('max_login_attempts', '5');
         $initialDuration = Setting::getValue('lockout_initial_duration', '15');
 
+        // Get session timeout settings
+        $sessionTimeoutMinutes = (int) Setting::getValue('session_timeout_minutes', '30');
+
         // Get flash messages from session
         $error = session('error');
         $lockoutUsername = session('lockout_username');
@@ -39,6 +42,7 @@ class LoginController extends Controller
             'superadminExists',
             'maxLoginAttempts',
             'initialDuration',
+            'sessionTimeoutMinutes',
             'error',
             'lockoutUsername',
             'lockoutTime',

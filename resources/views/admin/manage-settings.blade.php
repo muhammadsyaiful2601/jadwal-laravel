@@ -848,6 +848,52 @@
                     </div>
                 </div>
 
+                <!-- Card 4: Session Timeout Settings -->
+                <div class="settings-card">
+                    <div class="settings-card-title">
+                        <i class="fas fa-clock"></i> Pengaturan Session & Timeout
+                    </div>
+                    <div class="form-grid-2" style="margin-bottom:20px;">
+                        <div class="form-group-custom">
+                            <label>Auto Logout Session</label>
+                            <div class="toggle-wrap">
+                                <label class="toggle-switch">
+                                    <input type="hidden" name="session_auto_logout_enabled" value="0">
+                                    <input type="checkbox" name="session_auto_logout_enabled"
+                                        id="sessionAutoLogoutEnabled" value="1"
+                                        {{ ($sessionAutoLogoutEnabled ?? '1') == '1' ? 'checked' : '' }}>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div>
+                                    <div class="toggle-label-text">Aktifkan Auto Logout</div>
+                                    <small style="color:var(--zinc-400);font-size:0.75rem;">
+                                        Logout otomatis jika tidak ada aktivitas
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Session Timeout (Menit)</label>
+                            <input type="number" name="session_timeout_minutes" class="form-control-modern"
+                                value="{{ $sessionTimeoutMinutes ?? 30 }}" min="5" max="120">
+                            <span class="form-hint">Durasi tidak aktif sebelum auto logout (5-120 menit)</span>
+                        </div>
+                    </div>
+                    <div class="form-group-custom full"
+                        style="background:var(--zinc-50);padding:16px;border-radius:10px;border:1px solid var(--zinc-200);">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                            <i class="fas fa-info-circle" style="color:var(--zinc-400);"></i>
+                            <small style="color:var(--zinc-600);font-weight:600;">Cara Kerja Session Timeout:</small>
+                        </div>
+                        <ul style="font-size:0.8rem;color:var(--zinc-500);margin:0;padding-left:20px;line-height:1.6;">
+                            <li>Setiap kali Anda bergerak atau klik di halaman, timer akan direset</li>
+                            <li>Jika tidak ada aktivitas selama batas waktu, sistem akan logout otomatis</li>
+                            <li>User akan diarahkan ke halaman login dengan pesan "Session Expired"</li>
+                            <li>Log aktivitas otomatis akan tercatat di database</li>
+                        </ul>
+                    </div>
+                </div>
+
                 <div style="display:flex;justify-content:flex-end;margin-bottom:24px;">
                     <button type="submit" name="update_settings" class="btn-primary-solid">
                         <i class="fas fa-save"></i> Simpan Pengaturan

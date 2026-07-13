@@ -314,3 +314,64 @@
         color: rgba(255, 255, 255, 0.65);
     }
 </style>
+
+<script>
+    // Session Timeout & Activity Monitor
+    (function() {
+        const SESSION_TIMEOUT_MINUTES = {{ $sessionTimeoutMinutes ?? 30 }};
+        const SESSION_AUTO_LOGOUT_ENABLED = {{ $sessionAutoLogoutEnabled ?? '1' }} === '1';
+        const WARNING_BEFORE_LOGOUT = 60;
+        let timeoutWarningShown = false;
+        let logoutTimer;
+        let warningTimer;
+
+        function resetSessionTimer() {
+            if (!SESSION_AUTO_LOGOUT_ENABLED) return;
+            clearTimeout(logoutTimer);
+            clearTimeout(warningTimer);
+            timeoutWarningShown = false;
+
+            const timeoutMs = SESSION_TIMEOUT_MINUTES * 60 * 1000;
+            const warningMs = timeoutMs - (WARNING_BEFORE_LOGOUT * 1000);
+
+            warningTimer = setTimeout(showTimeoutWarning, warningMs);
+            logoutTimer = setTimeout(autoLogout, timeoutMs);
+        }
+
+        function showTimeoutWarning() {
+            if (timeoutWarningShown) return;
+            timeoutWarningShown = true;
+
+            const minutes = Math.floor(WARNING_BEFORE_LOGOUT / 60);
+            const seconds = WARNING_BEFORE_LOGOUT % 60;
+
+            if (confirm('Session akan berakhir dalam ' + minutes + ':' + (seconds < 10 ? '0' : '') + seconds +
+                    '.\nKlik OK untuk melanjutkan session, atau Cancel untuk logout sekarang.')) {
+                resetSessionTimer();
+            }
+        }
+
+        function autoLogout() {
+            alert('Session telah berakhir karena tidak ada aktivitas. Anda akan diarahkan ke halaman login.');
+            window.location.href = '/login?expired=1';
+        }
+
+        const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+
+        activityEvents.forEach(function(event) {
+            document.addEventListener(event, function(e) {
+                if (e.target.closest('.modal') || e.target.closest('.dropdown-menu') || e.target
+                    .closest('select')) {
+                    return;
+                }
+                resetSessionTimer();
+            }, {
+                passive: true
+            });
+        });
+
+        if (SESSION_AUTO_LOGOUT_ENABLED) {
+            resetSessionTimer();
+        }
+    })();
+</script>

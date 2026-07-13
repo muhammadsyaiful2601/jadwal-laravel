@@ -10,40 +10,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <style>
+        /* =============================================
+               NEOBRUTALISM STYLES - Landing Page Only
+               ============================================= */
         :root {
-            --primary: #1e293b;
-            --primary-light: #334155;
-            --accent: #2563eb;
-            --accent-hover: #1d4ed8;
-            --accent-light: #dbeafe;
-            --success: #059669;
-            --success-light: #d1fae5;
-            --success-bg: #ecfdf5;
-            --warning: #d97706;
-            --warning-light: #fef3c7;
-            --warning-bg: #fffbeb;
-            --danger: #dc2626;
-            --purple: #7c3aed;
-            --purple-light: #ede9fe;
-            --purple-bg: #f5f3ff;
-            --dark: #0f172a;
-            --gray-50: #f8fafc;
-            --gray-100: #f1f5f9;
-            --gray-200: #e2e8f0;
-            --gray-300: #cbd5e1;
-            --gray-400: #94a3b8;
-            --gray-500: #64748b;
-            --gray-600: #475569;
-            --gray-700: #334155;
-            --gray-800: #1e293b;
-            --gray-900: #0f172a;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --nb-black: #000000;
+            --nb-white: #FFFFFF;
+            --nb-offwhite: #F8F7F4;
+            --nb-yellow: #FFE66D;
+            --nb-red: #FF6B6B;
+            --nb-teal: #4ECDC4;
+            --nb-pink: #F38181;
+            --nb-green: #95E1D3;
+            --nb-purple: #A66CFF;
+            --nb-orange: #FFB347;
+            --nb-blue: #6BB5FF;
+            --nb-gray: #E8E8E8;
+            --nb-dark: #1A1A2E;
+            --nb-border: 3px solid #000;
+            --nb-border-thick: 4px solid #000;
+            --nb-shadow: 6px 6px 0px #000;
+            --nb-shadow-sm: 4px 4px 0px #000;
+            --nb-shadow-lg: 8px 8px 0px #000;
+            --nb-shadow-hover: 10px 10px 0px #000;
+            --nb-radius: 12px;
+            --nb-radius-sm: 8px;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
         }
 
         * {
@@ -53,15 +50,13 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--gray-50);
-            color: var(--gray-900);
+            font-family: var(--font-body);
+            background: var(--nb-offwhite);
+            color: var(--nb-black);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
-            font-weight: 400;
         }
 
-        /* Maintenance Mode */
         body.maintenance-active {
             overflow: hidden;
         }
@@ -72,8 +67,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 9999;
             display: flex;
             align-items: center;
@@ -82,44 +76,45 @@
         }
 
         .maintenance-content {
-            background: white;
-            border-radius: 16px;
+            background: var(--nb-yellow);
+            border: var(--nb-border-thick);
+            border-radius: var(--nb-radius);
             padding: 48px;
             text-align: center;
             max-width: 480px;
             width: 100%;
-            box-shadow: var(--shadow-xl);
+            box-shadow: var(--nb-shadow-lg);
             animation: slideUp 0.5s ease;
         }
 
         .maintenance-icon {
             font-size: 4rem;
-            color: var(--warning);
+            color: var(--nb-black);
             margin-bottom: 24px;
             animation: spin 3s linear infinite;
         }
 
         .maintenance-content h2 {
+            font-family: var(--font-display);
             font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 16px;
             font-size: 1.75rem;
+            margin-bottom: 16px;
         }
 
         .maintenance-message {
-            color: var(--gray-600);
             margin-bottom: 24px;
             line-height: 1.6;
+            font-weight: 500;
         }
 
         .maintenance-info {
-            background: var(--gray-50);
+            background: var(--nb-black);
+            color: var(--nb-white);
             padding: 12px 24px;
-            border-radius: 8px;
+            border-radius: var(--nb-radius-sm);
             display: inline-block;
-            color: var(--gray-600);
             font-size: 0.875rem;
-            border: 1px solid var(--gray-200);
+            border: 2px solid var(--nb-black);
         }
 
         @keyframes slideUp {
@@ -140,15 +135,15 @@
             }
         }
 
-        /* Header - Clean App Header */
+        /* Header - Neobrutalism App Header */
         .app-header {
-            background: white;
-            border-bottom: 1px solid var(--gray-200);
+            background: var(--nb-white);
+            border-bottom: var(--nb-border);
             padding: 20px 0;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .header-container {
@@ -181,28 +176,34 @@
             height: 56px;
             width: auto;
             object-fit: contain;
+            border: 2px solid var(--nb-black);
+            border-radius: var(--nb-radius-sm);
+            padding: 4px;
+            background: var(--nb-white);
         }
 
         .institution-info h1 {
+            font-family: var(--font-display);
             font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--gray-900);
+            font-weight: 700;
+            color: var(--nb-black);
             margin: 0;
             line-height: 1.2;
+            text-transform: uppercase;
             letter-spacing: -0.02em;
         }
 
         .institution-info h2 {
             font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--gray-600);
+            font-weight: 600;
+            color: var(--nb-dark);
             margin: 4px 0 0 0;
         }
 
         .institution-info .institution-sub {
             font-size: 0.8125rem;
-            font-weight: 600;
-            color: var(--accent);
+            font-weight: 700;
+            color: var(--nb-black);
             margin: 6px 0 0 0;
             display: flex;
             align-items: center;
@@ -211,8 +212,15 @@
             flex-wrap: wrap;
         }
 
+        .institution-info .institution-sub span {
+            background: var(--nb-yellow);
+            padding: 2px 8px;
+            border: 2px solid var(--nb-black);
+            border-radius: 4px;
+        }
+
         .institution-info .institution-divider {
-            color: var(--gray-300);
+            color: var(--nb-black);
             font-weight: 400;
         }
 
@@ -223,25 +231,28 @@
 
         .btn-reset {
             padding: 10px 20px;
-            border: 1.5px solid var(--gray-300);
-            background: white;
-            color: var(--gray-700);
-            border-radius: 8px;
-            font-weight: 600;
+            border: var(--nb-border);
+            background: var(--nb-white);
+            color: var(--nb-black);
+            border-radius: var(--nb-radius-sm);
+            font-weight: 700;
             font-size: 0.875rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .btn-reset:hover {
-            background: var(--gray-50);
-            border-color: var(--gray-400);
-            color: var(--gray-900);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .btn-reset:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
         }
 
         /* Main Container */
@@ -251,14 +262,14 @@
             padding: 32px 24px;
         }
 
-        /* Filter Section - Interactive Control Panel */
+        /* Filter Section - Neobrutalism Control Panel */
         .filter-section {
-            background: white;
-            border-radius: 16px;
+            background: var(--nb-yellow);
+            border: var(--nb-border-thick);
+            border-radius: var(--nb-radius);
             padding: 28px;
             margin-bottom: 32px;
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--gray-200);
+            box-shadow: var(--nb-shadow);
         }
 
         .filter-header {
@@ -267,13 +278,14 @@
             align-items: center;
             margin-bottom: 24px;
             padding-bottom: 20px;
-            border-bottom: 1px solid var(--gray-100);
+            border-bottom: 3px dashed var(--nb-black);
         }
 
         .filter-title {
-            font-size: 1.125rem;
+            font-family: var(--font-display);
+            font-size: 1.25rem;
             font-weight: 700;
-            color: var(--gray-900);
+            color: var(--nb-black);
             margin: 0;
             display: flex;
             align-items: center;
@@ -281,20 +293,21 @@
         }
 
         .filter-title i {
-            color: var(--accent);
             font-size: 1.25rem;
         }
 
         .filter-meta {
             font-size: 0.875rem;
-            color: var(--gray-600);
+            font-weight: 600;
             margin-top: 4px;
-            font-weight: 400;
         }
 
         .filter-meta strong {
-            color: var(--gray-900);
-            font-weight: 600;
+            background: var(--nb-black);
+            color: var(--nb-white);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
         }
 
         .filter-actions {
@@ -304,38 +317,48 @@
 
         .btn-filter-action {
             padding: 10px 18px;
-            border-radius: 8px;
-            font-weight: 600;
+            border-radius: var(--nb-radius-sm);
+            font-weight: 700;
             font-size: 0.875rem;
             cursor: pointer;
-            transition: all 0.2s ease;
-            border: none;
+            transition: all 0.15s ease;
+            border: var(--nb-border);
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            box-shadow: var(--nb-shadow-sm);
+            font-family: var(--font-display);
         }
 
         .btn-primary-action {
-            background: var(--accent);
-            color: white;
+            background: var(--nb-teal);
+            color: var(--nb-black);
         }
 
         .btn-primary-action:hover {
-            background: var(--accent-hover);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .btn-primary-action:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
         }
 
         .btn-outline-action {
-            background: white;
-            color: var(--gray-700);
-            border: 1.5px solid var(--gray-300);
+            background: var(--nb-white);
+            color: var(--nb-black);
         }
 
         .btn-outline-action:hover {
-            background: var(--gray-50);
-            border-color: var(--gray-400);
-            color: var(--gray-900);
+            background: var(--nb-gray);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .btn-outline-action:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
         }
 
         .filter-group {
@@ -347,9 +370,10 @@
         }
 
         .filter-label {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--gray-700);
+            font-family: var(--font-display);
+            font-size: 0.9375rem;
+            font-weight: 700;
+            color: var(--nb-black);
             margin-bottom: 12px;
             display: flex;
             align-items: center;
@@ -357,7 +381,6 @@
         }
 
         .filter-label i {
-            color: var(--accent);
             font-size: 1rem;
         }
 
@@ -369,29 +392,34 @@
 
         .filter-pill {
             padding: 10px 18px;
-            border-radius: 100px;
-            border: none;
-            background: var(--gray-100);
-            color: var(--gray-700);
-            font-weight: 500;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            background: var(--nb-white);
+            color: var(--nb-black);
+            font-weight: 600;
             font-size: 0.875rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .filter-pill:hover {
-            background: var(--gray-200);
-            color: var(--gray-900);
-            transform: translateY(-1px);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .filter-pill:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
         }
 
         .filter-pill.active {
-            background: var(--accent);
-            color: white;
-            box-shadow: var(--shadow-md);
+            background: var(--nb-black);
+            color: var(--nb-white);
+            box-shadow: var(--nb-shadow);
         }
 
         .filter-pill i {
@@ -411,9 +439,10 @@
         }
 
         .section-title {
+            font-family: var(--font-display);
             font-size: 1.25rem;
-            font-weight: 800;
-            color: var(--gray-900);
+            font-weight: 700;
+            color: var(--nb-black);
             margin: 0;
             display: flex;
             align-items: center;
@@ -421,15 +450,14 @@
         }
 
         .section-title i {
-            color: var(--accent);
             font-size: 1.5rem;
         }
 
         .section-subtitle {
             font-size: 0.875rem;
-            color: var(--gray-600);
+            font-weight: 500;
             margin-top: 4px;
-            font-weight: 400;
+            color: var(--nb-dark);
         }
 
         .section-actions {
@@ -440,23 +468,26 @@
         .btn-icon {
             width: 40px;
             height: 40px;
-            border-radius: 8px;
-            border: 1.5px solid var(--gray-300);
-            background: white;
-            color: var(--gray-700);
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            background: var(--nb-white);
+            color: var(--nb-black);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .btn-icon:hover {
-            background: var(--gray-50);
-            border-color: var(--gray-400);
-            color: var(--gray-900);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .btn-icon:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
         }
 
         .current-next-grid {
@@ -465,57 +496,90 @@
             gap: 24px;
         }
 
+        /* =============================================
+               3D CARD - Neobrutalism Schedule Card
+               ============================================= */
         .schedule-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--gray-200);
+            background: var(--nb-dark);
+            border: var(--nb-border-thick);
+            border-radius: var(--nb-radius);
             position: relative;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--nb-shadow);
+            transform-style: preserve-3d;
+            perspective: 1000px;
         }
 
         .schedule-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-xl);
+            transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateY(-6px);
+            box-shadow: var(--nb-shadow-hover);
         }
 
-        .schedule-card.accent-left::before {
+        /* 3D depth layers */
+        .schedule-card::before {
             content: '';
             position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 8px;
-            background: var(--purple);
+            top: 4px;
+            left: 4px;
+            right: -4px;
+            bottom: -4px;
+            background: var(--nb-black);
+            border-radius: var(--nb-radius);
+            z-index: -1;
+            transition: all 0.3s ease;
         }
 
-        .schedule-card.accent-green::before {
+        .schedule-card:hover::before {
+            top: 8px;
+            left: 8px;
+            right: -8px;
+            bottom: -8px;
+        }
+
+        /* Accent left border */
+        .schedule-card.accent-left::after {
             content: '';
             position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 8px;
-            background: var(--success);
+            left: -4px;
+            top: 16px;
+            bottom: 16px;
+            width: 12px;
+            background: var(--nb-purple);
+            border: 2px solid var(--nb-black);
+            border-radius: 4px;
+            z-index: 2;
+        }
+
+        .schedule-card.accent-green::after {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 16px;
+            bottom: 16px;
+            width: 12px;
+            background: var(--nb-green);
+            border: 2px solid var(--nb-black);
+            border-radius: 4px;
+            z-index: 2;
         }
 
         .schedule-card-header {
             padding: 24px;
-            border-bottom: 1px solid var(--gray-100);
+            border-bottom: var(--nb-border);
         }
 
         .schedule-card-header.primary-bg {
-            background: var(--primary);
-            color: white;
+            background: var(--nb-purple);
+            color: var(--nb-white);
         }
 
         .schedule-card-header.success-bg {
-            background: var(--success);
-            color: white;
+            background: var(--nb-green);
+            color: var(--nb-black);
         }
 
         .schedule-card-title {
+            font-family: var(--font-display);
             font-size: 1.125rem;
             font-weight: 700;
             margin: 0;
@@ -534,13 +598,16 @@
             justify-content: center;
             align-items: center;
             min-height: 280px;
+            background: var(--nb-dark);
+            border-radius: 0 0 var(--nb-radius) var(--nb-radius);
         }
 
         .empty-state-icon {
             width: 80px;
             height: 80px;
-            background: var(--accent-light);
-            border-radius: 50%;
+            background: var(--nb-yellow);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -549,21 +616,23 @@
 
         .empty-state-icon i {
             font-size: 2.5rem;
-            color: var(--accent);
+            color: var(--nb-black);
         }
 
         .empty-state-title {
+            font-family: var(--font-display);
             font-size: 1.125rem;
             font-weight: 700;
-            color: var(--gray-900);
             margin-bottom: 8px;
+            color: var(--nb-white);
         }
 
         .empty-state-text {
             font-size: 0.875rem;
-            color: var(--gray-600);
+            font-weight: 500;
             text-align: center;
             max-width: 280px;
+            color: var(--nb-white);
         }
 
         .current-schedule-content {
@@ -578,18 +647,24 @@
         }
 
         .schedule-time-badge .time-number {
+            font-family: var(--font-display);
             font-size: 3.5rem;
             font-weight: 900;
             line-height: 1;
-            color: var(--gray-900);
+            color: var(--nb-yellow);
             letter-spacing: -0.03em;
+            text-shadow: 3px 3px 0 var(--nb-black);
         }
 
         .schedule-time-badge .time-label {
             font-size: 0.875rem;
-            color: var(--gray-600);
+            font-weight: 600;
             margin-top: 8px;
-            font-weight: 500;
+            background: var(--nb-yellow);
+            color: var(--nb-black);
+            padding: 4px 12px;
+            border-radius: 4px;
+            display: inline-block;
         }
 
         .schedule-details {
@@ -597,9 +672,10 @@
         }
 
         .schedule-course-name {
+            font-family: var(--font-display);
             font-size: 1.25rem;
-            font-weight: 800;
-            color: var(--gray-900);
+            font-weight: 700;
+            color: var(--nb-yellow);
             margin-bottom: 16px;
             line-height: 1.3;
         }
@@ -610,18 +686,33 @@
             gap: 10px;
             margin-bottom: 10px;
             font-size: 0.9375rem;
-            color: var(--gray-700);
+            font-weight: 600;
+            color: var(--nb-white);
+        }
+
+        .schedule-info-row span {
+            color: var(--nb-white);
         }
 
         .schedule-info-row i {
-            color: var(--accent);
             width: 18px;
             font-size: 0.9375rem;
+            background: var(--nb-yellow);
+            padding: 4px;
+            border: 2px solid var(--nb-black);
+            border-radius: 4px;
+            text-align: center;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--nb-black);
         }
 
         .schedule-info-row strong {
-            color: var(--gray-900);
-            font-weight: 600;
+            font-weight: 700;
+            color: var(--nb-yellow);
         }
 
         .badge-pill {
@@ -629,20 +720,21 @@
             align-items: center;
             gap: 6px;
             padding: 6px 14px;
-            border-radius: 100px;
+            border-radius: var(--nb-radius-sm);
             font-size: 0.8125rem;
-            font-weight: 600;
+            font-weight: 700;
             margin-top: 12px;
+            border: var(--nb-border);
         }
 
         .badge-pill.success-pill {
-            background: var(--success-bg);
-            color: var(--success);
+            background: var(--nb-green);
+            color: var(--nb-black);
         }
 
         .badge-pill.warning-pill {
-            background: var(--warning-bg);
-            color: var(--warning);
+            background: var(--nb-orange);
+            color: var(--nb-black);
         }
 
         .badge-pill i {
@@ -650,19 +742,18 @@
         }
 
         .countdown-box {
-            background: var(--gray-50);
-            border: 1px solid var(--gray-200);
-            border-radius: 12px;
+            background: var(--nb-yellow);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
             padding: 16px;
             margin-top: 16px;
         }
 
         .countdown-label {
             font-size: 0.8125rem;
-            color: var(--gray-600);
+            font-weight: 700;
             text-align: center;
             margin-bottom: 12px;
-            font-weight: 500;
         }
 
         .countdown-timer {
@@ -672,58 +763,70 @@
         }
 
         .countdown-unit {
-            background: white;
+            background: var(--nb-white);
             padding: 10px 14px;
-            border-radius: 8px;
-            border: 1px solid var(--gray-200);
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
             text-align: center;
             min-width: 60px;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .countdown-unit .countdown-value {
+            font-family: var(--font-display);
             font-size: 1.25rem;
             font-weight: 800;
-            color: var(--gray-900);
+            color: var(--nb-black);
             line-height: 1;
         }
 
         .countdown-unit .countdown-text {
             font-size: 0.6875rem;
-            color: var(--gray-600);
+            font-weight: 600;
             margin-top: 4px;
-            font-weight: 500;
         }
 
+        /* =============================================
+               3D Detail Button
+               ============================================= */
         .btn-detail-modern {
             padding: 10px 20px;
-            border: 1.5px solid var(--accent);
-            background: white;
-            color: var(--accent);
-            border-radius: 100px;
-            font-weight: 600;
+            border: var(--nb-border);
+            background: var(--nb-white);
+            color: var(--nb-black);
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
+            font-weight: 700;
             font-size: 0.875rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             margin-top: 16px;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .btn-detail-modern:hover {
-            background: var(--accent);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+            background: var(--nb-black);
+            color: var(--nb-white);
+            transform: translate(-3px, -3px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .btn-detail-modern:active {
+            transform: translate(3px, 3px);
+            box-shadow: none;
         }
 
         /* Info Box */
         .info-box {
-            background: var(--accent-light);
-            border-left: 4px solid var(--accent);
-            border-radius: 12px;
+            background: var(--nb-teal);
+            border: var(--nb-border-thick);
+            border-radius: var(--nb-radius);
             padding: 16px 20px;
             margin-top: 24px;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .info-box-content {
@@ -733,7 +836,6 @@
         }
 
         .info-box-icon {
-            color: var(--accent);
             font-size: 1.25rem;
             margin-top: 2px;
         }
@@ -743,9 +845,9 @@
         }
 
         .info-box-title {
-            font-size: 0.8125rem;
-            font-weight: 600;
-            color: var(--gray-600);
+            font-family: var(--font-display);
+            font-size: 0.875rem;
+            font-weight: 700;
             margin-bottom: 8px;
         }
 
@@ -760,17 +862,29 @@
             align-items: center;
             gap: 6px;
             font-size: 0.875rem;
-            color: var(--gray-700);
+            font-weight: 500;
         }
 
         .info-tag i {
-            color: var(--accent);
             font-size: 0.875rem;
+            background: var(--nb-white);
+            padding: 3px;
+            border: 2px solid var(--nb-black);
+            border-radius: 4px;
+            text-align: center;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .info-tag strong {
-            color: var(--gray-900);
-            font-weight: 600;
+            font-weight: 700;
+            background: var(--nb-black);
+            color: var(--nb-white);
+            padding: 1px 6px;
+            border-radius: 3px;
         }
 
         /* Schedule List Section */
@@ -786,74 +900,102 @@
         }
 
         .schedule-count-badge {
-            background: var(--primary);
-            color: white;
+            background: var(--nb-black);
+            color: var(--nb-white);
             padding: 8px 16px;
-            border-radius: 100px;
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
             font-size: 0.875rem;
-            font-weight: 600;
+            font-weight: 700;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            border: var(--nb-border);
         }
 
         .schedule-list-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            gap: 20px;
+            gap: 24px;
         }
 
+        /* =============================================
+               3D CARD - Schedule List Card
+               ============================================= */
         .schedule-list-card {
-            background: white;
-            border-radius: 12px;
+            background: var(--nb-dark);
+            border: var(--nb-border-thick);
+            border-radius: var(--nb-radius);
             padding: 20px;
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--gray-200);
             display: flex;
             gap: 16px;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            box-shadow: var(--nb-shadow);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .schedule-list-card::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: -4px;
+            bottom: -4px;
+            background: var(--nb-black);
+            border-radius: var(--nb-radius);
+            z-index: -1;
+            transition: all 0.3s ease;
         }
 
         .schedule-list-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--accent);
+            transform: perspective(1000px) rotateX(3deg) rotateY(-3deg) translateY(-6px) scale(1.02);
+            box-shadow: var(--nb-shadow-hover);
+        }
+
+        .schedule-list-card:hover::before {
+            top: 8px;
+            left: 8px;
+            right: -8px;
+            bottom: -8px;
         }
 
         .schedule-list-card.active {
-            border-color: var(--success);
-            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+            background: var(--nb-green);
         }
 
         .schedule-time-box {
-            background: var(--gray-100);
-            border: 1px solid var(--gray-200);
-            border-radius: 10px;
+            background: var(--nb-yellow);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
             padding: 12px 16px;
             text-align: center;
             min-width: 90px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .schedule-time-box .time-start {
+            font-family: var(--font-display);
             font-size: 0.875rem;
             font-weight: 700;
-            color: var(--gray-900);
+            color: var(--nb-black);
         }
 
         .schedule-time-box .time-separator {
             font-size: 0.75rem;
-            color: var(--gray-500);
+            font-weight: 700;
             margin: 4px 0;
         }
 
         .schedule-time-box .time-end {
+            font-family: var(--font-display);
             font-size: 0.875rem;
             font-weight: 700;
-            color: var(--gray-900);
+            color: var(--nb-black);
         }
 
         .schedule-content {
@@ -861,9 +1003,10 @@
         }
 
         .schedule-course {
+            font-family: var(--font-display);
             font-size: 1.0625rem;
             font-weight: 700;
-            color: var(--gray-900);
+            color: var(--nb-white);
             margin-bottom: 10px;
             line-height: 1.3;
         }
@@ -880,31 +1023,51 @@
             align-items: center;
             gap: 8px;
             font-size: 0.875rem;
-            color: var(--gray-600);
+            font-weight: 500;
+            color: var(--nb-white);
         }
 
         .schedule-meta-item i {
-            color: var(--accent);
             width: 16px;
             font-size: 0.875rem;
+            color: var(--nb-black);
+            background: var(--nb-yellow);
+            padding: 3px;
+            border: 2px solid var(--nb-black);
+            border-radius: 4px;
+            text-align: center;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .schedule-meta-item a {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 500;
+            font-weight: 700;
+            color: var(--nb-white);
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 2px;
         }
 
         .schedule-meta-item a:hover {
-            text-decoration: underline;
+            background: var(--nb-yellow);
+            color: var(--nb-black);
+        }
+
+        .schedule-meta-item span {
+            color: var(--nb-white);
+            font-weight: 600;
         }
 
         /* Footer */
         .app-footer {
-            background: white;
-            border-top: 1px solid var(--gray-200);
+            background: var(--nb-black);
+            color: var(--nb-white);
             padding: 48px 0 24px;
             margin-top: 64px;
+            border-top: 4px solid var(--nb-black);
         }
 
         .footer-container {
@@ -921,9 +1084,10 @@
         }
 
         .footer-section h5 {
-            font-size: 1rem;
+            font-family: var(--font-display);
+            font-size: 1.125rem;
             font-weight: 700;
-            color: var(--gray-900);
+            color: var(--nb-yellow);
             margin-bottom: 16px;
             display: flex;
             align-items: center;
@@ -931,7 +1095,6 @@
         }
 
         .footer-section h5 i {
-            color: var(--accent);
             font-size: 1.125rem;
         }
 
@@ -941,69 +1104,76 @@
             gap: 10px;
             margin-bottom: 10px;
             font-size: 0.9375rem;
-            color: var(--gray-700);
+            font-weight: 500;
+            color: var(--nb-gray);
         }
 
         .footer-info-item i {
-            color: var(--accent);
             width: 18px;
             font-size: 0.9375rem;
+            color: var(--nb-yellow);
         }
 
         .footer-bottom {
             text-align: center;
             padding-top: 24px;
-            border-top: 1px solid var(--gray-200);
+            border-top: 2px dashed var(--nb-dark);
         }
 
         .btn-suggestion {
             padding: 12px 24px;
-            background: var(--gray-100);
-            color: var(--gray-700);
-            border: 1.5px solid var(--gray-300);
-            border-radius: 100px;
-            font-weight: 600;
+            background: var(--nb-yellow);
+            color: var(--nb-black);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
+            font-weight: 700;
             font-size: 0.9375rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             display: inline-flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 16px;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .btn-suggestion:hover {
-            background: var(--gray-200);
-            border-color: var(--gray-400);
-            color: var(--gray-900);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+            transform: translate(-3px, -3px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .btn-suggestion:active {
+            transform: translate(3px, 3px);
+            box-shadow: none;
         }
 
         .footer-copyright {
             font-size: 0.875rem;
-            color: var(--gray-700);
             font-weight: 600;
             margin-bottom: 4px;
+            color: var(--nb-gray);
         }
 
         .footer-version {
             font-size: 0.8125rem;
-            color: var(--gray-600);
+            font-weight: 500;
+            color: var(--nb-gray);
         }
 
         /* Mobile Sidebar */
         .sidebar-filter {
             position: fixed;
             top: 0;
-            left: -300px;
-            width: 300px;
+            left: -320px;
+            width: 320px;
             height: 100vh;
-            background: white;
+            background: var(--nb-white);
             z-index: 1050;
             transition: left 0.3s ease;
-            box-shadow: var(--shadow-xl);
+            box-shadow: var(--nb-shadow-lg);
             overflow-y: auto;
+            border-right: var(--nb-border-thick);
         }
 
         .sidebar-filter.show {
@@ -1016,7 +1186,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 23, 42, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             z-index: 1049;
             display: none;
         }
@@ -1026,44 +1196,69 @@
         }
 
         .sidebar-header {
-            background: var(--primary);
-            color: white;
+            background: var(--nb-black);
+            color: var(--nb-white);
             padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: var(--nb-border);
         }
 
         .sidebar-header h5 {
+            font-family: var(--font-display);
             margin: 0;
             font-weight: 700;
+        }
+
+        .btn-close-white {
+            filter: brightness(0) invert(1);
         }
 
         .sidebar-body {
             padding: 20px;
         }
 
+        .sidebar-body h6 {
+            font-family: var(--font-display);
+            font-weight: 700;
+        }
+
         .sidebar-footer {
             position: sticky;
             bottom: 0;
-            background: white;
+            background: var(--nb-white);
             padding: 16px 20px;
-            border-top: 1px solid var(--gray-200);
+            border-top: var(--nb-border);
         }
 
         .filter-toggle-btn {
-            background: var(--accent) !important;
-            color: white !important;
-            border: none !important;
-            padding: 10px 20px !important;
-            border-radius: 100px !important;
-            font-weight: 600 !important;
+            background: var(--nb-black) !important;
+            color: var(--nb-white) !important;
+            border: var(--nb-border) !important;
+            padding: 12px 20px !important;
+            border-radius: var(--nb-radius-sm) !important;
+            font-family: var(--font-display) !important;
+            font-weight: 700 !important;
+            box-shadow: var(--nb-shadow-sm) !important;
         }
 
         .filter-toggle-btn:hover {
-            background: var(--accent-hover) !important;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
+            transform: translate(-2px, -2px) !important;
+            box-shadow: var(--nb-shadow) !important;
+        }
+
+        .filter-toggle-btn:active {
+            transform: translate(2px, 2px) !important;
+            box-shadow: none !important;
+        }
+
+        /* =============================================
+               3D Tilt - JS Powered
+               ============================================= */
+        .tilt-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.2s ease;
         }
 
         /* Responsive */
@@ -1161,9 +1356,25 @@
             }
         }
 
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
         .schedule-card,
         .schedule-list-card {
-            animation: fadeInUp 0.4s ease;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .schedule-card:nth-child(2) {
+            animation-delay: 0.1s;
         }
     </style>
 </head>
@@ -1186,7 +1397,7 @@
         </div>
     @endif
 
-    <!-- Header - Clean App Header -->
+    <!-- Header - Neobrutalism App Header -->
     <header class="app-header">
         <div class="header-container">
             <div class="header-content">
@@ -1198,7 +1409,7 @@
                 <div class="institution-info">
                     <h1>{{ $headerTitle1 ?? $institusiNama }}</h1>
                     <h2>{{ $headerTitle2 ?? $institusiLokasi }}</h2>
-                    <p class="institution-sub">{{ $programStudi }}<span class="institution-divider">|</span>Tahun
+                    <p class="institution-sub">{{ $programStudi }}<span class="institution-divider"> | </span>Tahun
                         Akademik {{ $tahunAkademik }}</p>
                 </div>
                 <div class="logo-section">
@@ -1256,7 +1467,8 @@
                         </button>
                     </div>
                 @else
-                    <div class="alert alert-warning">
+                    <div class="alert alert-warning"
+                        style="background: var(--nb-orange); border: var(--nb-border); border-radius: var(--nb-radius-sm); color: var(--nb-black); font-weight: 600;">
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         Tidak ada kelas tersedia
                     </div>
@@ -1338,7 +1550,8 @@
                         </button>
                     </div>
                 @else
-                    <div class="alert alert-warning">
+                    <div class="alert alert-warning"
+                        style="background: var(--nb-orange); border: var(--nb-border); border-radius: var(--nb-radius-sm); color: var(--nb-black); font-weight: 600;">
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         Tidak ada kelas tersedia untuk semester {{ $semesterAktif }}
                     </div>
@@ -1349,9 +1562,9 @@
         <!-- Running Text / Marquee -->
         @if (($runningTextEnabled ?? '0') == '1' && !empty($runningTextContent))
             <div class="running-text-bar"
-                style="background-color: {{ $runningTextBgColor ?? '#4361ee' }}; color: {{ $runningTextColor ?? '#ffffff' }}; border-radius: 12px; overflow: hidden; margin-bottom: 28px;">
+                style="background: {{ $runningTextBgColor ?? '#1A1A2E' }}; color: {{ $runningTextColor ?? '#FFE66D' }}; border-radius: var(--nb-radius-sm); border: var(--nb-border); overflow: hidden; margin-bottom: 28px;">
                 <marquee behavior="scroll" direction="left"
-                    style="display: block; padding: 14px 20px; font-weight: 600; font-size: 0.95rem; width: 100%;"
+                    style="display: block; padding: 14px 20px; font-weight: 700; font-size: 0.95rem; width: 100%; font-family: 'Space Grotesk', sans-serif;"
                     @if (($runningTextSpeed ?? 'normal') == 'slow') scrollamount="3"
                     @elseif(($runningTextSpeed ?? 'normal') == 'fast') scrollamount="8"
                     @else scrollamount="5" @endif>
@@ -1387,7 +1600,7 @@
             <div id="currentScheduleContent">
                 <div class="current-next-grid">
                     <!-- Card Kiri: Jadwal Berlangsung -->
-                    <div class="schedule-card accent-green">
+                    <div class="schedule-card accent-green tilt-3d" data-tilt>
                         <div class="schedule-card-header success-bg">
                             <h5 class="schedule-card-title">
                                 <i class="fas fa-play-circle"></i>
@@ -1445,7 +1658,7 @@
                     </div>
 
                     <!-- Card Kanan: Jadwal Berikutnya -->
-                    <div class="schedule-card accent-left">
+                    <div class="schedule-card accent-left tilt-3d" data-tilt>
                         <div class="schedule-card-header primary-bg">
                             <div
                                 style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
@@ -1615,7 +1828,8 @@
             </div>
 
             @if (empty($jadwal))
-                <div class="schedule-card" style="text-align: center; padding: 60px 20px;">
+                <div class="schedule-card"
+                    style="text-align: center; padding: 60px 20px; background: var(--nb-dark);">
                     <div class="empty-state-icon" style="margin: 0 auto 20px;">
                         <i class="fas fa-calendar-times"></i>
                     </div>
@@ -1632,11 +1846,11 @@
                     @if (isset($jadwalPerHari[$hari]) && count($jadwalPerHari[$hari]) > 0)
                         <div class="mb-4">
                             <h4 class="mb-3"
-                                style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); display: flex; align-items: center; gap: 10px;">
-                                <i class="fas fa-calendar-day" style="color: var(--accent);"></i>
+                                style="font-family: 'Space Grotesk', sans-serif; font-size: 1.125rem; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-calendar-day" style="font-size: 1.25rem;"></i>
                                 {{ $hari }}
                                 <span class="badge-pill"
-                                    style="background: var(--gray-100); color: var(--gray-700); margin-left: 8px;">
+                                    style="background: var(--nb-black); color: var(--nb-white); border: var(--nb-border); margin-left: 8px; font-size: 0.8125rem;">
                                     {{ count($jadwalPerHari[$hari]) }} Jadwal
                                 </span>
                             </h4>
@@ -1650,7 +1864,8 @@
                                             }
                                         }
                                     @endphp
-                                    <div class="schedule-list-card {{ $isCurrent ? 'active' : '' }}">
+                                    <div class="schedule-list-card {{ $isCurrent ? 'active' : '' }} tilt-3d"
+                                        data-tilt>
                                         <div class="schedule-time-box">
                                             <div class="time-start">
                                                 {{ explode(' - ', $item['waktu'])[0] ?? $item['waktu'] }}</div>
@@ -1706,7 +1921,7 @@
                                 }
                             }
                         @endphp
-                        <div class="schedule-list-card {{ $isCurrent ? 'active' : '' }}">
+                        <div class="schedule-list-card {{ $isCurrent ? 'active' : '' }} tilt-3d" data-tilt>
                             <div class="schedule-time-box">
                                 <div class="time-start">{{ explode(' - ', $item['waktu'])[0] ?? $item['waktu'] }}
                                 </div>
@@ -1821,23 +2036,25 @@
     <!-- Modal Foto Ruangan -->
     <div class="modal fade room-photo-modal" id="roomPhotoModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content" style="border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-xl);">
-                <div class="modal-header" style="background: var(--primary); color: white; border-bottom: none;">
-                    <h5 class="modal-title">
+            <div class="modal-content"
+                style="border: var(--nb-border-thick); border-radius: var(--nb-radius); overflow: hidden; box-shadow: var(--nb-shadow-lg);">
+                <div class="modal-header"
+                    style="background: var(--nb-black); color: var(--nb-white); border-bottom: var(--nb-border);">
+                    <h5 class="modal-title" style="font-family: 'Space Grotesk', sans-serif; font-weight: 700;">
                         <i class="fas fa-door-open me-2"></i> Foto Ruangan
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" style="padding: 0; text-align: center;">
                     <div class="room-photo-container" id="roomPhotoContainer"
-                        style="min-height: 300px; background: var(--gray-50); display: flex; align-items: center; justify-content: center;">
-                        <div class="room-photo-placeholder" style="padding: 60px 20px; color: var(--gray-400);">
+                        style="min-height: 300px; background: var(--nb-offwhite); display: flex; align-items: center; justify-content: center;">
+                        <div class="room-photo-placeholder" style="padding: 60px 20px; color: var(--nb-dark);">
                             <i class="fas fa-image d-block" style="font-size: 4rem; margin-bottom: 16px;"></i>
                             <p class="mb-0">Memuat foto...</p>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer" style="border-top: 1px solid var(--gray-200);">
+                <div class="modal-footer" style="border-top: var(--nb-border); background: var(--nb-offwhite);">
                     <button type="button" class="btn btn-outline-action" data-bs-dismiss="modal">
                         <i class="fas fa-times me-2"></i> Tutup
                     </button>
@@ -1850,16 +2067,17 @@
     <div class="modal fade" id="scheduleModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content"
-                style="border: none; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-xl);">
-                <div class="modal-header" style="background: var(--primary); color: white; border-bottom: none;">
-                    <h5 class="modal-title">
+                style="border: var(--nb-border-thick); border-radius: var(--nb-radius); overflow: hidden; box-shadow: var(--nb-shadow-lg);">
+                <div class="modal-header"
+                    style="background: var(--nb-black); color: var(--nb-white); border-bottom: var(--nb-border);">
+                    <h5 class="modal-title" style="font-family: 'Space Grotesk', sans-serif; font-weight: 700;">
                         <i class="fas fa-info-circle me-2"></i> Detail Jadwal
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4" id="scheduleDetail">
                 </div>
-                <div class="modal-footer" style="border-top: 1px solid var(--gray-200);">
+                <div class="modal-footer" style="border-top: var(--nb-border); background: var(--nb-offwhite);">
                     <button type="button" class="btn btn-outline-action" data-bs-dismiss="modal">
                         <i class="fas fa-times me-2"></i> Tutup
                     </button>
@@ -1872,9 +2090,10 @@
     <div class="modal fade" id="suggestionModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content"
-                style="border: none; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-xl);">
-                <div class="modal-header" style="background: var(--primary); color: white; border-bottom: none;">
-                    <h5 class="modal-title">
+                style="border: var(--nb-border-thick); border-radius: var(--nb-radius); overflow: hidden; box-shadow: var(--nb-shadow-lg);">
+                <div class="modal-header"
+                    style="background: var(--nb-black); color: var(--nb-white); border-bottom: var(--nb-border);">
+                    <h5 class="modal-title" style="font-family: 'Space Grotesk', sans-serif; font-weight: 700;">
                         <i class="fas fa-comment-dots me-2"></i> Kritik & Saran
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -1882,48 +2101,48 @@
                 <form id="suggestionForm" method="POST" action="{{ url('/submit-suggestion') }}">
                     @csrf
                     <div class="modal-body p-4">
-                        <p class="text-muted mb-4">
+                        <p class="mb-4" style="font-weight: 500;">
                             Sampaikan kritik dan saran Anda untuk perbaikan sistem jadwal kuliah.
                             Semua masukan akan sangat berarti bagi kami.
                         </p>
 
                         <div class="mb-3">
                             <label for="suggestionName" class="form-label"
-                                style="font-weight: 600; color: var(--gray-900);">
+                                style="font-family: 'Space Grotesk', sans-serif; font-weight: 700;">
                                 Nama <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control" id="suggestionName" name="name"
                                 placeholder="Masukkan nama Anda" required
-                                style="border-radius: 8px; border: 1.5px solid var(--gray-300); padding: 10px 14px;">
+                                style="border-radius: var(--nb-radius-sm); border: var(--nb-border); padding: 10px 14px;">
                         </div>
 
                         <div class="mb-3">
                             <label for="suggestionEmail" class="form-label"
-                                style="font-weight: 600; color: var(--gray-900);">
+                                style="font-family: 'Space Grotesk', sans-serif; font-weight: 700;">
                                 Email (opsional)
                             </label>
                             <input type="email" class="form-control" id="suggestionEmail" name="email"
                                 placeholder="nama@email.com"
-                                style="border-radius: 8px; border: 1.5px solid var(--gray-300); padding: 10px 14px;">
+                                style="border-radius: var(--nb-radius-sm); border: var(--nb-border); padding: 10px 14px;">
                             <small class="text-muted">Email hanya digunakan untuk follow up jika diperlukan</small>
                         </div>
 
                         <div class="mb-3">
                             <label for="suggestionMessage" class="form-label"
-                                style="font-weight: 600; color: var(--gray-900);">
+                                style="font-family: 'Space Grotesk', sans-serif; font-weight: 700;">
                                 Kritik & Saran <span class="text-danger">*</span>
                             </label>
                             <textarea class="form-control" id="suggestionMessage" name="message" rows="5"
                                 placeholder="Tuliskan kritik dan saran Anda di sini..." required
-                                style="border-radius: 8px; border: 1.5px solid var(--gray-300); padding: 10px 14px;"></textarea>
+                                style="border-radius: var(--nb-radius-sm); border: var(--nb-border); padding: 10px 14px;"></textarea>
                             <small class="text-muted">Minimal 10 karakter</small>
                         </div>
 
-                        <div class="info-box">
+                        <div class="info-box" style="background: var(--nb-yellow);">
                             <div class="info-box-content">
-                                <i class="fas fa-info-circle info-box-icon"></i>
+                                <i class="fas fa-info-circle info-box-icon" style="font-size: 1.25rem;"></i>
                                 <div class="info-box-text">
-                                    <small class="text-muted">
+                                    <small style="font-weight: 500;">
                                         Kritik dan saran Anda akan langsung masuk ke sistem dan dapat dilihat oleh
                                         admin.
                                         Tidak perlu login untuk mengirimkan kritik dan saran.
@@ -1932,7 +2151,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer" style="border-top: 1px solid var(--gray-200);">
+                    <div class="modal-footer" style="border-top: var(--nb-border); background: var(--nb-offwhite);">
                         <button type="button" class="btn btn-outline-action" data-bs-dismiss="modal">
                             <i class="fas fa-times me-2"></i> Batal
                         </button>
@@ -2050,8 +2269,8 @@
                 img.style.objectFit = "contain";
                 img.onerror = function() {
                     photoContainer.innerHTML = `
-                        <div class="room-photo-placeholder">
-                            <i class="fas fa-image d-block" style="font-size: 4rem; margin-bottom: 16px; color: var(--gray-400);"></i>
+                        <div class="room-photo-placeholder" style="padding: 60px 20px; color: var(--nb-dark);">
+                            <i class="fas fa-image d-block" style="font-size: 4rem; margin-bottom: 16px;"></i>
                             <p class="mb-0">Foto tidak tersedia</p>
                         </div>
                     `;
@@ -2060,8 +2279,8 @@
                 photoContainer.appendChild(img);
             } else {
                 photoContainer.innerHTML = `
-                    <div class="room-photo-placeholder">
-                        <i class="fas fa-image d-block" style="font-size: 4rem; margin-bottom: 16px; color: var(--gray-400);"></i>
+                    <div class="room-photo-placeholder" style="padding: 60px 20px; color: var(--nb-dark);">
+                        <i class="fas fa-image d-block" style="font-size: 4rem; margin-bottom: 16px;"></i>
                         <p class="mb-0">Foto tidak tersedia</p>
                     </div>
                 `;
@@ -2079,44 +2298,44 @@
             detail.innerHTML = `
                 <div class="row">
                     <div class="col-md-6">
-                        <h4 class="mb-3" style="color: var(--gray-900); font-weight: 800; font-size: 1.5rem;">${data.mata_kuliah}</h4>
+                        <h4 class="mb-3" style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.5rem;">${data.mata_kuliah}</h4>
                         <table class="table table-borderless">
                             <tr>
-                                <td style="width: 140px;"><i class="fas fa-clock me-2" style="color: var(--accent);"></i>Waktu</td>
+                                <td style="width: 140px;"><i class="fas fa-clock me-2" style="background: var(--nb-yellow); padding: 3px; border: 2px solid #000; border-radius: 4px; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center;"></i>Waktu</td>
                                 <td><strong>${data.waktu}</strong></td>
                             </tr>
                             <tr>
-                                <td><i class="fas fa-list-ol me-2" style="color: var(--accent);"></i>Jam ke-</td>
+                                <td><i class="fas fa-list-ol me-2" style="background: var(--nb-yellow); padding: 3px; border: 2px solid #000; border-radius: 4px; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center;"></i>Jam ke-</td>
                                 <td><strong>${data.jam_ke}</strong></td>
                             </tr>
                             <tr>
-                                <td><i class="fas fa-user-tie me-2" style="color: var(--accent);"></i>Dosen</td>
+                                <td><i class="fas fa-user-tie me-2" style="background: var(--nb-yellow); padding: 3px; border: 2px solid #000; border-radius: 4px; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center;"></i>Dosen</td>
                                 <td><strong>${data.dosen}</strong></td>
                             </tr>
                             <tr>
-                                <td><i class="fas fa-door-open me-2" style="color: var(--accent);"></i>Ruang</td>
+                                <td><i class="fas fa-door-open me-2" style="background: var(--nb-yellow); padding: 3px; border: 2px solid #000; border-radius: 4px; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center;"></i>Ruang</td>
                                 <td><strong>${data.ruang}</strong></td>
                             </tr>
                             <tr>
-                                <td><i class="fas fa-users me-2" style="color: var(--accent);"></i>Kelas</td>
+                                <td><i class="fas fa-users me-2" style="background: var(--nb-yellow); padding: 3px; border: 2px solid #000; border-radius: 4px; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center;"></i>Kelas</td>
                                 <td><strong>${data.kelas}</strong></td>
                             </tr>
                             <tr>
-                                <td><i class="fas fa-calendar-day me-2" style="color: var(--accent);"></i>Hari</td>
+                                <td><i class="fas fa-calendar-day me-2" style="background: var(--nb-yellow); padding: 3px; border: 2px solid #000; border-radius: 4px; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center;"></i>Hari</td>
                                 <td><strong>${data.hari}</strong></td>
                             </tr>
                             <tr>
-                                <td><i class="fas fa-calendar-alt me-2" style="color: var(--accent);"></i>Semester</td>
+                                <td><i class="fas fa-calendar-alt me-2" style="background: var(--nb-yellow); padding: 3px; border: 2px solid #000; border-radius: 4px; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center;"></i>Semester</td>
                                 <td><strong>${data.semester} ${data.tahun_akademik}</strong></td>
                             </tr>
                         </table>
                     </div>
                     <div class="col-md-6">
-                        <div class="card" style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 12px;">
+                        <div class="card" style="background: var(--nb-yellow); border: var(--nb-border); border-radius: var(--nb-radius); box-shadow: var(--nb-shadow-sm);">
                             <div class="card-body text-center py-5">
-                                <div class="display-1 fw-bold mb-3" style="color: var(--accent); font-size: 4rem; font-weight: 900;">${data.jam_ke}</div>
-                                <h6 class="text-muted">Jam ke-${data.jam_ke}</h6>
-                                <span class="badge-pill success-pill mt-2" style="font-size: 0.875rem;">
+                                <div class="display-1 fw-bold mb-3" style="font-family: 'Space Grotesk', sans-serif; color: var(--nb-black); font-size: 4rem; font-weight: 900; text-shadow: 3px 3px 0 rgba(0,0,0,0.1);">${data.jam_ke}</div>
+                                <h6 style="font-weight: 600;">Jam ke-${data.jam_ke}</h6>
+                                <span class="badge-pill success-pill mt-2" style="font-size: 0.875rem; background: var(--nb-black); color: var(--nb-white);">
                                     <i class="fas fa-clock"></i> ${data.waktu}
                                 </span>
                             </div>
@@ -2127,8 +2346,42 @@
             bootstrapModal.show();
         }
 
+        // =============================================
+        // 3D TILT EFFECT - Vanilla JS
+        // =============================================
+        function initTiltEffect() {
+            const tiltElements = document.querySelectorAll('.tilt-3d');
+
+            tiltElements.forEach(el => {
+                el.addEventListener('mousemove', (e) => {
+                    const rect = el.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const rotateX = ((y - centerY) / centerY) * -8;
+                    const rotateY = ((x - centerX) / centerX) * 8;
+
+                    el.style.setProperty('--rotate-x', rotateX + 'deg');
+                    el.style.setProperty('--rotate-y', rotateY + 'deg');
+
+                    el.style.transform =
+                        `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
+                });
+
+                el.addEventListener('mouseleave', () => {
+                    el.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+                });
+            });
+        }
+
         // Initialize on DOM ready
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize 3D tilt
+            initTiltEffect();
+
             // Detail buttons
             document.querySelectorAll('.btn-detail-modern').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -2163,16 +2416,6 @@
             if (waktuTungguDetik > 0) {
                 startCountdownTimer();
             }
-
-            // Update current time badge every minute
-            setInterval(() => {
-                const now = new Date();
-                const currentTime = now.toLocaleTimeString('id-ID', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false
-                });
-            }, 60000);
 
             // Suggestion form handler
             $('#suggestionForm').on('submit', function(e) {

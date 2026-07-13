@@ -1205,15 +1205,6 @@
             });
         @endif
 
-        function editSchedule(data) {
-            // Placeholder - the original editSchedule JS function is in the modals
-            if (typeof window.editScheduleOriginal === 'function') {
-                window.editScheduleOriginal(data);
-            } else {
-                console.log('Edit schedule:', data);
-            }
-        }
-
         // Auto-hide notifications
         setTimeout(function() {
             const container = document.getElementById('notification-container');
