@@ -7,27 +7,36 @@
     <title>Maintenance - Admin Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --canvas-bg: #f1f5f9;
-            --card-bg: #ffffff;
-            --card-radius: 16px;
-            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.05);
-            --card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.08);
-            --corporate-blue: #1d4ed8;
-            --corporate-blue-hover: #1e3a8a;
-            --zinc-900: #18181b;
-            --zinc-800: #27272a;
-            --zinc-700: #3f3f46;
-            --zinc-600: #52525b;
-            --zinc-500: #71717a;
-            --zinc-400: #a1a1aa;
-            --zinc-300: #d4d4d8;
-            --zinc-200: #e4e4e7;
-            --zinc-100: #f4f4f5;
-            --zinc-50: #fafafa;
+            --nb-black: #000000;
+            --nb-white: #FFFFFF;
+            --nb-offwhite: #F8F7F4;
+            --nb-yellow: #FFE66D;
+            --nb-red: #FF6B6B;
+            --nb-teal: #4ECDC4;
+            --nb-pink: #F38181;
+            --nb-green: #95E1D3;
+            --nb-purple: #A66CFF;
+            --nb-orange: #FFB347;
+            --nb-blue: #6BB5FF;
+            --nb-gray: #E8E8E8;
+            --nb-dark: #1A1A2E;
+            --nb-border: 3px solid #000;
+            --nb-border-thick: 4px solid #000;
+            --nb-shadow: 6px 6px 0px #000;
+            --nb-shadow-sm: 4px 4px 0px #000;
+            --nb-shadow-lg: 8px 8px 0px #000;
+            --nb-shadow-hover: 10px 10px 0px #000;
+            --nb-radius: 12px;
+            --nb-radius-sm: 8px;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
         }
 
         * {
@@ -37,10 +46,13 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--canvas-bg);
+            font-family: var(--font-body);
+            background: var(--nb-offwhite);
+            color: var(--nb-black);
+            line-height: 1.6;
             min-height: 100vh;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         .main-content {
@@ -51,15 +63,16 @@
 
         /* Top Bar */
         .top-bar {
-            background: var(--card-bg);
+            background: var(--nb-white);
             padding: 16px 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid var(--zinc-100);
+            border-bottom: var(--nb-border);
             position: sticky;
             top: 0;
             z-index: 500;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .top-bar-left {
@@ -70,20 +83,36 @@
 
         .top-bar-toggle {
             display: none;
-            background: none;
-            border: none;
+            background: var(--nb-white);
+            border: var(--nb-border);
             font-size: 1.2rem;
-            color: var(--zinc-600);
+            color: var(--nb-black);
             cursor: pointer;
-            padding: 4px;
+            padding: 8px 12px;
+            border-radius: var(--nb-radius-sm);
+            box-shadow: var(--nb-shadow-sm);
+            transition: all 0.15s ease;
+        }
+
+        .top-bar-toggle:hover {
+            background: var(--nb-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .top-bar-toggle:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
         }
 
         .top-bar-left h4 {
-            font-size: 1.2rem;
+            font-family: var(--font-display);
+            font-size: 1.3rem;
             font-weight: 700;
-            color: var(--zinc-800);
+            color: var(--nb-black);
             margin-bottom: 0;
             letter-spacing: -0.3px;
+            text-transform: uppercase;
         }
 
         .top-bar-right {
@@ -93,29 +122,33 @@
         }
 
         .top-bar-date {
+            font-family: var(--font-display);
             font-size: 0.85rem;
-            color: var(--zinc-500);
-            font-weight: 500;
+            color: var(--nb-dark);
+            font-weight: 600;
         }
 
         .top-bar-right .dropdown-toggle {
-            background: var(--zinc-50);
-            border: 1px solid var(--zinc-200);
-            border-radius: 10px;
-            padding: 8px 16px;
+            background: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 10px 16px;
+            font-family: var(--font-body);
             font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--zinc-700);
+            font-weight: 600;
+            color: var(--nb-black);
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
             transition: all 0.15s ease;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .top-bar-right .dropdown-toggle:hover {
-            background: var(--zinc-100);
-            border-color: var(--zinc-300);
+            background: var(--nb-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
         .top-bar-right .dropdown-toggle::after {
@@ -123,47 +156,61 @@
         }
 
         .top-bar-right .dropdown-menu {
-            border-radius: 12px;
-            border: 1px solid var(--zinc-200);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-            padding: 6px;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow);
+            padding: 8px;
             min-width: 180px;
+            background: var(--nb-white);
         }
 
         .top-bar-right .dropdown-item {
-            border-radius: 8px;
-            padding: 8px 12px;
+            border-radius: var(--nb-radius-sm);
+            padding: 10px 14px;
+            font-family: var(--font-body);
             font-size: 0.85rem;
-            color: var(--zinc-700);
+            font-weight: 600;
+            color: var(--nb-black);
             display: flex;
             align-items: center;
             gap: 10px;
+            transition: all 0.15s ease;
         }
 
         .top-bar-right .dropdown-item:hover {
-            background: var(--zinc-50);
+            background: var(--nb-yellow);
+            color: var(--nb-black);
+        }
+
+        .top-bar-right .dropdown-item.text-danger {
+            color: var(--nb-red);
         }
 
         .top-bar-right .dropdown-item.text-danger:hover {
-            background: #fef2f2;
+            background: var(--nb-red);
+            color: var(--nb-white);
         }
 
         .top-bar-right .dropdown-divider {
             margin: 4px 0;
-            border-color: var(--zinc-100);
+            border-color: var(--nb-gray);
         }
 
         .maintenance-badge-top {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: #fef2f2;
-            color: #b91c1c;
+            background: var(--nb-red);
+            color: var(--nb-white);
+            font-family: var(--font-display);
             font-size: 0.75rem;
-            font-weight: 600;
-            padding: 4px 12px;
-            border-radius: 20px;
-            border: 1px solid #fecaca;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .content-wrapper {
@@ -175,129 +222,205 @@
         }
 
         .page-title-section h4 {
-            font-size: 1.3rem;
+            font-family: var(--font-display);
+            font-size: 1.5rem;
             font-weight: 700;
-            color: var(--zinc-800);
-            margin-bottom: 4px;
+            color: var(--nb-black);
+            margin-bottom: 6px;
             letter-spacing: -0.3px;
+            text-transform: uppercase;
         }
 
         .page-title-section p {
-            font-size: 0.88rem;
-            color: var(--zinc-500);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            color: var(--nb-dark);
             margin-bottom: 0;
+            font-weight: 500;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: var(--nb-yellow);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius);
+            padding: 18px 22px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            box-shadow: var(--nb-shadow);
+        }
+
+        .info-box i {
+            color: var(--nb-black);
+            font-size: 1.2rem;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .info-box strong {
+            font-family: var(--font-display);
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--nb-black);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-family: var(--font-body);
+            font-size: 0.82rem;
+            color: var(--nb-black);
+            margin-bottom: 0;
+            font-weight: 600;
+            margin-top: 4px;
         }
 
         /* Cards */
         .card {
-            background: var(--card-bg);
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
-            border: 1px solid rgba(0, 0, 0, 0.02);
-            margin-bottom: 20px;
+            background: var(--nb-white);
+            border-radius: var(--nb-radius);
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: var(--nb-border);
+            background: var(--nb-purple);
+        }
+
+        .card-header h5 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--nb-white);
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .card-body {
             padding: 24px;
+            background: var(--nb-white);
         }
 
-        /* Table Card */
-        .table-card {
-            background: var(--card-bg);
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
-            border: 1px solid rgba(0, 0, 0, 0.02);
-            margin-bottom: 28px;
-        }
-
-        .table-card-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--zinc-100);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .table-card-header h5 {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--zinc-800);
-            margin-bottom: 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .table-card-header h5 i {
-            color: var(--zinc-400);
-            font-size: 0.9rem;
-        }
-
-        .table-card-body {
-            padding: 0;
-        }
-
-        .info-box {
-            background: #eff6ff;
-            border: 1px solid #dbeafe;
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin-bottom: 20px;
-        }
-
-        .info-box i {
-            color: var(--corporate-blue);
-        }
-
+        /* Buttons */
         .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.875rem;
-            border: none;
+            padding: 12px 24px;
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 700;
+            border: var(--nb-border);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            font-family: 'Inter', sans-serif;
+            box-shadow: var(--nb-shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .btn-primary-custom {
-            background: var(--corporate-blue);
-            color: white;
+            background: var(--nb-purple);
+            color: var(--nb-white);
         }
 
         .btn-primary-custom:hover {
-            background: var(--corporate-blue-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.15);
+            background: var(--nb-pink);
+            color: var(--nb-black);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .btn-primary-custom:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary-custom {
+            background: var(--nb-white);
+            color: var(--nb-black);
+        }
+
+        .btn-secondary-custom:hover {
+            background: var(--nb-gray);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .btn-secondary-custom:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
 
         .btn-danger-custom {
-            background: #dc2626;
-            color: white;
+            background: var(--nb-red);
+            color: var(--nb-white);
         }
 
         .btn-danger-custom:hover {
-            background: #b91c1c;
+            background: var(--nb-red);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
+        /* Forms */
+        .form-label {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--nb-black);
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 12px 16px;
+            font-family: var(--font-body);
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--nb-black);
+            background: var(--nb-white);
+            transition: all 0.2s ease;
+            box-shadow: var(--nb-shadow-sm);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--nb-black);
+            box-shadow: var(--nb-shadow);
+            transform: translate(-2px, -2px);
+        }
+
+        /* Toggle Switch */
         .toggle-switch {
             position: relative;
             width: 48px;
             height: 24px;
-            background: #cbd5e1;
+            background: var(--nb-gray);
             border-radius: 24px;
             cursor: pointer;
             transition: all 0.3s ease;
+            border: var(--nb-border);
+            flex-shrink: 0;
         }
 
         .toggle-switch.active {
-            background: #16a34a;
+            background: var(--nb-green);
         }
 
         .toggle-switch::after {
@@ -305,16 +428,18 @@
             position: absolute;
             width: 20px;
             height: 20px;
-            background: white;
+            background: var(--nb-white);
             border-radius: 50%;
             top: 2px;
             left: 2px;
             transition: all 0.3s ease;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--nb-shadow-sm);
+            border: 2px solid var(--nb-black);
         }
 
         .toggle-switch.active::after {
             left: 26px;
+            background: var(--nb-white);
         }
 
         .status-indicator {
@@ -322,19 +447,27 @@
             align-items: center;
             gap: 8px;
             padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 600;
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 700;
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .status-online {
-            background: #d1fae5;
-            color: #059669;
+            background: var(--nb-green);
+            color: var(--nb-black);
         }
 
         .status-offline {
-            background: #fee2e2;
-            color: #dc2626;
+            background: var(--nb-red);
+            color: var(--nb-white);
+        }
+
+        hr {
+            border-color: var(--nb-gray);
+            opacity: 1;
         }
 
         /* Responsive */
@@ -386,6 +519,27 @@
     @include('components.admin.sidebar')
 
     <div class="main-content">
+        @if (session('success') || session('error') || session('info'))
+            <div id="notification-container"
+                style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;">
+                @if (session('success'))
+                    <div class="alert-flash success" style="margin-bottom: 10px;">
+                        <i class="fas fa-check-circle"></i> {{ session('success') }}
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="alert-flash error" style="margin-bottom: 10px;">
+                        <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+                    </div>
+                @endif
+                @if (session('info'))
+                    <div class="alert-flash info" style="margin-bottom: 10px;">
+                        <i class="fas fa-info-circle"></i> {{ session('info') }}
+                    </div>
+                @endif
+            </div>
+        @endif
+
         <header class="top-bar">
             <div class="top-bar-left">
                 <button class="top-bar-toggle" onclick="toggleSidebar()">
@@ -405,6 +559,8 @@
                         <i class="fas fa-chevron-down" style="font-size:0.7rem; opacity:0.6;"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{{ url('/admin/dashboard') }}"><i
+                                    class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                         <li><a class="dropdown-item" href="{{ url('/admin/profile') }}"><i class="fas fa-user"></i>
                                 Profile</a></li>
                         <li>
@@ -437,149 +593,108 @@
                         <strong>Informasi:</strong>
                         <p class="mb-0" style="font-size: 0.875rem;">Saat mode maintenance aktif, aplikasi akan
                             menampilkan halaman maintenance kepada semua pengguna kecuali admin. Fitur meliputi
-                            penjadwalan
-                            backup database, pembersihan cache/log, dan pengaturan timeout sesi.</p>
+                            penjadwalan backup database, pembersihan cache/log, dan pengaturan timeout sesi.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="table-card">
-                <div class="table-card-header">
+            <div class="card">
+                <div class="card-header">
                     <h5><i class="fas fa-database"></i> Backup Database</h5>
                 </div>
-                <div class="table-card-body">
-                    <div style="padding: 24px;">
-                        <p style="font-size: 0.875rem; color: var(--zinc-600); margin-bottom: 16px;">Backup database
-                            untuk menyimpan
-                            data penting.</p>
+                <div class="card-body">
+                    <p style="font-size: 0.875rem; color: var(--nb-dark); margin-bottom: 16px; font-weight: 500;">
+                        Backup database untuk menyimpan data penting.</p>
 
-                        <div class="d-flex gap-2 flex-wrap">
-                            <form method="POST" action="{{ url('/admin/maintenance/backup') }}" class="d-inline">
-                                @csrf
-                                @if ($superadminVerified)
-                                    <button type="submit" class="btn btn-primary-custom">
-                                        <i class="fas fa-download me-1"></i> Backup Sekarang
-                                    </button>
-                                @else
-                                    <button type="button" class="btn btn-primary-custom" disabled
-                                        style="opacity:0.4;cursor:not-allowed;">
-                                        <i class="fas fa-download me-1"></i> Backup Sekarang
-                                    </button>
-                                @endif
-                            </form>
-                            <button class="btn btn-secondary-custom" disabled>
-                                <i class="fas fa-history me-1"></i> Lihat Riwayat Backup
-                            </button>
-                        </div>
-
-                        <hr class="my-4">
-
-                        <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem;"><i
-                                class="fas fa-broom me-2"></i>Pembersihan Data</h5>
-                        <p style="font-size: 0.875rem; color: var(--zinc-600); margin-bottom: 16px;">Hapus cache, log,
-                            dan data
-                            sementara untuk mengoptimalkan kinerja aplikasi.</p>
-
-                        <div class="d-flex gap-2 flex-wrap">
-                            <form method="POST" action="{{ url('/admin/maintenance/clear-cache') }}" class="d-inline">
-                                @csrf
-                                @if ($superadminVerified)
-                                    <button type="submit" class="btn btn-primary-custom">
-                                        <i class="fas fa-broom me-1"></i> Clear Cache
-                                    </button>
-                                @else
-                                    <button type="button" class="btn btn-primary-custom" disabled
-                                        style="opacity:0.4;cursor:not-allowed;">
-                                        <i class="fas fa-broom me-1"></i> Clear Cache
-                                    </button>
-                                @endif
-                            </form>
-                            <form method="POST" action="{{ url('/admin/maintenance/clear-logs') }}" class="d-inline">
-                                @csrf
-                                @if ($superadminVerified)
-                                    <button type="submit" class="btn btn-primary-custom">
-                                        <i class="fas fa-file-alt me-1"></i> Clear Logs
-                                    </button>
-                                @else
-                                    <button type="button" class="btn btn-primary-custom" disabled
-                                        style="opacity:0.4;cursor:not-allowed;">
-                                        <i class="fas fa-file-alt me-1"></i> Clear Logs
-                                    </button>
-                                @endif
-                            </form>
-                        </div>
-
-                        <hr class="my-4">
-
-                        <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem;"><i
-                                class="fas fa-clock me-2"></i>Pengaturan Sesi</h5>
-                        <p style="font-size: 0.875rem; color: var(--zinc-600); margin-bottom: 16px;">Atur batas waktu
-                            sesi login
-                            untuk keamanan.</p>
-
-                        <form method="POST" action="{{ url('/admin/maintenance/session') }}" class="d-inline">
-                            @csrf
-                            <div class="row align-items-end">
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label">Timeout Sesi (menit)</label>
-                                    <input type="number" name="session_timeout" class="form-control"
-                                        value="{{ $settings['session_timeout'] ?? 60 }}" min="5"
-                                        max="480">
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    @if ($superadminVerified)
-                                        <button type="submit" class="btn btn-primary-custom">
-                                            <i class="fas fa-save me-1"></i> Simpan
-                                        </button>
-                                    @else
-                                        <button type="button" class="btn btn-primary-custom" disabled
-                                            style="opacity:0.4;cursor:not-allowed;">
-                                            <i class="fas fa-save me-1"></i> Simpan
-                                        </button>
-                                    @endif
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-
-                        <hr class="my-4">
-
-                        <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem;"><i
-                                class="fas fa-cog me-2"></i>Mode Maintenance</h5>
-                        <p style="font-size: 0.875rem; color: var(--zinc-600); margin-bottom: 16px;">Aktifkan atau
-                            nonaktifkan mode
-                            maintenance.</p>
-
-                        <form method="POST" action="{{ url('/admin/maintenance/toggle') }}" id="maintenanceForm">
-                            @csrf
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="toggle-switch {{ $isMaintenance ? 'active' : '' }}"
-                                    id="maintenanceToggle" style="cursor: pointer;" tabindex="0" role="switch"
-                                    aria-checked="{{ $isMaintenance ? 'true' : 'false' }}"></div>
-                                <span
-                                    class="status-indicator {{ $isMaintenance ? 'status-offline' : 'status-online' }}"
-                                    id="maintenanceStatus">
-                                    <i
-                                        class="fas {{ $isMaintenance ? 'fa-exclamation-circle' : 'fa-check-circle' }}"></i>
-                                    {{ $isMaintenance ? 'Maintenance Aktif' : 'Aplikasi Online' }}
-                                </span>
-                            </div>
-
-                            <div class="mt-3">
-                                @if ($superadminVerified)
-                                    <button type="submit" class="btn btn-primary-custom" id="applyMaintenance">
-                                        <i class="fas fa-save me-1"></i> Terapkan Perubahan
-                                    </button>
-                                @else
-                                    <button type="button" class="btn btn-primary-custom" disabled
-                                        style="opacity:0.4;cursor:not-allowed;" id="applyMaintenance">
-                                        <i class="fas fa-save me-1"></i> Terapkan Perubahan
-                                    </button>
-                                @endif
-                                </button>
-                            </div>
-                        </form>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{{ url('/admin/manage-settings/backup-database') }}" class="btn btn-primary-custom">
+                            <i class="fas fa-download me-1"></i> Backup Sekarang
+                        </a>
+                        <a href="{{ url('/admin/backup-history') }}" class="btn btn-secondary-custom">
+                            <i class="fas fa-history me-1"></i> Lihat Riwayat Backup
+                        </a>
                     </div>
+
+                    <hr class="my-4">
+
+                    <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem; text-transform: uppercase;">
+                        <i class="fas fa-broom me-2"></i>Pembersihan Data
+                    </h5>
+                    <p style="font-size: 0.875rem; color: var(--nb-dark); margin-bottom: 16px; font-weight: 500;">
+                        Hapus cache, log, dan data sementara untuk mengoptimalkan kinerja aplikasi.</p>
+
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{{ url('/admin/manage-settings/clear-cache') }}" class="btn btn-primary-custom"
+                            onclick="return confirm('Yakin hapus semua cache sistem?')">
+                            <i class="fas fa-broom me-1"></i> Clear Cache
+                        </a>
+                        <a href="{{ url('/admin/manage-settings/clear-logs') }}" class="btn btn-primary-custom"
+                            onclick="return confirm('Yakin hapus semua log aktivitas?')">
+                            <i class="fas fa-file-alt me-1"></i> Clear Logs
+                        </a>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem; text-transform: uppercase;">
+                        <i class="fas fa-clock me-2"></i>Pengaturan Sesi
+                    </h5>
+                    <p style="font-size: 0.875rem; color: var(--nb-dark); margin-bottom: 16px; font-weight: 500;">
+                        Atur batas waktu sesi login untuk keamanan.</p>
+
+                    <form method="POST" action="{{ url('/admin/maintenance/session') }}" class="d-inline">
+                        @csrf
+                        <div class="d-flex gap-2 flex-wrap align-items-end">
+                            <div style="flex: 1; min-width: 200px;">
+                                <label class="form-label">Timeout Sesi (menit)</label>
+                                <input type="number" name="session_timeout" class="form-control"
+                                    value="{{ $settings['session_timeout'] ?? 60 }}" min="5" max="480">
+                            </div>
+                            @if ($superadminVerified)
+                                <button type="submit" class="btn btn-primary-custom">
+                                    <i class="fas fa-save me-1"></i> Simpan
+                                </button>
+                            @else
+                                <button type="button" class="btn btn-primary-custom" disabled>
+                                    <i class="fas fa-save me-1"></i> Simpan
+                                </button>
+                            @endif
+                        </div>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem; text-transform: uppercase;">
+                        <i class="fas fa-cog me-2"></i>Mode Maintenance
+                    </h5>
+                    <p style="font-size: 0.875rem; color: var(--nb-dark); margin-bottom: 16px; font-weight: 500;">
+                        Aktifkan atau nonaktifkan mode maintenance.</p>
+
+                    <form method="POST" action="{{ url('/admin/maintenance/toggle') }}" id="maintenanceForm">
+                        @csrf
+                        <div class="d-flex align-items-center gap-3 flex-wrap">
+                            <div class="toggle-switch {{ $isMaintenance ? 'active' : '' }}" id="maintenanceToggle"
+                                style="cursor: pointer;" tabindex="0" role="switch"
+                                aria-checked="{{ $isMaintenance ? 'true' : 'false' }}"></div>
+                            <span class="status-indicator {{ $isMaintenance ? 'status-offline' : 'status-online' }}"
+                                id="maintenanceStatus">
+                                <i class="fas {{ $isMaintenance ? 'fa-exclamation-circle' : 'fa-check-circle' }}"></i>
+                                {{ $isMaintenance ? 'Maintenance Aktif' : 'Aplikasi Online' }}
+                            </span>
+                        </div>
+
+                        <div class="mt-3">
+                            @if ($superadminVerified)
+                                <button type="submit" class="btn btn-primary-custom" id="applyMaintenance">
+                                    <i class="fas fa-save me-1"></i> Terapkan Perubahan
+                                </button>
+                            @else
+                                <button type="button" class="btn btn-primary-custom" disabled id="applyMaintenance">
+                                    <i class="fas fa-save me-1"></i> Terapkan Perubahan
+                                </button>
+                            @endif
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

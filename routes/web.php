@@ -58,7 +58,11 @@ Route::get('/admin/manage-settings', [SettingsController::class, 'index']);
 Route::post('/admin/manage-settings/update', [SettingsController::class, 'update']);
 Route::get('/admin/manage-settings/reset-data', [SettingsController::class, 'resetData']);
 Route::get('/admin/manage-settings/clear-logs', [SettingsController::class, 'clearLogs']);
+Route::get('/admin/manage-settings/clear-cache', [SettingsController::class, 'clearCache']);
 Route::get('/admin/manage-settings/backup-database', [SettingsController::class, 'backupDatabase']);
+Route::get('/admin/backup-history', [SettingsController::class, 'backupHistory']);
+Route::get('/admin/backup-history/download/{filename}', [SettingsController::class, 'downloadBackup']);
+Route::get('/admin/backup-history/delete/{filename}', [SettingsController::class, 'deleteBackup']);
 
 // User management routes
 Route::get('/admin/manage-users', [UserController::class, 'index']);

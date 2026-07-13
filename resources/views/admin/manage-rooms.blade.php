@@ -7,28 +7,37 @@
     <title>Kelola Ruangan - Admin Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
     <style>
         :root {
-            --canvas-bg: #f1f5f9;
-            --card-bg: #ffffff;
-            --card-radius: 16px;
-            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.05);
-            --card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.08);
-            --corporate-blue: #1d4ed8;
-            --corporate-blue-hover: #1e3a8a;
-            --zinc-900: #18181b;
-            --zinc-800: #27272a;
-            --zinc-700: #3f3f46;
-            --zinc-600: #52525b;
-            --zinc-500: #71717a;
-            --zinc-400: #a1a1aa;
-            --zinc-300: #d4d4d8;
-            --zinc-200: #e4e4e7;
-            --zinc-100: #f4f4f5;
-            --zinc-50: #fafafa;
+            --nb-black: #000000;
+            --nb-white: #FFFFFF;
+            --nb-offwhite: #F8F7F4;
+            --nb-yellow: #FFE66D;
+            --nb-red: #FF6B6B;
+            --nb-teal: #4ECDC4;
+            --nb-pink: #F38181;
+            --nb-green: #95E1D3;
+            --nb-purple: #A66CFF;
+            --nb-orange: #FFB347;
+            --nb-blue: #6BB5FF;
+            --nb-gray: #E8E8E8;
+            --nb-dark: #1A1A2E;
+            --nb-border: 3px solid #000;
+            --nb-border-thick: 4px solid #000;
+            --nb-shadow: 6px 6px 0px #000;
+            --nb-shadow-sm: 4px 4px 0px #000;
+            --nb-shadow-lg: 8px 8px 0px #000;
+            --nb-shadow-hover: 10px 10px 0px #000;
+            --nb-radius: 12px;
+            --nb-radius-sm: 8px;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
         }
 
         * {
@@ -38,10 +47,13 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--canvas-bg);
+            font-family: var(--font-body);
+            background: var(--nb-offwhite);
+            color: var(--nb-black);
+            line-height: 1.6;
             min-height: 100vh;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         .main-content {
@@ -52,15 +64,16 @@
 
         /* Top Bar */
         .top-bar {
-            background: var(--card-bg);
+            background: var(--nb-white);
             padding: 16px 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid var(--zinc-100);
+            border-bottom: var(--nb-border);
             position: sticky;
             top: 0;
             z-index: 500;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .top-bar-left {
@@ -71,20 +84,36 @@
 
         .top-bar-toggle {
             display: none;
-            background: none;
-            border: none;
+            background: var(--nb-white);
+            border: var(--nb-border);
             font-size: 1.2rem;
-            color: var(--zinc-600);
+            color: var(--nb-black);
             cursor: pointer;
-            padding: 4px;
+            padding: 8px 12px;
+            border-radius: var(--nb-radius-sm);
+            box-shadow: var(--nb-shadow-sm);
+            transition: all 0.15s ease;
+        }
+
+        .top-bar-toggle:hover {
+            background: var(--nb-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .top-bar-toggle:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
         }
 
         .top-bar-left h4 {
-            font-size: 1.2rem;
+            font-family: var(--font-display);
+            font-size: 1.3rem;
             font-weight: 700;
-            color: var(--zinc-800);
+            color: var(--nb-black);
             margin-bottom: 0;
             letter-spacing: -0.3px;
+            text-transform: uppercase;
         }
 
         .top-bar-right {
@@ -94,29 +123,33 @@
         }
 
         .top-bar-date {
+            font-family: var(--font-display);
             font-size: 0.85rem;
-            color: var(--zinc-500);
-            font-weight: 500;
+            color: var(--nb-dark);
+            font-weight: 600;
         }
 
         .top-bar-right .dropdown-toggle {
-            background: var(--zinc-50);
-            border: 1px solid var(--zinc-200);
-            border-radius: 10px;
-            padding: 8px 16px;
+            background: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 10px 16px;
+            font-family: var(--font-body);
             font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--zinc-700);
+            font-weight: 600;
+            color: var(--nb-black);
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
             transition: all 0.15s ease;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .top-bar-right .dropdown-toggle:hover {
-            background: var(--zinc-100);
-            border-color: var(--zinc-300);
+            background: var(--nb-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
         .top-bar-right .dropdown-toggle::after {
@@ -124,94 +157,70 @@
         }
 
         .top-bar-right .dropdown-menu {
-            border-radius: 12px;
-            border: 1px solid var(--zinc-200);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-            padding: 6px;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow);
+            padding: 8px;
             min-width: 180px;
+            background: var(--nb-white);
         }
 
         .top-bar-right .dropdown-item {
-            border-radius: 8px;
-            padding: 8px 12px;
+            border-radius: var(--nb-radius-sm);
+            padding: 10px 14px;
+            font-family: var(--font-body);
             font-size: 0.85rem;
-            color: var(--zinc-700);
+            font-weight: 600;
+            color: var(--nb-black);
             display: flex;
             align-items: center;
             gap: 10px;
+            transition: all 0.15s ease;
         }
 
         .top-bar-right .dropdown-item:hover {
-            background: var(--zinc-50);
+            background: var(--nb-yellow);
+            color: var(--nb-black);
+        }
+
+        .top-bar-right .dropdown-item.text-danger {
+            color: var(--nb-red);
         }
 
         .top-bar-right .dropdown-item.text-danger:hover {
-            background: #fef2f2;
+            background: var(--nb-red);
+            color: var(--nb-white);
         }
 
         .top-bar-right .dropdown-divider {
             margin: 4px 0;
-            border-color: var(--zinc-100);
+            border-color: var(--nb-gray);
         }
 
-        /* Content */
         .content-wrapper {
             padding: 28px 32px;
         }
 
         .page-title-section {
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
 
         .page-title-section h4 {
-            font-size: 1.3rem;
+            font-family: var(--font-display);
+            font-size: 1.5rem;
             font-weight: 700;
-            color: var(--zinc-800);
-            margin-bottom: 4px;
+            color: var(--nb-black);
+            margin-bottom: 6px;
             letter-spacing: -0.3px;
+            text-transform: uppercase;
         }
 
         .page-title-section p {
-            font-size: 0.88rem;
-            color: var(--zinc-500);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            color: var(--nb-dark);
             margin-bottom: 0;
-        }
-
-        /* Actions Bar */
-        .actions-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-            background: var(--card-bg);
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
-            padding: 18px 24px;
-            margin-bottom: 24px;
-            border: 1px solid rgba(0, 0, 0, 0.02);
-        }
-
-        .btn-primary-solid {
-            padding: 10px 22px;
-            background: var(--corporate-blue);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        .btn-primary-solid:hover {
-            background: var(--corporate-blue-hover);
-            color: white;
+            font-weight: 500;
         }
 
         /* Stats Cards */
@@ -223,17 +232,45 @@
         }
 
         .stat-card {
-            background: var(--card-bg);
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
+            background: var(--nb-white);
+            border-radius: var(--nb-radius);
+            box-shadow: var(--nb-shadow);
             padding: 22px 24px;
             transition: all 0.2s ease;
-            border: 1px solid rgba(0, 0, 0, 0.02);
+            border: var(--nb-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--nb-black);
+        }
+
+        .stat-card:nth-child(1)::before {
+            background: var(--nb-teal);
+        }
+
+        .stat-card:nth-child(2)::before {
+            background: var(--nb-green);
+        }
+
+        .stat-card:nth-child(3)::before {
+            background: var(--nb-orange);
+        }
+
+        .stat-card:nth-child(4)::before {
+            background: var(--nb-pink);
         }
 
         .stat-card:hover {
-            box-shadow: var(--card-shadow-hover);
-            transform: translateY(-2px);
+            transform: translate(-3px, -3px);
+            box-shadow: var(--nb-shadow-hover);
         }
 
         .stat-card-top {
@@ -244,93 +281,157 @@
         }
 
         .stat-card-label {
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--zinc-500);
+            font-family: var(--font-display);
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--nb-dark);
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
         }
 
         .stat-card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            border-radius: var(--nb-radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             flex-shrink: 0;
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .stat-card-icon.blue {
-            background: #eff6ff;
-            color: #1d4ed8;
+            background: var(--nb-teal);
+            color: var(--nb-black);
         }
 
         .stat-card-icon.green {
-            background: #f0fdf4;
-            color: #16a34a;
+            background: var(--nb-green);
+            color: var(--nb-black);
         }
 
         .stat-card-icon.amber {
-            background: #fffbeb;
-            color: #d97706;
+            background: var(--nb-orange);
+            color: var(--nb-black);
         }
 
         .stat-card-icon.rose {
-            background: #fff1f2;
-            color: #e11d48;
+            background: var(--nb-pink);
+            color: var(--nb-white);
         }
 
         .stat-card-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--zinc-900);
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--nb-black);
             letter-spacing: -0.5px;
             line-height: 1.2;
+            text-shadow: 3px 3px 0 var(--nb-gray);
         }
 
         .stat-card-footer {
-            margin-top: 8px;
+            margin-top: 10px;
         }
 
         .stat-card-footer small {
+            font-family: var(--font-body);
             font-size: 0.78rem;
-            color: var(--zinc-400);
+            color: var(--nb-dark);
+            font-weight: 600;
+        }
+
+        /* Actions Bar */
+        .actions-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: var(--nb-white);
+            border-radius: var(--nb-radius);
+            box-shadow: var(--nb-shadow);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            border: var(--nb-border);
+        }
+
+        .actions-bar-left {
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            color: var(--nb-dark);
+            font-weight: 600;
+        }
+
+        .actions-bar-left strong {
+            color: var(--nb-black);
+            font-weight: 700;
+        }
+
+        .btn-primary-solid {
+            padding: 12px 24px;
+            background: var(--nb-purple);
+            color: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--nb-shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary-solid:hover {
+            background: var(--nb-pink);
+            color: var(--nb-black);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
         /* Table Card */
         .table-card {
-            background: var(--card-bg);
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
-            border: 1px solid rgba(0, 0, 0, 0.02);
+            background: var(--nb-white);
+            border-radius: var(--nb-radius);
+            box-shadow: var(--nb-shadow);
+            border: var(--nb-border);
             margin-bottom: 28px;
+            overflow: hidden;
         }
 
         .table-card-header {
             padding: 20px 24px;
-            border-bottom: 1px solid var(--zinc-100);
+            border-bottom: var(--nb-border);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
+            background: var(--nb-purple);
         }
 
         .table-card-header h5 {
-            font-size: 0.95rem;
+            font-family: var(--font-display);
+            font-size: 1rem;
             font-weight: 700;
-            color: var(--zinc-800);
+            color: var(--nb-white);
             margin-bottom: 0;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .table-card-header h5 i {
-            color: var(--zinc-400);
-            font-size: 0.9rem;
+            font-size: 1rem;
         }
 
         .table-card-body {
@@ -340,101 +441,112 @@
         .table-clean {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.85rem;
+            font-family: var(--font-body);
+            font-size: 0.88rem;
         }
 
         .table-clean thead {
-            background: var(--zinc-50);
+            background: var(--nb-offwhite);
         }
 
         .table-clean thead th {
-            padding: 12px 18px;
-            font-weight: 600;
+            padding: 14px 18px;
+            font-family: var(--font-display);
+            font-weight: 700;
             font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
-            color: var(--zinc-500);
-            border-bottom: 1px solid var(--zinc-100);
+            letter-spacing: 0.5px;
+            color: var(--nb-black);
+            border-bottom: var(--nb-border);
             text-align: left;
             white-space: nowrap;
         }
 
         .table-clean tbody tr {
-            transition: background 0.12s ease;
+            transition: all 0.15s ease;
+            border-bottom: 1px solid var(--nb-gray);
         }
 
         .table-clean tbody tr:hover {
-            background: var(--zinc-50);
-        }
-
-        .table-clean tbody tr:not(:last-child) td {
-            border-bottom: 1px solid var(--zinc-100);
+            background: var(--nb-yellow);
+            transform: scale(1.01);
         }
 
         .table-clean tbody td {
-            padding: 12px 18px;
-            color: var(--zinc-700);
-            font-weight: 400;
+            padding: 14px 18px;
+            color: var(--nb-black);
+            font-weight: 500;
             vertical-align: middle;
         }
 
         .table-clean tbody tr:nth-child(even) {
-            background: rgba(0, 0, 0, 0.015);
+            background: var(--nb-offwhite);
         }
 
         .table-clean tbody tr:nth-child(even):hover {
-            background: var(--zinc-50);
+            background: var(--nb-yellow);
         }
 
         .room-name {
-            font-weight: 600;
-            color: var(--zinc-900);
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--nb-black);
         }
 
         .capacity-badge {
             display: inline-block;
-            background: #eff6ff;
-            color: #1d4ed8;
+            background: var(--nb-blue);
+            color: var(--nb-white);
+            font-family: var(--font-display);
             font-size: 0.82rem;
-            font-weight: 600;
-            padding: 3px 14px;
-            border-radius: 8px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: var(--nb-radius-sm);
+            border: 2px solid var(--nb-black);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .facility-badge {
             display: inline-block;
-            background: var(--zinc-100);
-            color: var(--zinc-600);
+            background: var(--nb-gray);
+            color: var(--nb-black);
+            font-family: var(--font-body);
             font-size: 0.72rem;
-            font-weight: 500;
-            padding: 2px 10px;
-            border-radius: 6px;
-            margin: 1px 2px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: var(--nb-radius-sm);
+            margin: 2px;
+            border: 2px solid var(--nb-black);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .facility-more {
             display: inline-block;
-            background: var(--zinc-50);
-            color: var(--zinc-500);
+            background: var(--nb-offwhite);
+            color: var(--nb-dark);
+            font-family: var(--font-display);
             font-size: 0.72rem;
-            font-weight: 500;
-            padding: 2px 10px;
-            border-radius: 6px;
-            border: 1px solid var(--zinc-200);
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: var(--nb-radius-sm);
+            border: 2px solid var(--nb-black);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .photo-thumb {
             width: 50px;
             height: 50px;
-            border-radius: 10px;
+            border-radius: var(--nb-radius-sm);
             object-fit: cover;
             cursor: pointer;
-            border: 1px solid var(--zinc-100);
-            transition: opacity 0.15s ease;
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow-sm);
+            transition: all 0.15s ease;
         }
 
         .photo-thumb:hover {
-            opacity: 0.8;
+            transform: scale(1.1);
+            box-shadow: var(--nb-shadow);
         }
 
         .photo-none {
@@ -443,10 +555,11 @@
             justify-content: center;
             width: 50px;
             height: 50px;
-            border-radius: 10px;
-            background: var(--zinc-100);
-            color: var(--zinc-400);
+            border-radius: var(--nb-radius-sm);
+            background: var(--nb-gray);
+            color: var(--nb-dark);
             font-size: 0.75rem;
+            border: var(--nb-border);
         }
 
         .action-group {
@@ -455,12 +568,12 @@
         }
 
         .action-btn {
-            width: 34px;
-            height: 34px;
-            border-radius: 8px;
-            border: 1.5px solid var(--zinc-200);
-            background: var(--card-bg);
-            color: var(--zinc-500);
+            width: 36px;
+            height: 36px;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            background: var(--nb-white);
+            color: var(--nb-black);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -468,79 +581,69 @@
             transition: all 0.15s ease;
             text-decoration: none;
             font-size: 0.85rem;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .action-btn:hover {
-            border-color: var(--corporate-blue);
-            color: var(--corporate-blue);
-            background: #f8faff;
-        }
-
-        .action-btn.danger {
-            border-color: var(--zinc-200);
-            color: var(--zinc-500);
+            background: var(--nb-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
         .action-btn.danger:hover {
-            border-color: #fca5a5;
-            color: #dc2626;
-            background: #fef2f2;
-        }
-
-        .action-btn.danger-text {
-            border-color: var(--zinc-200);
-            color: var(--zinc-500);
-            background: var(--card-bg);
-        }
-
-        .action-btn.danger-text:hover {
-            border-color: #fca5a5;
-            color: #dc2626;
-            background: #fef2f2;
+            background: var(--nb-red);
+            color: var(--nb-white);
         }
 
         /* Alert flash */
         .alert-flash {
-            border-radius: 12px;
-            border: none;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
             padding: 16px 20px;
             margin-bottom: 24px;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-family: var(--font-body);
             font-size: 0.88rem;
+            font-weight: 600;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .alert-flash.success {
-            background: #f0fdf4;
-            color: #166534;
-            border-left: 4px solid #22c55e;
+            background: var(--nb-green);
+            color: var(--nb-black);
+            border-left: 5px solid var(--nb-black);
         }
 
         .alert-flash.error {
-            background: #fef2f2;
-            color: #991b1b;
-            border-left: 4px solid #ef4444;
+            background: var(--nb-red);
+            color: var(--nb-white);
+            border-left: 5px solid var(--nb-black);
         }
 
         /* Upload box */
         .upload-box {
-            border: 2px dashed var(--zinc-200);
-            border-radius: 12px;
+            border: var(--nb-border);
+            border-radius: var(--nb-radius);
             padding: 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.15s ease;
+            background: var(--nb-offwhite);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .upload-box:hover {
-            border-color: var(--corporate-blue);
-            background: var(--zinc-50);
+            border-color: var(--nb-black);
+            background: var(--nb-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
         .upload-box i {
             font-size: 2rem;
-            color: var(--zinc-400);
+            color: var(--nb-dark);
             display: block;
             margin-bottom: 8px;
         }
@@ -550,112 +653,35 @@
             max-width: 150px;
             max-height: 150px;
             object-fit: cover;
-            border-radius: 10px;
+            border-radius: var(--nb-radius-sm);
             margin-top: 10px;
-        }
-
-        /* DataTables */
-        .dataTables_wrapper .dataTables_length {
-            padding: 14px 18px;
-            float: left;
-            font-size: 0.82rem;
-            color: var(--zinc-600);
-        }
-
-        .dataTables_wrapper .dataTables_length select {
-            padding: 4px 8px;
-            border: 1.5px solid var(--zinc-200);
-            border-radius: 8px;
-            font-size: 0.82rem;
-            font-family: 'Inter', sans-serif;
-            color: var(--zinc-700);
-            outline: none;
-            margin: 0 6px;
-        }
-
-        .dataTables_wrapper .dataTables_filter {
-            padding: 14px 18px;
-            float: right;
-            font-size: 0.82rem;
-            color: var(--zinc-600);
-        }
-
-        .dataTables_wrapper .dataTables_filter input {
-            padding: 6px 12px;
-            border: 1.5px solid var(--zinc-200);
-            border-radius: 8px;
-            font-size: 0.82rem;
-            font-family: 'Inter', sans-serif;
-            color: var(--zinc-700);
-            outline: none;
-            margin-left: 8px;
-            min-width: 180px;
-        }
-
-        .dataTables_wrapper .dataTables_filter input:focus {
-            border-color: var(--corporate-blue);
-            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
-        }
-
-        .dataTables_wrapper .dataTables_info {
-            padding: 14px 18px;
-            float: left;
-            font-size: 0.78rem;
-            color: var(--zinc-400);
-            clear: both;
-        }
-
-        .dataTables_wrapper .dataTables_paginate {
-            padding: 14px 18px;
-            float: right;
-            font-size: 0.82rem;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button {
-            padding: 6px 12px;
-            margin: 0 2px;
-            border: 1.5px solid var(--zinc-200);
-            border-radius: 8px;
-            color: var(--zinc-600);
-            cursor: pointer;
-            display: inline-block;
-            transition: all 0.15s ease;
-            background: var(--card-bg);
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-            border-color: var(--corporate-blue);
-            color: var(--corporate-blue);
-            background: #f8faff;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-            background: var(--corporate-blue);
-            border-color: var(--corporate-blue);
-            color: white !important;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-            opacity: 0.4;
-            cursor: default;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
-            border-color: var(--zinc-200);
-            color: var(--zinc-600);
-            background: var(--card-bg);
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         /* Modal */
         .modal-content-modern {
-            border-radius: 16px;
-            border: none;
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+            border-radius: var(--nb-radius);
+            border: var(--nb-border-thick);
+            box-shadow: var(--nb-shadow-lg);
         }
 
         .modal-header-modern {
             padding: 20px 24px;
-            border-bottom: 1px solid var(--zinc-100);
+            border-bottom: var(--nb-border);
+            background: var(--nb-purple);
+        }
+
+        .modal-header-modern .modal-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--nb-white);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-header-modern .btn-close {
+            filter: invert(1);
         }
 
         .modal-body-modern {
@@ -666,10 +692,65 @@
 
         .modal-footer-modern {
             padding: 16px 24px;
-            border-top: 1px solid var(--zinc-100);
+            border-top: var(--nb-border);
             display: flex;
             justify-content: flex-end;
             gap: 10px;
+        }
+
+        .btn-modal-secondary {
+            padding: 10px 20px;
+            background: var(--nb-white);
+            color: var(--nb-black);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: var(--nb-shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-modal-secondary:hover {
+            background: var(--nb-gray);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        /* Form Controls */
+        .form-control-custom {
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 10px 14px;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--nb-black);
+            background: var(--nb-white);
+            outline: none;
+            transition: all 0.15s ease;
+            width: 100%;
+            box-shadow: var(--nb-shadow-sm);
+        }
+
+        .form-control-custom:focus {
+            border-color: var(--nb-black);
+            box-shadow: var(--nb-shadow);
+            transform: translate(-2px, -2px);
+        }
+
+        .form-label-custom {
+            font-family: var(--font-display);
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--nb-black);
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         /* Sidebar Overlay */
@@ -737,12 +818,12 @@
             }
 
             .stat-card-value {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
 
             .stat-card-icon {
-                width: 36px;
-                height: 36px;
+                width: 38px;
+                height: 38px;
                 font-size: 1rem;
             }
 
@@ -756,10 +837,6 @@
 
             .top-bar-date {
                 display: none;
-            }
-
-            .dataTables_wrapper .dataTables_filter input {
-                min-width: 120px;
             }
         }
     </style>
@@ -780,14 +857,17 @@
     <div class="main-content">
         <header class="top-bar">
             <div class="top-bar-left">
-                <button class="top-bar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <button class="top-bar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <h4>Kelola Ruangan</h4>
             </div>
             <div class="top-bar-right">
                 <span class="top-bar-date"><i class="far fa-calendar-alt me-1"></i> {{ date('d F Y') }}</span>
                 <div class="dropdown">
                     <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle"></i> {{ session('username') }}
+                        <i class="fas fa-user-circle"></i>
+                        {{ session('username') }}
                         <i class="fas fa-chevron-down" style="font-size:0.7rem; opacity:0.6;"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
@@ -802,7 +882,7 @@
                             <form action="{{ url('/logout') }}" method="POST">
                                 @csrf
                                 <button type="submit" class="dropdown-item text-danger border-0 bg-transparent w-100"
-                                    style="display:flex;align-items:center;gap:10px;">
+                                    style="display:flex; align-items:center; gap:10px;">
                                     <i class="fas fa-sign-out-alt"></i> Logout
                                 </button>
                             </form>
@@ -856,8 +936,8 @@
 
             <!-- Actions Bar -->
             <div class="actions-bar">
-                <div style="font-size:0.88rem;color:var(--zinc-600);">
-                    <strong style="color:var(--zinc-800);">{{ count($rooms) }}</strong> ruangan tersedia
+                <div class="actions-bar-left">
+                    <strong>{{ count($rooms) }}</strong> ruangan tersedia
                 </div>
                 <button class="btn-primary-solid" data-bs-toggle="modal" data-bs-target="#addModal">
                     <i class="fas fa-plus"></i> Tambah Ruangan
@@ -866,29 +946,26 @@
 
             <!-- Data Table -->
             <div class="table-card">
-                <div class="table-card-header">
-                    <h5><i class="fas fa-list"></i> Daftar Ruangan</h5>
-                </div>
                 <div class="table-card-body">
                     <div style="overflow-x: auto;">
                         <table class="table-clean" id="roomsTable">
                             <thead>
                                 <tr>
-                                    <th>No</th>
+                                    <th style="width: 50px;">No</th>
                                     <th>Nama Ruangan</th>
                                     <th>Foto</th>
                                     <th>Deskripsi</th>
                                     <th>Kapasitas</th>
                                     <th>Fasilitas</th>
                                     <th>Tanggal Dibuat</th>
-                                    <th>Aksi</th>
+                                    <th style="width: 140px;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @php $no = 1; @endphp
                                 @foreach ($rooms as $room)
                                     <tr>
-                                        <td style="color:var(--zinc-400);">{{ $no++ }}</td>
+                                        <td style="color:var(--nb-dark); font-weight:600;">{{ $no++ }}</td>
                                         <td><span class="room-name">{{ $room->nama_ruang }}</span></td>
                                         <td>
                                             @if ($room->foto_path)
@@ -901,14 +978,14 @@
                                             @endif
                                         </td>
                                         <td
-                                            style="color:var(--zinc-500);max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                            style="max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--nb-dark);">
                                             {{ $room->deskripsi ?: '-' }}
                                         </td>
                                         <td>
                                             @if ($room->kapasitas > 0)
                                                 <span class="capacity-badge">{{ $room->kapasitas }}</span>
                                             @else
-                                                <span style="color:var(--zinc-400);">-</span>
+                                                <span style="color:var(--nb-dark);">-</span>
                                             @endif
                                         </td>
                                         <td style="max-width:180px;">
@@ -927,11 +1004,11 @@
                                                     <span class="facility-more">+{{ count($fasilitas) - 3 }}</span>
                                                 @endif
                                             @else
-                                                <span style="color:var(--zinc-400);">-</span>
+                                                <span style="color:var(--nb-dark);">-</span>
                                             @endif
                                         </td>
-                                        <td style="color:var(--zinc-500);">
-                                            {{ date('d/m/Y', strtotime($room->created_at)) }}</td>
+                                        <td style="font-weight:600;">{{ date('d/m/Y', strtotime($room->created_at)) }}
+                                        </td>
                                         <td>
                                             <div class="action-group">
                                                 <button class="action-btn"
@@ -940,7 +1017,7 @@
                                                 </button>
                                                 @if ($room->foto_path)
                                                     <a href="{{ url('/admin/manage-rooms/delete-photo/' . $room->id) }}"
-                                                        class="action-btn danger-text"
+                                                        class="action-btn danger"
                                                         onclick="return confirm('Yakin hapus foto ini?')"
                                                         title="Hapus Foto">
                                                         <i class="fas fa-image"></i>
@@ -971,8 +1048,8 @@
                 <form method="POST" enctype="multipart/form-data" action="{{ url('/admin/manage-rooms/store') }}">
                     @csrf
                     <div class="modal-header-modern d-flex align-items-center justify-content-between">
-                        <h5 class="modal-title" style="font-weight:700;font-size:1rem;">
-                            <i class="fas fa-plus me-2" style="color:var(--corporate-blue);"></i> Tambah Ruangan Baru
+                        <h5 class="modal-title">
+                            <i class="fas fa-plus me-2"></i> Tambah Ruangan Baru
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
@@ -980,45 +1057,34 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label
-                                        style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Nama
-                                        Ruangan <span style="color:#dc2626;">*</span></label>
-                                    <input type="text" name="nama_ruang" class="form-control" required
-                                        style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;"
+                                    <label class="form-label-custom">Nama Ruangan <span
+                                            style="color:var(--nb-red);">*</span></label>
+                                    <input type="text" name="nama_ruang" class="form-control-custom" required
                                         placeholder="Contoh: R.101, Lab. Komputer 1">
                                 </div>
                                 <div class="mb-3">
-                                    <label
-                                        style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Kapasitas</label>
-                                    <input type="number" name="kapasitas" class="form-control"
-                                        style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;"
+                                    <label class="form-label-custom">Kapasitas</label>
+                                    <input type="number" name="kapasitas" class="form-control-custom"
                                         placeholder="Jumlah maksimal orang" min="0">
                                 </div>
                                 <div class="mb-3">
-                                    <label
-                                        style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Fasilitas</label>
-                                    <textarea name="fasilitas" class="form-control" rows="2"
-                                        style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;"
+                                    <label class="form-label-custom">Fasilitas</label>
+                                    <textarea name="fasilitas" class="form-control-custom" rows="2"
                                         placeholder="Pisahkan dengan koma (AC, Proyektor, Papan Tulis)"></textarea>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label
-                                        style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Deskripsi</label>
-                                    <textarea name="deskripsi" class="form-control" rows="4"
-                                        style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;"
-                                        placeholder="Deskripsi ruangan..."></textarea>
+                                    <label class="form-label-custom">Deskripsi</label>
+                                    <textarea name="deskripsi" class="form-control-custom" rows="4" placeholder="Deskripsi ruangan..."></textarea>
                                 </div>
                                 <div class="mb-3">
-                                    <label
-                                        style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Foto
-                                        Ruangan</label>
+                                    <label class="form-label-custom">Foto Ruangan</label>
                                     <div class="upload-box" onclick="document.getElementById('fotoInput').click()">
                                         <i class="fas fa-cloud-upload-alt"></i>
-                                        <p style="color:var(--zinc-500);font-size:0.85rem;margin-bottom:4px;">Klik
+                                        <p style="color:var(--nb-dark);font-size:0.85rem;margin-bottom:4px;">Klik
                                             untuk upload foto</p>
-                                        <small style="color:var(--zinc-400);font-size:0.75rem;">Format: JPG, PNG, GIF,
+                                        <small style="color:var(--nb-dark);font-size:0.75rem;">Format: JPG, PNG, GIF,
                                             WebP - Maks 2MB</small>
                                         <input type="file" name="foto" id="fotoInput" class="d-none"
                                             accept="image/*" onchange="previewFoto(this, 'addFotoPreview')">
@@ -1029,10 +1095,11 @@
                         </div>
                     </div>
                     <div class="modal-footer-modern">
-                        <button type="button" class="action-btn" data-bs-dismiss="modal"
-                            style="width:auto;padding:8px 20px;">Batal</button>
-                        <button type="submit" name="add_room" class="btn-primary-solid" style="padding:8px 20px;">
-                            <i class="fas fa-save"></i> Simpan
+                        <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i> Batal
+                        </button>
+                        <button type="submit" name="add_room" class="btn-modal-primary">
+                            <i class="fas fa-save me-1"></i> Simpan
                         </button>
                     </div>
                 </form>
@@ -1049,8 +1116,8 @@
                     @csrf
                     <input type="hidden" name="id" id="edit_id">
                     <div class="modal-header-modern d-flex align-items-center justify-content-between">
-                        <h5 class="modal-title" style="font-weight:700;font-size:1rem;">
-                            <i class="fas fa-edit me-2" style="color:var(--corporate-blue);"></i> Edit Ruangan
+                        <h5 class="modal-title">
+                            <i class="fas fa-edit me-2"></i> Edit Ruangan
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
@@ -1058,45 +1125,35 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label
-                                        style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Nama
-                                        Ruangan <span style="color:#dc2626;">*</span></label>
+                                    <label class="form-label-custom">Nama Ruangan <span
+                                            style="color:var(--nb-red);">*</span></label>
                                     <input type="text" name="nama_ruang" id="edit_nama_ruang"
-                                        class="form-control" required
-                                        style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                                        class="form-control-custom" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label
-                                        style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Kapasitas</label>
-                                    <input type="number" name="kapasitas" id="edit_kapasitas" class="form-control"
-                                        min="0"
-                                        style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                                    <label class="form-label-custom">Kapasitas</label>
+                                    <input type="number" name="kapasitas" id="edit_kapasitas"
+                                        class="form-control-custom" min="0">
                                 </div>
                                 <div class="mb-3">
-                                    <label
-                                        style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Fasilitas</label>
-                                    <textarea name="fasilitas" id="edit_fasilitas" class="form-control" rows="2"
-                                        style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;"></textarea>
+                                    <label class="form-label-custom">Fasilitas</label>
+                                    <textarea name="fasilitas" id="edit_fasilitas" class="form-control-custom" rows="2"></textarea>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label
-                                        style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Deskripsi</label>
-                                    <textarea name="deskripsi" id="edit_deskripsi" class="form-control" rows="4"
-                                        style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;"></textarea>
+                                    <label class="form-label-custom">Deskripsi</label>
+                                    <textarea name="deskripsi" id="edit_deskripsi" class="form-control-custom" rows="4"></textarea>
                                 </div>
                                 <div class="mb-3">
-                                    <label
-                                        style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Foto
-                                        Ruangan</label>
+                                    <label class="form-label-custom">Foto Ruangan</label>
                                     <div id="currentFoto" class="mb-2"></div>
                                     <div class="upload-box"
                                         onclick="document.getElementById('editFotoInput').click()">
                                         <i class="fas fa-sync-alt"></i>
-                                        <p style="color:var(--zinc-500);font-size:0.85rem;margin-bottom:4px;">Klik
+                                        <p style="color:var(--nb-dark);font-size:0.85rem;margin-bottom:4px;">Klik
                                             untuk ganti foto</p>
-                                        <small style="color:var(--zinc-400);font-size:0.75rem;">Biarkan kosong jika
+                                        <small style="color:var(--nb-dark);font-size:0.75rem;">Biarkan kosong jika
                                             tidak ingin mengubah</small>
                                         <input type="file" name="foto" id="editFotoInput" class="d-none"
                                             accept="image/*" onchange="previewFoto(this, 'editFotoPreview')">
@@ -1107,10 +1164,11 @@
                         </div>
                     </div>
                     <div class="modal-footer-modern">
-                        <button type="button" class="action-btn" data-bs-dismiss="modal"
-                            style="width:auto;padding:8px 20px;">Batal</button>
-                        <button type="submit" name="edit_room" class="btn-primary-solid" style="padding:8px 20px;">
-                            <i class="fas fa-save"></i> Update
+                        <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i> Batal
+                        </button>
+                        <button type="submit" name="edit_room" class="btn-modal-primary">
+                            <i class="fas fa-save me-1"></i> Update
                         </button>
                     </div>
                 </form>
@@ -1123,13 +1181,12 @@
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content modal-content-modern">
                 <div class="modal-header-modern d-flex align-items-center justify-content-between">
-                    <h5 class="modal-title" id="photoTitle" style="font-weight:700;font-size:0.95rem;">Foto Ruangan
-                    </h5>
+                    <h5 class="modal-title" id="photoTitle">Foto Ruangan</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body-modern text-center">
                     <img id="viewPhotoImg" src="" alt=""
-                        style="max-width:100%;max-height:500px;border-radius:10px;">
+                        style="max-width:100%;max-height:500px;border-radius:var(--nb-radius-sm);">
                 </div>
             </div>
         </div>
@@ -1181,7 +1238,7 @@
             const currentFotoDiv = document.getElementById('currentFoto');
             if (room.foto_path) {
                 currentFotoDiv.innerHTML = `
-                    <p style="font-size:0.8rem;color:var(--zinc-500);margin-bottom:6px;">Foto saat ini:</p>
+                    <p style="font-size:0.8rem;color:var(--nb-dark);margin-bottom:6px;font-weight:600;">Foto saat ini:</p>
                     <img src="{{ asset('storage/uploads/rooms/') }}/${room.foto_path}"
                          class="foto-preview"
                          alt="Foto ${room.nama_ruang}"
@@ -1189,7 +1246,7 @@
                          style="cursor:pointer;">
                 `;
             } else {
-                currentFotoDiv.innerHTML = '<p style="font-size:0.8rem;color:var(--zinc-400);">Tidak ada foto</p>';
+                currentFotoDiv.innerHTML = '<p style="font-size:0.8rem;color:var(--nb-dark);">Tidak ada foto</p>';
             }
 
             document.getElementById('editFotoPreview').innerHTML = '';
@@ -1221,9 +1278,9 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     preview.innerHTML = `
-                        <div style="border:1px solid var(--zinc-200);border-radius:10px;padding:8px;margin-top:8px;">
-                            <img src="${e.target.result}" class="img-thumbnail" style="max-height:150px;border-radius:8px;">
-                            <small style="display:block;margin-top:4px;color:var(--zinc-500);">${file.name} (${(file.size / 1024).toFixed(1)} KB)</small>
+                        <div style="border:var(--nb-border);border-radius:var(--nb-radius-sm);padding:8px;margin-top:8px;">
+                            <img src="${e.target.result}" class="img-thumbnail" style="max-height:150px;border-radius:var(--nb-radius-sm);">
+                            <small style="display:block;margin-top:4px;color:var(--nb-dark);">${file.name} (${(file.size / 1024).toFixed(1)} KB)</small>
                         </div>
                     `;
                 };

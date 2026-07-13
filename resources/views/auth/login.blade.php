@@ -3,24 +3,43 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Login Admin - Jadwal Kuliah</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <style>
+        /* =============================================
+               NEOBRUTALISM STYLES - Auth Pages
+               ============================================= */
         :root {
-            --navy-primary: #0f172a;
-            --navy-secondary: #1e293b;
-            --corporate-blue: #1d4ed8;
-            --corporate-blue-hover: #1e3a8a;
-            --zinc-800: #27272a;
-            --zinc-600: #52525b;
-            --zinc-400: #a1a1aa;
-            --zinc-200: #e4e4e7;
-            --zinc-100: #f4f4f5;
-            --white: #ffffff;
+            --nb-black: #000000;
+            --nb-white: #FFFFFF;
+            --nb-offwhite: #F8F7F4;
+            --nb-yellow: #FFE66D;
+            --nb-red: #FF6B6B;
+            --nb-teal: #4ECDC4;
+            --nb-pink: #F38181;
+            --nb-green: #95E1D3;
+            --nb-purple: #A66CFF;
+            --nb-orange: #FFB347;
+            --nb-blue: #6BB5FF;
+            --nb-gray: #E8E8E8;
+            --nb-dark: #1A1A2E;
+            --nb-border: 3px solid #000;
+            --nb-border-thick: 4px solid #000;
+            --nb-shadow: 6px 6px 0px #000;
+            --nb-shadow-sm: 4px 4px 0px #000;
+            --nb-shadow-lg: 8px 8px 0px #000;
+            --nb-shadow-hover: 10px 10px 0px #000;
+            --nb-radius: 12px;
+            --nb-radius-sm: 8px;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
         }
 
         * {
@@ -30,23 +49,26 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            height: 100vh;
-            overflow: hidden;
-            background: var(--white);
+            font-family: var(--font-body);
+            background: var(--nb-offwhite);
+            color: var(--nb-black);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* Split Screen Container */
         .split-container {
             display: flex;
             width: 100%;
-            height: 100vh;
+            min-height: 100vh;
         }
 
         /* Left Panel - Brand / Welcome */
         .left-panel {
             width: 55%;
-            background: var(--navy-primary);
+            background: var(--nb-purple);
+            border-right: var(--nb-border-thick);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -54,31 +76,10 @@
             padding: 60px 80px;
             position: relative;
             overflow: hidden;
+            box-shadow: var(--nb-shadow-lg);
         }
 
         /* Decorative geometric elements */
-        .left-panel::before {
-            content: '';
-            position: absolute;
-            top: -120px;
-            right: -120px;
-            width: 400px;
-            height: 400px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 50%;
-        }
-
-        .left-panel::after {
-            content: '';
-            position: absolute;
-            bottom: -80px;
-            left: -80px;
-            width: 300px;
-            height: 300px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 50%;
-        }
-
         .geo-dots {
             position: absolute;
             top: 60px;
@@ -89,10 +90,11 @@
         }
 
         .geo-dots span {
-            width: 6px;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 50%;
+            width: 8px;
+            height: 8px;
+            background: var(--nb-black);
+            border-radius: 0;
+            border: 2px solid var(--nb-black);
         }
 
         .geo-dots-2 {
@@ -105,10 +107,11 @@
         }
 
         .geo-dots-2 span {
-            width: 8px;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 50%;
+            width: 10px;
+            height: 10px;
+            background: var(--nb-yellow);
+            border: 2px solid var(--nb-black);
+            border-radius: 0;
         }
 
         .geo-line {
@@ -116,8 +119,8 @@
             top: 50%;
             left: -60px;
             width: 200px;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.06);
+            height: 3px;
+            background: var(--nb-black);
             transform: rotate(30deg);
         }
 
@@ -126,8 +129,8 @@
             bottom: 40%;
             right: -40px;
             width: 150px;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.06);
+            height: 3px;
+            background: var(--nb-white);
             transform: rotate(-25deg);
         }
 
@@ -143,29 +146,33 @@
             width: 100px;
             height: 100px;
             object-fit: contain;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 24px;
+            background: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
             padding: 18px;
             margin-bottom: 32px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: var(--nb-shadow);
             display: inline-block;
         }
 
         .left-content h1 {
-            color: var(--white);
-            font-size: 2rem;
+            color: var(--nb-black);
+            font-family: var(--font-display);
+            font-size: 2.5rem;
             font-weight: 700;
             letter-spacing: -0.5px;
-            margin-bottom: 8px;
-            line-height: 1.3;
+            margin-bottom: 16px;
+            line-height: 1.2;
+            text-transform: uppercase;
         }
 
         .left-content .subtitle {
-            color: rgba(255, 255, 255, 0.6);
+            color: var(--nb-black);
             font-size: 1.05rem;
-            font-weight: 400;
+            font-weight: 600;
             margin-bottom: 40px;
             line-height: 1.6;
+            opacity: 0.9;
         }
 
         .feature-list {
@@ -177,36 +184,38 @@
             display: flex;
             align-items: center;
             gap: 14px;
-            color: rgba(255, 255, 255, 0.75);
+            color: var(--nb-black);
             font-size: 0.92rem;
-            font-weight: 400;
+            font-weight: 600;
             margin-bottom: 16px;
         }
 
         .feature-item .icon-box {
-            width: 36px;
-            height: 36px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
+            width: 40px;
+            height: 40px;
+            background: var(--nb-yellow);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .feature-item .icon-box i {
             font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.6);
+            color: var(--nb-black);
         }
 
         .left-footer {
             position: absolute;
             bottom: 30px;
-            color: rgba(255, 255, 255, 0.25);
+            color: var(--nb-black);
             font-size: 0.78rem;
-            font-weight: 300;
+            font-weight: 600;
             letter-spacing: 0.5px;
+            opacity: 0.8;
         }
 
         /* Right Panel - Login Form */
@@ -216,7 +225,7 @@
             align-items: center;
             justify-content: center;
             padding: 40px;
-            background: var(--white);
+            background: var(--nb-offwhite);
         }
 
         .login-card {
@@ -243,170 +252,195 @@
             width: 56px;
             height: 56px;
             object-fit: contain;
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 4px;
+            background: var(--nb-white);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .form-header h2 {
-            font-size: 1.35rem;
+            font-family: var(--font-display);
+            font-size: 1.75rem;
             font-weight: 700;
-            color: var(--zinc-800);
+            color: var(--nb-black);
             margin-bottom: 4px;
             letter-spacing: -0.3px;
         }
 
         .form-header p {
             font-size: 0.95rem;
-            font-weight: 400;
-            color: var(--zinc-600);
+            font-weight: 500;
+            color: var(--nb-dark);
             margin-bottom: 0;
         }
 
         /* Alerts */
         .alert-modern {
-            border-radius: 12px;
-            border: none;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
             padding: 16px 20px;
             margin-bottom: 24px;
             font-size: 0.88rem;
+            font-weight: 600;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .alert-session {
-            background: #fefce8;
-            color: #a16207;
-            border-left: 4px solid #eab308;
+            background: var(--nb-yellow);
+            color: var(--nb-black);
+            border-left: 4px solid var(--nb-black);
         }
 
         .alert-error {
-            background: #fef2f2;
-            color: #b91c1c;
-            border-left: 4px solid #ef4444;
+            background: var(--nb-red);
+            color: var(--nb-white);
+            border-left: 4px solid var(--nb-black);
         }
 
         .alert-lockout {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            border-radius: 12px;
-            padding: 20px;
+            background: var(--nb-red);
+            border: var(--nb-border-thick);
+            border-radius: var(--nb-radius);
+            padding: 24px;
             margin-bottom: 24px;
             text-align: center;
+            box-shadow: var(--nb-shadow);
         }
 
         .alert-lockout i {
-            font-size: 1.8rem;
-            color: #dc2626;
+            font-size: 2rem;
+            color: var(--nb-white);
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
         .alert-lockout h5 {
-            font-weight: 600;
-            color: #7f1d1d;
-            font-size: 1rem;
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--nb-white);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
         }
 
         .alert-lockout p {
-            color: #991b1b;
+            color: var(--nb-white);
             font-size: 0.88rem;
+            font-weight: 500;
         }
 
         .lockout-level {
             display: inline-block;
-            background: rgba(220, 38, 38, 0.1);
-            color: #dc2626;
-            padding: 2px 12px;
-            border-radius: 20px;
+            background: var(--nb-black);
+            color: var(--nb-white);
+            padding: 3px 14px;
+            border-radius: var(--nb-radius-sm);
             font-size: 0.8rem;
-            font-weight: 600;
-            margin-top: 6px;
+            font-weight: 700;
+            margin-top: 8px;
+            border: 2px solid var(--nb-black);
         }
 
         .countdown-display {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #dc2626;
-            margin: 8px 0;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--nb-yellow);
+            margin: 12px 0;
+            text-shadow: 3px 3px 0 var(--nb-black);
         }
 
         /* Attempts Progress */
         .attempts-box {
-            background: var(--zinc-100);
-            border-radius: 12px;
-            padding: 16px 18px;
+            background: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 18px;
             margin-bottom: 24px;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .attempts-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .attempts-header small {
             font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--zinc-600);
+            font-weight: 700;
+            color: var(--nb-black);
         }
 
         .progress-track {
-            height: 8px;
-            background: #e4e4e7;
-            border-radius: 10px;
+            height: 10px;
+            background: var(--nb-gray);
+            border: 2px solid var(--nb-black);
+            border-radius: var(--nb-radius-sm);
             overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
-            border-radius: 10px;
+            border-radius: 6px;
             transition: width 0.4s ease;
+            font-weight: 700;
         }
 
         .progress-fill.safe {
-            background: #22c55e;
+            background: var(--nb-green);
         }
 
         .progress-fill.caution {
-            background: #eab308;
+            background: var(--nb-orange);
         }
 
         .progress-fill.warning {
-            background: #f97316;
+            background: var(--nb-yellow);
         }
 
         .progress-fill.danger {
-            background: #ef4444;
+            background: var(--nb-red);
         }
 
         .progress-fill.locked {
-            background: #71717a;
+            background: var(--nb-black);
         }
 
         .attempts-footer {
-            margin-top: 8px;
+            margin-top: 10px;
             font-size: 0.8rem;
-            color: var(--zinc-400);
+            font-weight: 600;
+            color: var(--nb-dark);
         }
 
         .refresh-notice {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            color: #1e40af;
-            border-radius: 12px;
+            background: var(--nb-blue);
+            border: var(--nb-border);
+            color: var(--nb-black);
+            border-radius: var(--nb-radius-sm);
             padding: 14px 18px;
             margin-bottom: 24px;
             font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: var(--nb-shadow-sm);
         }
 
-        /* Form Inputs - Modern Inline Icon Style */
+        /* Form Inputs - Neobrutalism Style */
         .form-group {
             margin-bottom: 20px;
         }
 
         .form-label {
+            font-family: var(--font-display);
             font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--zinc-800);
+            font-weight: 700;
+            color: var(--nb-black);
             margin-bottom: 8px;
             display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .input-wrapper {
@@ -418,24 +452,34 @@
             left: 16px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--zinc-400);
+            color: var(--nb-black);
             font-size: 1rem;
             pointer-events: none;
-            transition: color 0.2s ease;
+            transition: all 0.2s ease;
+            background: var(--nb-yellow);
+            padding: 8px;
+            border: 2px solid var(--nb-black);
+            border-radius: var(--nb-radius-sm);
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .input-wrapper .form-control {
             width: 100%;
-            padding: 14px 16px 14px 46px;
-            border: 1.5px solid var(--zinc-200);
-            border-radius: 12px;
+            padding: 14px 16px 14px 60px;
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
             font-size: 0.92rem;
-            font-family: 'Inter', sans-serif;
-            color: var(--zinc-800);
-            background: var(--white);
+            font-family: var(--font-body);
+            color: var(--nb-black);
+            background: var(--nb-white);
             transition: all 0.2s ease;
             outline: none;
-            box-shadow: none;
+            box-shadow: var(--nb-shadow-sm);
+            font-weight: 600;
         }
 
         .input-wrapper .form-control::placeholder {
@@ -444,17 +488,18 @@
         }
 
         .input-wrapper .form-control:focus {
-            border-color: var(--corporate-blue);
-            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+            border-color: var(--nb-black);
+            box-shadow: var(--nb-shadow);
+            transform: translate(-2px, -2px);
         }
 
         .input-wrapper .form-control:focus~.input-icon {
-            color: var(--corporate-blue);
+            background: var(--nb-teal);
         }
 
         .input-wrapper .form-control.input-locked {
-            background: #fefce8;
-            border-color: #eab308;
+            background: var(--nb-yellow);
+            border-color: var(--nb-black);
         }
 
         /* Toggle password visibility */
@@ -463,57 +508,71 @@
             right: 14px;
             top: 50%;
             transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--zinc-400);
+            background: var(--nb-white);
+            border: 2px solid var(--nb-black);
+            color: var(--nb-black);
             cursor: pointer;
-            padding: 4px;
-            font-size: 0.95rem;
-            transition: color 0.2s ease;
+            padding: 6px 10px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            border-radius: var(--nb-radius-sm);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .toggle-password:hover {
-            color: var(--zinc-600);
+            background: var(--nb-yellow);
+            transform: translateY(-50%) translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
-        /* Login Button - Solid Corporate Blue */
+        .toggle-password:active {
+            transform: translateY(-50%) translate(2px, 2px);
+            box-shadow: none;
+        }
+
+        /* Login Button - Neobrutalism Style */
         .btn-login {
             width: 100%;
-            padding: 14px 24px;
-            background: var(--corporate-blue);
-            color: var(--white);
-            border: none;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
+            padding: 16px 24px;
+            background: var(--nb-yellow);
+            color: var(--nb-black);
+            border: var(--nb-border-thick);
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
             margin-bottom: 24px;
+            box-shadow: var(--nb-shadow);
+            text-transform: uppercase;
         }
 
         .btn-login:hover:not(:disabled) {
-            background: var(--corporate-blue-hover);
-            transform: translateY(-1px);
+            background: var(--nb-teal);
+            transform: translate(-3px, -3px);
+            box-shadow: var(--nb-shadow-hover);
         }
 
         .btn-login:active:not(:disabled) {
-            transform: translateY(0);
+            transform: translate(3px, 3px);
+            box-shadow: none;
         }
 
         .btn-login:disabled {
-            background: #94a3b8;
+            background: var(--nb-gray);
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
         .btn-login i {
-            font-size: 0.9rem;
+            font-size: 1rem;
         }
 
         /* Register Link */
@@ -524,34 +583,21 @@
 
         .register-section small {
             font-size: 0.85rem;
-            color: var(--zinc-600);
+            color: var(--nb-dark);
+            font-weight: 600;
         }
 
         .register-link {
-            color: var(--corporate-blue);
-            font-weight: 600;
+            color: var(--nb-purple);
+            font-weight: 700;
             text-decoration: none;
-            transition: color 0.2s ease;
+            transition: all 0.2s ease;
             position: relative;
         }
 
         .register-link:hover {
-            color: var(--corporate-blue-hover);
-        }
-
-        .register-link::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--corporate-blue);
-            transition: width 0.25s ease;
-        }
-
-        .register-link:hover::after {
-            width: 100%;
+            color: var(--nb-black);
+            transform: translateY(-1px);
         }
 
         /* Responsive */
@@ -576,7 +622,7 @@
             }
 
             .form-header h2 {
-                font-size: 1.2rem;
+                font-size: 1.4rem;
             }
 
             .form-logo {
@@ -613,7 +659,7 @@
             <div class="left-content">
                 <img src="{{ asset('jadwal-kampus/assets/images/SI.png') }}" alt="Logo Sistem Informasi"
                     class="left-logo"
-                    onerror="this.onerror=null; this.src='https://via.placeholder.com/100x100/1e293b/ffffff?text=SI'">
+                    onerror="this.onerror=null; this.src='https://via.placeholder.com/100x100/A66CFF/ffffff?text=SI'">
 
                 <h1>Selamat Datang</h1>
                 <p class="subtitle">Sistem Informasi Jadwal Kuliah<br>Politeknik Negeri Padang<br> PSDKU Tanah Datar</p>
@@ -653,7 +699,7 @@
                     <div class="form-logo-row">
                         <img src="{{ asset('jadwal-kampus/assets/images/logo_kampus.png') }}" alt="Logo"
                             class="form-logo"
-                            onerror="this.onerror=null; this.src='https://via.placeholder.com/56x56/0f172a/ffffff?text=PNP'">
+                            onerror="this.onerror=null; this.src='https://via.placeholder.com/56x56/A66CFF/ffffff?text=PNP'">
                     </div>
                     <h2>{{ $institusiNama ?? 'Politeknik Negeri Padang' }}</h2>
                     <p>{{ $institusiLokasi ?? 'PSDKU Tanah Datar' }}</p>
@@ -705,13 +751,13 @@
                         </div>
                         <div class="attempts-footer">
                             @if ($attempts_info['percentage'] >= 80)
-                                <i class="fas fa-exclamation-triangle text-danger me-1"></i>
-                                <strong class="text-danger">Hampir terkunci!</strong>
+                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                <strong>Hampir terkunci!</strong>
                             @elseif($attempts_info['percentage'] >= 60)
-                                <i class="fas fa-exclamation-circle text-warning me-1"></i>
-                                <span class="text-warning">Peringatan!</span>
+                                <i class="fas fa-exclamation-circle me-1"></i>
+                                <span>Peringatan!</span>
                             @else
-                                <i class="fas fa-info-circle text-info me-1"></i>
+                                <i class="fas fa-info-circle me-1"></i>
                                 <span>Percobaan tersisa</span>
                             @endif
                         </div>
@@ -955,10 +1001,10 @@
                         </div>
                         <div class="attempts-footer">
                             ${attemptsInfo.percentage >= 80 ?
-                                '<i class="fas fa-exclamation-triangle text-danger me-1"></i><strong class="text-danger">Hampir terkunci!</strong>' :
+                                '<i class="fas fa-exclamation-triangle text-danger me-1"></i><strong>Hampir terkunci!</strong>' :
                               attemptsInfo.percentage >= 60 ?
-                                '<i class="fas fa-exclamation-circle text-warning me-1"></i><span class="text-warning">Peringatan!</span>' :
-                                '<i class="fas fa-info-circle text-info me-1"></i><span>Percobaan tersisa</span>'}
+                                '<i class="fas fa-exclamation-circle me-1"></i><span>Peringatan!</span>' :
+                                '<i class="fas fa-info-circle me-1"></i><span>Percobaan tersisa</span>'}
                         </div>
                     </div>
                 `;
@@ -1008,32 +1054,14 @@
                     return;
                 }
 
-                countdownDisplay.text(formatTime(lockoutSeconds));
+                countdownDisplay.textContent = formatTime(lockoutSeconds);
                 lockoutSeconds--;
+
                 setTimeout(updateCountdown, 1000);
             }
 
             updateCountdown();
         }
-
-        // Prevent form resubmission on refresh
-        if (window.history.replaceState) {
-            window.history.replaceState(null, null, window.location.href);
-        }
-
-        // Auto focus on username field if session expired
-        @if ($sessionExpired)
-            document.addEventListener('DOMContentLoaded', function() {
-                document.getElementById('username').focus();
-            });
-        @endif
-
-        // Clear session data when leaving page
-        window.addEventListener('beforeunload', function() {
-            if (typeof navigator.sendBeacon === 'function') {
-                navigator.sendBeacon('{{ url('/clear-login-session') }}');
-            }
-        });
     </script>
 </body>
 

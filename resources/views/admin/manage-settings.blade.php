@@ -7,27 +7,36 @@
     <title>Pengaturan Sistem - Admin Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --canvas-bg: #f1f5f9;
-            --card-bg: #ffffff;
-            --card-radius: 16px;
-            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.05);
-            --card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.08);
-            --corporate-blue: #1d4ed8;
-            --corporate-blue-hover: #1e3a8a;
-            --zinc-900: #18181b;
-            --zinc-800: #27272a;
-            --zinc-700: #3f3f46;
-            --zinc-600: #52525b;
-            --zinc-500: #71717a;
-            --zinc-400: #a1a1aa;
-            --zinc-300: #d4d4d8;
-            --zinc-200: #e4e4e7;
-            --zinc-100: #f4f4f5;
-            --zinc-50: #fafafa;
+            --nb-black: #000000;
+            --nb-white: #FFFFFF;
+            --nb-offwhite: #F8F7F4;
+            --nb-yellow: #FFE66D;
+            --nb-red: #FF6B6B;
+            --nb-teal: #4ECDC4;
+            --nb-pink: #F38181;
+            --nb-green: #95E1D3;
+            --nb-purple: #A66CFF;
+            --nb-orange: #FFB347;
+            --nb-blue: #6BB5FF;
+            --nb-gray: #E8E8E8;
+            --nb-dark: #1A1A2E;
+            --nb-border: 3px solid #000;
+            --nb-border-thick: 4px solid #000;
+            --nb-shadow: 6px 6px 0px #000;
+            --nb-shadow-sm: 4px 4px 0px #000;
+            --nb-shadow-lg: 8px 8px 0px #000;
+            --nb-shadow-hover: 10px 10px 0px #000;
+            --nb-radius: 12px;
+            --nb-radius-sm: 8px;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
         }
 
         * {
@@ -37,10 +46,13 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--canvas-bg);
+            font-family: var(--font-body);
+            background: var(--nb-offwhite);
+            color: var(--nb-black);
+            line-height: 1.6;
             min-height: 100vh;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         .main-content {
@@ -51,15 +63,16 @@
 
         /* Top Bar */
         .top-bar {
-            background: var(--card-bg);
+            background: var(--nb-white);
             padding: 16px 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid var(--zinc-100);
+            border-bottom: var(--nb-border);
             position: sticky;
             top: 0;
             z-index: 500;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .top-bar-left {
@@ -70,20 +83,36 @@
 
         .top-bar-toggle {
             display: none;
-            background: none;
-            border: none;
+            background: var(--nb-white);
+            border: var(--nb-border);
             font-size: 1.2rem;
-            color: var(--zinc-600);
+            color: var(--nb-black);
             cursor: pointer;
-            padding: 4px;
+            padding: 8px 12px;
+            border-radius: var(--nb-radius-sm);
+            box-shadow: var(--nb-shadow-sm);
+            transition: all 0.15s ease;
+        }
+
+        .top-bar-toggle:hover {
+            background: var(--nb-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .top-bar-toggle:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
         }
 
         .top-bar-left h4 {
-            font-size: 1.2rem;
+            font-family: var(--font-display);
+            font-size: 1.3rem;
             font-weight: 700;
-            color: var(--zinc-800);
+            color: var(--nb-black);
             margin-bottom: 0;
             letter-spacing: -0.3px;
+            text-transform: uppercase;
         }
 
         .top-bar-right {
@@ -93,29 +122,33 @@
         }
 
         .top-bar-date {
+            font-family: var(--font-display);
             font-size: 0.85rem;
-            color: var(--zinc-500);
-            font-weight: 500;
+            color: var(--nb-dark);
+            font-weight: 600;
         }
 
         .top-bar-right .dropdown-toggle {
-            background: var(--zinc-50);
-            border: 1px solid var(--zinc-200);
-            border-radius: 10px;
-            padding: 8px 16px;
+            background: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 10px 16px;
+            font-family: var(--font-body);
             font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--zinc-700);
+            font-weight: 600;
+            color: var(--nb-black);
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
             transition: all 0.15s ease;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .top-bar-right .dropdown-toggle:hover {
-            background: var(--zinc-100);
-            border-color: var(--zinc-300);
+            background: var(--nb-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
         .top-bar-right .dropdown-toggle::after {
@@ -123,34 +156,44 @@
         }
 
         .top-bar-right .dropdown-menu {
-            border-radius: 12px;
-            border: 1px solid var(--zinc-200);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-            padding: 6px;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow);
+            padding: 8px;
             min-width: 180px;
+            background: var(--nb-white);
         }
 
         .top-bar-right .dropdown-item {
-            border-radius: 8px;
-            padding: 8px 12px;
+            border-radius: var(--nb-radius-sm);
+            padding: 10px 14px;
+            font-family: var(--font-body);
             font-size: 0.85rem;
-            color: var(--zinc-700);
+            font-weight: 600;
+            color: var(--nb-black);
             display: flex;
             align-items: center;
             gap: 10px;
+            transition: all 0.15s ease;
         }
 
         .top-bar-right .dropdown-item:hover {
-            background: var(--zinc-50);
+            background: var(--nb-yellow);
+            color: var(--nb-black);
+        }
+
+        .top-bar-right .dropdown-item.text-danger {
+            color: var(--nb-red);
         }
 
         .top-bar-right .dropdown-item.text-danger:hover {
-            background: #fef2f2;
+            background: var(--nb-red);
+            color: var(--nb-white);
         }
 
         .top-bar-right .dropdown-divider {
             margin: 4px 0;
-            border-color: var(--zinc-100);
+            border-color: var(--nb-gray);
         }
 
         .content-wrapper {
@@ -163,44 +206,51 @@
         }
 
         .page-title-section h4 {
-            font-size: 1.3rem;
+            font-family: var(--font-display);
+            font-size: 1.5rem;
             font-weight: 700;
-            color: var(--zinc-800);
-            margin-bottom: 4px;
+            color: var(--nb-black);
+            margin-bottom: 6px;
             letter-spacing: -0.3px;
+            text-transform: uppercase;
         }
 
         .page-title-section p {
-            font-size: 0.88rem;
-            color: var(--zinc-500);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            color: var(--nb-dark);
             margin-bottom: 0;
+            font-weight: 500;
         }
 
         /* Settings Cards */
         .settings-card {
-            background: var(--card-bg);
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
+            background: var(--nb-white);
+            border-radius: var(--nb-radius);
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow);
             padding: 28px 32px;
             margin-bottom: 24px;
-            border: 1px solid rgba(0, 0, 0, 0.02);
         }
 
         .settings-card-title {
+            font-family: var(--font-display);
             font-size: 1rem;
             font-weight: 700;
-            color: var(--zinc-800);
+            color: var(--nb-black);
             display: flex;
             align-items: center;
             gap: 10px;
             padding-bottom: 20px;
             margin-bottom: 24px;
-            border-bottom: 1px solid var(--zinc-100);
+            border-bottom: var(--nb-border);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .settings-card-title i {
-            color: var(--zinc-400);
-            font-size: 0.95rem;
+            color: var(--nb-purple);
+            font-size: 1rem;
         }
 
         .form-grid-2 {
@@ -220,35 +270,43 @@
         }
 
         .form-group-custom label {
+            font-family: var(--font-display);
             font-size: 0.82rem;
-            font-weight: 600;
-            color: var(--zinc-700);
+            font-weight: 700;
+            color: var(--nb-black);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .form-control-modern {
             padding: 10px 14px;
-            border: 1.5px solid var(--zinc-200);
-            border-radius: 10px;
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-body);
             font-size: 0.85rem;
-            font-family: 'Inter', sans-serif;
-            color: var(--zinc-700);
-            background: var(--card-bg);
+            font-weight: 600;
+            color: var(--nb-black);
+            background: var(--nb-white);
             outline: none;
             transition: all 0.15s ease;
             width: 100%;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .form-control-modern:focus {
-            border-color: var(--corporate-blue);
-            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+            border-color: var(--nb-black);
+            box-shadow: var(--nb-shadow);
+            transform: translate(-2px, -2px);
         }
 
         .form-control-modern::placeholder {
-            color: var(--zinc-400);
+            color: var(--nb-gray);
         }
 
-        select.form-control-modern {
-            appearance: auto;
+        .form-control-modern:read-only {
+            background: var(--nb-gray);
+            color: var(--nb-dark);
+            cursor: not-allowed;
         }
 
         textarea.form-control-modern {
@@ -256,12 +314,14 @@
         }
 
         .form-hint {
+            font-family: var(--font-body);
             font-size: 0.75rem;
-            color: var(--zinc-400);
+            color: var(--nb-dark);
             margin-top: 2px;
+            font-weight: 500;
         }
 
-        /* iOS Toggle */
+        /* Toggle Switch */
         .toggle-wrap {
             display: flex;
             align-items: center;
@@ -289,9 +349,10 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: var(--zinc-300);
+            background: var(--nb-gray);
             border-radius: 28px;
             transition: all 0.3s ease;
+            border: var(--nb-border);
         }
 
         .toggle-slider::before {
@@ -301,14 +362,15 @@
             width: 22px;
             left: 3px;
             bottom: 3px;
-            background: white;
+            background: var(--nb-white);
             border-radius: 50%;
             transition: all 0.3s ease;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+            box-shadow: var(--nb-shadow-sm);
+            border: 2px solid var(--nb-black);
         }
 
         .toggle-switch input:checked+.toggle-slider {
-            background: var(--corporate-blue);
+            background: var(--nb-green);
         }
 
         .toggle-switch input:checked+.toggle-slider::before {
@@ -316,9 +378,10 @@
         }
 
         .toggle-label-text {
+            font-family: var(--font-display);
             font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--zinc-700);
+            font-weight: 700;
+            color: var(--nb-black);
         }
 
         /* Color Picker Row */
@@ -337,42 +400,49 @@
         .color-input-wrap input[type="color"] {
             width: 48px;
             height: 48px;
-            border: 1.5px solid var(--zinc-200);
-            border-radius: 10px;
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
             cursor: pointer;
             padding: 3px;
-            background: var(--card-bg);
+            background: var(--nb-white);
             flex-shrink: 0;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .color-input-wrap input[type="color"]:hover {
-            border-color: var(--zinc-300);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
         .color-input-wrap .color-label {
+            font-family: var(--font-display);
             font-size: 0.82rem;
-            color: var(--zinc-600);
+            color: var(--nb-black);
+            font-weight: 600;
         }
 
         .color-input-wrap .color-label small {
-            color: var(--zinc-400);
+            color: var(--nb-dark);
             display: block;
             font-size: 0.75rem;
+            font-weight: 500;
         }
 
         /* Preview Box */
         .preview-box {
-            border: 2px dashed var(--zinc-300);
-            border-radius: 12px;
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
             padding: 20px;
-            background: var(--zinc-50);
+            background: var(--nb-offwhite);
             margin-top: 8px;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .preview-box-title {
+            font-family: var(--font-display);
             font-size: 0.78rem;
-            font-weight: 600;
-            color: var(--zinc-400);
+            font-weight: 700;
+            color: var(--nb-dark);
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 10px;
@@ -385,14 +455,17 @@
             min-height: 60px;
             display: flex;
             align-items: center;
-            border-radius: 10px;
+            border-radius: var(--nb-radius-sm);
             padding: 12px 16px;
             overflow: hidden;
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         #runningTextPreview marquee {
             width: 100%;
             font-weight: 600;
+            font-family: var(--font-body);
         }
 
         /* Security Row */
@@ -404,27 +477,31 @@
 
         /* Danger Zone */
         .danger-zone {
-            background: #fff1f2;
-            border: 1px solid #fecaca;
-            border-radius: var(--card-radius);
+            background: var(--nb-red);
+            border: var(--nb-border-thick);
+            border-radius: var(--nb-radius);
             padding: 28px 32px;
             margin-bottom: 24px;
+            box-shadow: var(--nb-shadow);
         }
 
         .danger-zone-title {
+            font-family: var(--font-display);
             font-size: 1rem;
             font-weight: 700;
-            color: #b91c1c;
+            color: var(--nb-white);
             display: flex;
             align-items: center;
             gap: 10px;
             padding-bottom: 16px;
             margin-bottom: 20px;
-            border-bottom: 1px solid #fecaca;
+            border-bottom: var(--nb-border);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .danger-zone-title i {
-            color: #fca5a5;
+            color: var(--nb-yellow);
         }
 
         .danger-grid {
@@ -435,10 +512,10 @@
 
         .btn-destructive-outline {
             padding: 12px 18px;
-            border-radius: 10px;
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
             font-size: 0.82rem;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.15s ease;
             display: flex;
@@ -446,68 +523,81 @@
             justify-content: center;
             gap: 8px;
             text-decoration: none;
-            border: 1.5px solid #fca5a5;
-            background: var(--card-bg);
-            color: #b91c1c;
+            border: var(--nb-border);
+            background: var(--nb-white);
+            color: var(--nb-red);
             width: 100%;
+            box-shadow: var(--nb-shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .btn-destructive-outline:hover {
-            background: #fef2f2;
-            border-color: #f87171;
+            background: var(--nb-yellow);
+            color: var(--nb-black);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
         /* Primary Button */
         .btn-primary-solid {
             padding: 10px 28px;
-            background: var(--corporate-blue);
-            color: white;
-            border: none;
-            border-radius: 10px;
+            background: var(--nb-purple);
+            color: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
             font-size: 0.85rem;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.15s ease;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             text-decoration: none;
+            box-shadow: var(--nb-shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .btn-primary-solid:hover {
-            background: var(--corporate-blue-hover);
-            color: white;
+            background: var(--nb-pink);
+            color: var(--nb-black);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
         /* Alert flash */
         .alert-flash {
-            border-radius: 12px;
-            border: none;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
             padding: 16px 20px;
             margin-bottom: 24px;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-family: var(--font-body);
             font-size: 0.88rem;
+            font-weight: 600;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .alert-flash.success {
-            background: #f0fdf4;
-            color: #166534;
-            border-left: 4px solid #22c55e;
+            background: var(--nb-green);
+            color: var(--nb-black);
+            border-left: 5px solid var(--nb-black);
         }
 
         .alert-flash.error {
-            background: #fef2f2;
-            color: #991b1b;
-            border-left: 4px solid #ef4444;
+            background: var(--nb-red);
+            color: var(--nb-white);
+            border-left: 5px solid var(--nb-black);
         }
 
         .alert-flash.info {
-            background: #eff6ff;
-            color: #1e40af;
-            border-left: 4px solid #3b82f6;
+            background: var(--nb-blue);
+            color: var(--nb-white);
+            border-left: 5px solid var(--nb-black);
         }
 
         /* Sidebar Overlay */
@@ -595,31 +685,43 @@
 </head>
 
 <body>
-    <div id="notification-container">
-        @if (session('success'))
-            <div class="alert-flash success"><i class="fas fa-check-circle"></i> {{ session('success') }}</div>
-        @endif
-        @if (session('error'))
-            <div class="alert-flash error"><i class="fas fa-exclamation-circle"></i> {{ session('error') }}</div>
-        @endif
-        @if (session('info'))
-            <div class="alert-flash info"><i class="fas fa-info-circle"></i> {{ session('info') }}</div>
-        @endif
-    </div>
-
     @include('components.admin.sidebar')
 
     <div class="main-content">
+        @if (session('success') || session('error') || session('info'))
+            <div id="notification-container"
+                style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;">
+                @if (session('success'))
+                    <div class="alert-flash success" style="margin-bottom: 10px;">
+                        <i class="fas fa-check-circle"></i> {{ session('success') }}
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="alert-flash error" style="margin-bottom: 10px;">
+                        <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+                    </div>
+                @endif
+                @if (session('info'))
+                    <div class="alert-flash info" style="margin-bottom: 10px;">
+                        <i class="fas fa-info-circle"></i> {{ session('info') }}
+                    </div>
+                @endif
+            </div>
+        @endif
+
         <header class="top-bar">
             <div class="top-bar-left">
-                <button class="top-bar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <button class="top-bar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <h4>Pengaturan Sistem</h4>
             </div>
             <div class="top-bar-right">
                 <span class="top-bar-date"><i class="far fa-calendar-alt me-1"></i> {{ date('d F Y') }}</span>
                 <div class="dropdown">
                     <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle"></i> {{ session('username') }}
+                        <i class="fas fa-user-circle"></i>
+                        {{ session('username') }}
                         <i class="fas fa-chevron-down" style="font-size:0.7rem; opacity:0.6;"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
@@ -752,7 +854,7 @@
                             </label>
                             <div>
                                 <div class="toggle-label-text">Aktifkan Running Text di Halaman Utama</div>
-                                <small style="color:var(--zinc-400);font-size:0.75rem;">
+                                <small style="color:var(--nb-dark);font-size:0.75rem;">
                                     Jika diaktifkan, running text akan muncul di bawah filter dan di atas jadwal
                                     berlangsung
                                 </small>
@@ -814,13 +916,12 @@
                     <div class="preview-box">
                         <div class="preview-box-title"><i class="fas fa-eye"></i> Preview Running Text</div>
                         <div id="runningTextPreview"
-                            style="background-color: {{ $settings['running_text_bg_color'] ?? '#4361ee' }};
-                                   color: {{ $settings['running_text_color'] ?? '#ffffff' }};">
+                            style="background-color: {{ $settings['running_text_bg_color'] ?? '#4361ee' }};color: {{ $settings['running_text_color'] ?? '#ffffff' }};">
                             <marquee behavior="scroll" direction="left" class="fw-semibold">
                                 {{ $settings['running_text_content'] ?? 'Selamat datang di Sistem Informasi Jadwal Kuliah' }}
                             </marquee>
                         </div>
-                        <small style="color:var(--zinc-400);font-size:0.75rem;margin-top:8px;display:block;">
+                        <small style="color:var(--nb-dark);font-size:0.75rem;margin-top:8px;display:block;">
                             Tampilan akan disesuaikan dengan preferensi di atas
                         </small>
                     </div>
@@ -836,7 +937,7 @@
                             <label>Superadmin Registered</label>
                             <input type="text" name="superadmin_registered" class="form-control-modern"
                                 value="{{ $settings['superadmin_registered'] ?? '0' }}" readonly
-                                style="background:var(--zinc-50);color:var(--zinc-500);">
+                                style="background:var(--nb-gray);color:var(--nb-dark);cursor:not-allowed;">
                             <span class="form-hint">Status registrasi superadmin (0 = belum, 1 = sudah)</span>
                         </div>
                         <div class="form-group-custom">
@@ -866,7 +967,7 @@
                                 </label>
                                 <div>
                                     <div class="toggle-label-text">Aktifkan Auto Logout</div>
-                                    <small style="color:var(--zinc-400);font-size:0.75rem;">
+                                    <small style="color:var(--nb-dark);font-size:0.75rem;">
                                         Logout otomatis jika tidak ada aktivitas
                                     </small>
                                 </div>
@@ -880,12 +981,12 @@
                         </div>
                     </div>
                     <div class="form-group-custom full"
-                        style="background:var(--zinc-50);padding:16px;border-radius:10px;border:1px solid var(--zinc-200);">
+                        style="background:var(--nb-offwhite);padding:16px;border-radius:var(--nb-radius-sm);border:var(--nb-border);">
                         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                            <i class="fas fa-info-circle" style="color:var(--zinc-400);"></i>
-                            <small style="color:var(--zinc-600);font-weight:600;">Cara Kerja Session Timeout:</small>
+                            <i class="fas fa-info-circle" style="color:var(--nb-purple);"></i>
+                            <small style="color:var(--nb-black);font-weight:600;">Cara Kerja Session Timeout:</small>
                         </div>
-                        <ul style="font-size:0.8rem;color:var(--zinc-500);margin:0;padding-left:20px;line-height:1.6;">
+                        <ul style="font-size:0.8rem;color:var(--nb-dark);margin:0;padding-left:20px;line-height:1.6;">
                             <li>Setiap kali Anda bergerak atau klik di halaman, timer akan direset</li>
                             <li>Jika tidak ada aktivitas selama batas waktu, sistem akan logout otomatis</li>
                             <li>User akan diarahkan ke halaman login dengan pesan "Session Expired"</li>
@@ -908,7 +1009,7 @@
                         <i class="fas fa-exclamation-triangle"></i> Zona Berbahaya (Hanya Superadmin)
                     </div>
                     <p
-                        style="font-size:0.85rem;color:#991b1b;margin-bottom:18px;display:flex;align-items:center;gap:8px;">
+                        style="font-size:0.85rem;color:var(--nb-white);margin-bottom:18px;display:flex;align-items:center;gap:8px;">
                         <i class="fas fa-info-circle"></i> Hati-hati! Aksi di bawah ini tidak dapat dibatalkan.
                     </p>
                     <div class="danger-grid">
@@ -924,16 +1025,26 @@
                             onclick="return confirm('Yakin hapus semua log aktivitas?')">
                             <i class="fas fa-trash-alt"></i> Hapus Log Aktivitas
                         </a>
+                        <a href="{{ url('/admin/manage-settings/clear-cache') }}" class="btn-destructive-outline"
+                            onclick="return confirm('Yakin hapus semua cache sistem?')">
+                            <i class="fas fa-broom"></i> Clear Cache
+                        </a>
                     </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <a href="{{ url('/admin/backup-history') }}" class="btn-primary-solid">
+                        <i class="fas fa-history"></i> Lihat Riwayat Backup
+                    </a>
                 </div>
             @else
                 <div
-                    style="background:var(--zinc-50);border:1px solid var(--zinc-200);border-radius:var(--card-radius);padding:24px;margin-bottom:24px;">
+                    style="background:var(--nb-gray);border:var(--nb-border);border-radius:var(--nb-radius);padding:24px;margin-bottom:24px;box-shadow:var(--nb-shadow-sm);">
                     <h6
-                        style="font-size:0.9rem;font-weight:600;color:var(--zinc-600);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
-                        <i class="fas fa-lock" style="color:var(--zinc-400);"></i> Akses Terbatas
+                        style="font-size:0.9rem;font-weight:700;color:var(--nb-black);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+                        <i class="fas fa-lock" style="color:var(--nb-dark);"></i> Akses Terbatas
                     </h6>
-                    <p style="font-size:0.85rem;color:var(--zinc-500);margin-bottom:0;">
+                    <p style="font-size:0.85rem;color:var(--nb-dark);margin-bottom:0;">
                         <i class="fas fa-info-circle me-1"></i>
                         Fitur zona berbahaya hanya dapat diakses oleh Superadmin. Hubungi Superadmin untuk aksi-aksi
                         seperti reset data, backup database, atau hapus log.

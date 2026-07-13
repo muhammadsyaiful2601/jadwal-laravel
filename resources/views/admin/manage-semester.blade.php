@@ -7,27 +7,36 @@
     <title>Kelola Semester - Admin Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --canvas-bg: #f1f5f9;
-            --card-bg: #ffffff;
-            --card-radius: 16px;
-            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.05);
-            --card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.08);
-            --corporate-blue: #1d4ed8;
-            --corporate-blue-hover: #1e3a8a;
-            --zinc-900: #18181b;
-            --zinc-800: #27272a;
-            --zinc-700: #3f3f46;
-            --zinc-600: #52525b;
-            --zinc-500: #71717a;
-            --zinc-400: #a1a1aa;
-            --zinc-300: #d4d4d8;
-            --zinc-200: #e4e4e7;
-            --zinc-100: #f4f4f5;
-            --zinc-50: #fafafa;
+            --nb-black: #000000;
+            --nb-white: #FFFFFF;
+            --nb-offwhite: #F8F7F4;
+            --nb-yellow: #FFE66D;
+            --nb-red: #FF6B6B;
+            --nb-teal: #4ECDC4;
+            --nb-pink: #F38181;
+            --nb-green: #95E1D3;
+            --nb-purple: #A66CFF;
+            --nb-orange: #FFB347;
+            --nb-blue: #6BB5FF;
+            --nb-gray: #E8E8E8;
+            --nb-dark: #1A1A2E;
+            --nb-border: 3px solid #000;
+            --nb-border-thick: 4px solid #000;
+            --nb-shadow: 6px 6px 0px #000;
+            --nb-shadow-sm: 4px 4px 0px #000;
+            --nb-shadow-lg: 8px 8px 0px #000;
+            --nb-shadow-hover: 10px 10px 0px #000;
+            --nb-radius: 12px;
+            --nb-radius-sm: 8px;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
         }
 
         * {
@@ -37,10 +46,13 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--canvas-bg);
+            font-family: var(--font-body);
+            background: var(--nb-offwhite);
+            color: var(--nb-black);
+            line-height: 1.6;
             min-height: 100vh;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         .main-content {
@@ -51,15 +63,16 @@
 
         /* Top Bar */
         .top-bar {
-            background: var(--card-bg);
+            background: var(--nb-white);
             padding: 16px 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid var(--zinc-100);
+            border-bottom: var(--nb-border);
             position: sticky;
             top: 0;
             z-index: 500;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .top-bar-left {
@@ -70,20 +83,53 @@
 
         .top-bar-toggle {
             display: none;
-            background: none;
-            border: none;
+            background: var(--nb-white);
+            border: var(--nb-border);
             font-size: 1.2rem;
-            color: var(--zinc-600);
+            color: var(--nb-black);
             cursor: pointer;
-            padding: 4px;
+            padding: 8px 12px;
+            border-radius: var(--nb-radius-sm);
+            box-shadow: var(--nb-shadow-sm);
+            transition: all 0.15s ease;
+        }
+
+        .top-bar-toggle:hover {
+            background: var(--nb-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .top-bar-toggle:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
         }
 
         .top-bar-left h4 {
-            font-size: 1.2rem;
+            font-family: var(--font-display);
+            font-size: 1.3rem;
             font-weight: 700;
-            color: var(--zinc-800);
+            color: var(--nb-black);
             margin-bottom: 0;
             letter-spacing: -0.3px;
+            text-transform: uppercase;
+        }
+
+        .maintenance-badge-top {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--nb-orange);
+            color: var(--nb-black);
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .top-bar-right {
@@ -93,29 +139,33 @@
         }
 
         .top-bar-date {
+            font-family: var(--font-display);
             font-size: 0.85rem;
-            color: var(--zinc-500);
-            font-weight: 500;
+            color: var(--nb-dark);
+            font-weight: 600;
         }
 
         .top-bar-right .dropdown-toggle {
-            background: var(--zinc-50);
-            border: 1px solid var(--zinc-200);
-            border-radius: 10px;
-            padding: 8px 16px;
+            background: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 10px 16px;
+            font-family: var(--font-body);
             font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--zinc-700);
+            font-weight: 600;
+            color: var(--nb-black);
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
             transition: all 0.15s ease;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .top-bar-right .dropdown-toggle:hover {
-            background: var(--zinc-100);
-            border-color: var(--zinc-300);
+            background: var(--nb-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
         .top-bar-right .dropdown-toggle::after {
@@ -123,37 +173,42 @@
         }
 
         .top-bar-right .dropdown-menu {
-            border-radius: 12px;
-            border: 1px solid var(--zinc-200);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-            padding: 6px;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow);
+            padding: 8px;
             min-width: 180px;
+            background: var(--nb-white);
         }
 
         .top-bar-right .dropdown-item {
-            border-radius: 8px;
-            padding: 8px 12px;
+            border-radius: var(--nb-radius-sm);
+            padding: 10px 14px;
+            font-family: var(--font-body);
             font-size: 0.85rem;
-            color: var(--zinc-700);
+            font-weight: 600;
+            color: var(--nb-black);
             display: flex;
             align-items: center;
             gap: 10px;
+            transition: all 0.15s ease;
         }
 
         .top-bar-right .dropdown-item:hover {
-            background: var(--zinc-50);
+            background: var(--nb-yellow);
+            color: var(--nb-black);
         }
 
         .top-bar-right .dropdown-item.text-danger:hover {
-            background: #fef2f2;
+            background: var(--nb-red);
+            color: var(--nb-white);
         }
 
         .top-bar-right .dropdown-divider {
             margin: 4px 0;
-            border-color: var(--zinc-100);
+            border-color: var(--nb-gray);
         }
 
-        /* Content */
         .content-wrapper {
             padding: 28px 32px;
         }
@@ -163,17 +218,21 @@
         }
 
         .page-title-section h4 {
-            font-size: 1.3rem;
+            font-family: var(--font-display);
+            font-size: 1.5rem;
             font-weight: 700;
-            color: var(--zinc-800);
-            margin-bottom: 4px;
+            color: var(--nb-black);
+            margin-bottom: 6px;
             letter-spacing: -0.3px;
+            text-transform: uppercase;
         }
 
         .page-title-section p {
-            font-size: 0.88rem;
-            color: var(--zinc-500);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            color: var(--nb-dark);
             margin-bottom: 0;
+            font-weight: 500;
         }
 
         /* Actions Bar */
@@ -183,129 +242,61 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 16px;
-            background: var(--card-bg);
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
-            padding: 18px 24px;
+            background: var(--nb-white);
+            border-radius: var(--nb-radius);
+            box-shadow: var(--nb-shadow);
+            padding: 20px 24px;
             margin-bottom: 24px;
-            border: 1px solid rgba(0, 0, 0, 0.02);
+            border: var(--nb-border);
+        }
+
+        .actions-bar-left {
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            color: var(--nb-dark);
+            font-weight: 600;
+        }
+
+        .actions-bar-left strong {
+            color: var(--nb-black);
+            font-weight: 700;
         }
 
         .btn-primary-solid {
-            padding: 10px 22px;
-            background: var(--corporate-blue);
-            color: white;
-            border: none;
-            border-radius: 10px;
+            padding: 12px 24px;
+            background: var(--nb-purple);
+            color: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
             font-size: 0.82rem;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.15s ease;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             text-decoration: none;
+            box-shadow: var(--nb-shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .btn-primary-solid:hover {
-            background: var(--corporate-blue-hover);
-            color: white;
-        }
-
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 28px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
-            padding: 22px 24px;
-            transition: all 0.2s ease;
-            border: 1px solid rgba(0, 0, 0, 0.02);
-        }
-
-        .stat-card:hover {
-            box-shadow: var(--card-shadow-hover);
-            transform: translateY(-2px);
-        }
-
-        .stat-card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-
-        .stat-card-label {
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--zinc-500);
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        .stat-card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-
-        .stat-card-icon.blue {
-            background: #eff6ff;
-            color: #1d4ed8;
-        }
-
-        .stat-card-icon.emerald {
-            background: #ecfdf5;
-            color: #059669;
-        }
-
-        .stat-card-icon.amber {
-            background: #fffbeb;
-            color: #d97706;
-        }
-
-        .stat-card-icon.purple {
-            background: #f5f3ff;
-            color: #7c3aed;
-        }
-
-        .stat-card-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--zinc-900);
-            letter-spacing: -0.5px;
-            line-height: 1.2;
-        }
-
-        .stat-card-footer {
-            margin-top: 8px;
-        }
-
-        .stat-card-footer small {
-            font-size: 0.78rem;
-            color: var(--zinc-400);
+            background: var(--nb-pink);
+            color: var(--nb-black);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
         /* Active Semester Status Bar */
         .status-bar-card {
-            background: var(--card-bg);
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
+            background: var(--nb-white);
+            border-radius: var(--nb-radius);
+            box-shadow: var(--nb-shadow);
             padding: 0;
-            margin-bottom: 28px;
-            border: 1px solid rgba(0, 0, 0, 0.02);
+            margin-bottom: 24px;
+            border: var(--nb-border);
             overflow: hidden;
         }
 
@@ -316,7 +307,7 @@
             flex-wrap: wrap;
             gap: 16px;
             padding: 20px 24px;
-            border-left: 6px solid var(--corporate-blue);
+            border-left: 6px solid var(--nb-purple);
         }
 
         .status-bar-left {
@@ -328,47 +319,175 @@
         .status-icon {
             width: 48px;
             height: 48px;
-            border-radius: 14px;
-            background: #eff6ff;
-            color: var(--corporate-blue);
+            border-radius: var(--nb-radius-sm);
+            background: var(--nb-purple);
+            color: var(--nb-white);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.3rem;
             flex-shrink: 0;
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .status-info h5 {
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: var(--zinc-500);
+            font-family: var(--font-display);
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--nb-dark);
             margin-bottom: 2px;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
         }
 
         .status-info h3 {
+            font-family: var(--font-display);
             font-size: 1.2rem;
             font-weight: 700;
-            color: var(--zinc-800);
+            color: var(--nb-black);
             margin-bottom: 2px;
         }
 
         .status-info small {
             font-size: 0.78rem;
-            color: var(--zinc-400);
+            color: var(--nb-dark);
+            font-weight: 600;
         }
 
         .status-badge-pill {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: #eff6ff;
-            color: #1d4ed8;
+            background: var(--nb-green);
+            color: var(--nb-black);
+            font-family: var(--font-display);
             font-size: 0.82rem;
-            font-weight: 600;
+            font-weight: 700;
             padding: 6px 18px;
-            border-radius: 20px;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow-sm);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--nb-white);
+            border-radius: var(--nb-radius);
+            box-shadow: var(--nb-shadow);
+            padding: 22px 24px;
+            transition: all 0.2s ease;
+            border: var(--nb-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--nb-black);
+        }
+
+        .stat-card:nth-child(1)::before {
+            background: var(--nb-purple);
+        }
+
+        .stat-card:nth-child(2)::before {
+            background: var(--nb-green);
+        }
+
+        .stat-card:nth-child(3)::before {
+            background: var(--nb-orange);
+        }
+
+        .stat-card:nth-child(4)::before {
+            background: var(--nb-blue);
+        }
+
+        .stat-card:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: var(--nb-shadow-hover);
+        }
+
+        .stat-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .stat-card-label {
+            font-family: var(--font-display);
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--nb-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--nb-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow-sm);
+        }
+
+        .stat-card-icon.blue {
+            background: var(--nb-blue);
+            color: var(--nb-white);
+        }
+
+        .stat-card-icon.emerald {
+            background: var(--nb-green);
+            color: var(--nb-black);
+        }
+
+        .stat-card-icon.amber {
+            background: var(--nb-orange);
+            color: var(--nb-black);
+        }
+
+        .stat-card-icon.purple {
+            background: var(--nb-purple);
+            color: var(--nb-white);
+        }
+
+        .stat-card-value {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--nb-black);
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            text-shadow: 3px 3px 0 var(--nb-gray);
+        }
+
+        .stat-card-footer {
+            margin-top: 10px;
+        }
+
+        .stat-card-footer small {
+            font-family: var(--font-body);
+            font-size: 0.78rem;
+            color: var(--nb-dark);
+            font-weight: 600;
         }
 
         /* Semester Cards Grid */
@@ -380,24 +499,34 @@
         }
 
         .semester-item {
-            background: var(--card-bg);
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
+            background: var(--nb-white);
+            border-radius: var(--nb-radius);
+            box-shadow: var(--nb-shadow);
             padding: 24px;
-            border: 1px solid var(--zinc-100);
+            border: var(--nb-border);
             transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
         }
 
         .semester-item:hover {
-            box-shadow: var(--card-shadow-hover);
-            transform: translateY(-2px);
+            transform: translate(-3px, -3px);
+            box-shadow: var(--nb-shadow-hover);
         }
 
         .semester-item.active {
-            border-color: #bfdbfe;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.05), inset 0 0 0 1px var(--corporate-blue);
+            border-color: var(--nb-black);
+            box-shadow: var(--nb-shadow-hover);
+        }
+
+        .semester-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--nb-green);
         }
 
         .semester-item-top {
@@ -408,36 +537,41 @@
         }
 
         .semester-item-title {
+            font-family: var(--font-display);
             font-size: 1.1rem;
             font-weight: 700;
-            color: var(--zinc-800);
+            color: var(--nb-black);
             margin-bottom: 2px;
         }
 
         .semester-item-sub {
+            font-family: var(--font-body);
             font-size: 0.88rem;
-            color: var(--zinc-500);
-            font-weight: 400;
+            color: var(--nb-dark);
+            font-weight: 600;
         }
 
         .badge-status {
             display: inline-flex;
             align-items: center;
             gap: 5px;
+            font-family: var(--font-display);
             font-size: 0.72rem;
-            font-weight: 600;
+            font-weight: 700;
             padding: 4px 14px;
-            border-radius: 20px;
+            border-radius: var(--nb-radius-sm);
+            border: 2px solid var(--nb-black);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .badge-status.active {
-            background: #ecfdf5;
-            color: #059669;
+            background: var(--nb-green);
+            color: var(--nb-black);
         }
 
         .badge-status.inactive {
-            background: var(--zinc-100);
-            color: var(--zinc-500);
+            background: var(--nb-gray);
+            color: var(--nb-dark);
         }
 
         .semester-item-stats {
@@ -445,29 +579,33 @@
             align-items: center;
             gap: 12px;
             padding: 12px 16px;
-            background: var(--zinc-50);
-            border-radius: 10px;
+            background: var(--nb-offwhite);
+            border-radius: var(--nb-radius-sm);
             margin-bottom: 18px;
+            border: var(--nb-border);
         }
 
         .semester-item-stats i {
-            color: var(--zinc-400);
+            color: var(--nb-dark);
             font-size: 0.95rem;
         }
 
         .semester-item-stats .stat-text {
+            font-family: var(--font-body);
             font-size: 0.85rem;
-        }
-
-        .semester-item-stats .stat-text strong {
-            color: var(--zinc-800);
             font-weight: 600;
         }
 
+        .semester-item-stats .stat-text strong {
+            color: var(--nb-black);
+            font-weight: 700;
+        }
+
         .semester-item-stats .stat-text small {
-            color: var(--zinc-400);
+            color: var(--nb-dark);
             display: block;
             font-size: 0.75rem;
+            font-weight: 600;
         }
 
         .semester-item-actions {
@@ -478,67 +616,72 @@
 
         .btn-outline-sm {
             padding: 8px 18px;
-            border-radius: 10px;
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
             font-size: 0.8rem;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.15s ease;
             display: inline-flex;
             align-items: center;
             gap: 7px;
             text-decoration: none;
-            border: 1.5px solid var(--zinc-200);
-            background: var(--card-bg);
-            color: var(--zinc-700);
+            border: var(--nb-border);
+            background: var(--nb-white);
+            color: var(--nb-black);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .btn-outline-sm:hover {
-            border-color: var(--corporate-blue);
-            color: var(--corporate-blue);
-            background: #f8faff;
+            background: var(--nb-yellow);
+            color: var(--nb-black);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
         .btn-outline-sm.success {
-            border-color: #bbf7d0;
-            color: #16a34a;
-            background: var(--card-bg);
+            background: var(--nb-green);
+            color: var(--nb-black);
         }
 
         .btn-outline-sm.success:hover {
-            background: #f0fdf4;
-            border-color: #86efac;
+            background: var(--nb-teal);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
         .btn-outline-sm.danger {
-            border-color: #fca5a5;
-            color: #dc2626;
-            background: var(--card-bg);
+            background: var(--nb-white);
+            color: var(--nb-red);
         }
 
         .btn-outline-sm.danger:hover {
-            background: #fef2f2;
-            border-color: #f87171;
+            background: var(--nb-red);
+            color: var(--nb-white);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
         .btn-outline-sm:disabled {
             opacity: 0.5;
-            cursor: default;
+            cursor: not-allowed;
         }
 
         /* Info Box */
         .info-box {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            border-radius: 12px;
+            background: var(--nb-yellow);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius);
             padding: 20px 24px;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .info-box h6 {
+            font-family: var(--font-display);
             font-size: 0.88rem;
-            font-weight: 600;
-            color: #1e40af;
+            font-weight: 700;
+            color: var(--nb-black);
             margin-bottom: 10px;
             display: flex;
             align-items: center;
@@ -548,8 +691,10 @@
         .info-box ul {
             margin-bottom: 0;
             padding-left: 20px;
+            font-family: var(--font-body);
             font-size: 0.82rem;
-            color: #1e40af;
+            color: var(--nb-black);
+            font-weight: 600;
         }
 
         .info-box ul li {
@@ -558,38 +703,60 @@
 
         /* Alert flash */
         .alert-flash {
-            border-radius: 12px;
-            border: none;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
             padding: 16px 20px;
             margin-bottom: 24px;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-family: var(--font-body);
             font-size: 0.88rem;
+            font-weight: 600;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .alert-flash.success {
-            background: #f0fdf4;
-            color: #166534;
-            border-left: 4px solid #22c55e;
+            background: var(--nb-green);
+            color: var(--nb-black);
+            border-left: 5px solid var(--nb-black);
         }
 
         .alert-flash.error {
-            background: #fef2f2;
-            color: #991b1b;
-            border-left: 4px solid #ef4444;
+            background: var(--nb-red);
+            color: var(--nb-white);
+            border-left: 5px solid var(--nb-black);
+        }
+
+        .alert-flash.info {
+            background: var(--nb-blue);
+            color: var(--nb-white);
+            border-left: 5px solid var(--nb-black);
         }
 
         /* Modal */
         .modal-content-modern {
-            border-radius: 16px;
-            border: none;
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+            border-radius: var(--nb-radius);
+            border: var(--nb-border-thick);
+            box-shadow: var(--nb-shadow-lg);
         }
 
         .modal-header-modern {
             padding: 20px 24px;
-            border-bottom: 1px solid var(--zinc-100);
+            border-bottom: var(--nb-border);
+            background: var(--nb-purple);
+        }
+
+        .modal-header-modern .modal-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--nb-white);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-header-modern .btn-close {
+            filter: invert(1);
         }
 
         .modal-body-modern {
@@ -598,10 +765,88 @@
 
         .modal-footer-modern {
             padding: 16px 24px;
-            border-top: 1px solid var(--zinc-100);
+            border-top: var(--nb-border);
             display: flex;
             justify-content: flex-end;
             gap: 10px;
+        }
+
+        .btn-modal-secondary {
+            padding: 10px 20px;
+            background: var(--nb-white);
+            color: var(--nb-black);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: var(--nb-shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-modal-secondary:hover {
+            background: var(--nb-gray);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .btn-modal-primary {
+            padding: 10px 20px;
+            background: var(--nb-purple);
+            color: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: var(--nb-shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-modal-primary:hover {
+            background: var(--nb-pink);
+            color: var(--nb-black);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        /* Form Controls */
+        .form-control-custom {
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 10px 14px;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--nb-black);
+            background: var(--nb-white);
+            outline: none;
+            transition: all 0.15s ease;
+            width: 100%;
+            box-shadow: var(--nb-shadow-sm);
+        }
+
+        .form-control-custom:focus {
+            border-color: var(--nb-black);
+            box-shadow: var(--nb-shadow);
+            transform: translate(-2px, -2px);
+        }
+
+        .form-label-custom {
+            font-family: var(--font-display);
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--nb-black);
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         /* Sidebar Overlay */
@@ -722,11 +967,12 @@
     <div class="main-content">
         <header class="top-bar">
             <div class="top-bar-left">
-                <button class="top-bar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <button class="top-bar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <h4>Kelola Semester</h4>
                 @if ($isMaintenance ?? false)
-                    <span
-                        style="display:inline-flex;align-items:center;gap:6px;background:#fef2f2;color:#b91c1c;font-size:0.75rem;font-weight:600;padding:4px 12px;border-radius:20px;border:1px solid #fecaca;">
+                    <span class="maintenance-badge-top">
                         <i class="fas fa-tools"></i> Maintenance
                     </span>
                 @endif
@@ -735,7 +981,8 @@
                 <span class="top-bar-date"><i class="far fa-calendar-alt me-1"></i> {{ date('d F Y') }}</span>
                 <div class="dropdown">
                     <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle"></i> {{ session('username') }}
+                        <i class="fas fa-user-circle"></i>
+                        {{ session('username') }}
                         <i class="fas fa-chevron-down" style="font-size:0.7rem; opacity:0.6;"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
@@ -815,8 +1062,8 @@
 
             <!-- Actions Bar -->
             <div class="actions-bar">
-                <div style="font-size:0.88rem;color:var(--zinc-600);">
-                    <strong style="color:var(--zinc-800);">{{ $semesters->count() }}</strong> semester akademik
+                <div class="actions-bar-left">
+                    <strong>{{ $semesters->count() }}</strong> semester akademik
                 </div>
                 <button class="btn-primary-solid" data-bs-toggle="modal" data-bs-target="#addSemesterModal">
                     <i class="fas fa-plus"></i> Tambah Semester
@@ -906,7 +1153,7 @@
                     @endforeach
                 </div>
             @else
-                <div class="alert-flash" style="background:#eff6ff;color:#1e40af;border-left:4px solid #3b82f6;">
+                <div class="alert-flash info">
                     <i class="fas fa-info-circle"></i> Belum ada data semester. Silakan tambah semester baru.
                 </div>
             @endif
@@ -933,43 +1180,39 @@
                 <form method="POST" action="{{ url('/admin/manage-semester/store') }}">
                     @csrf
                     <div class="modal-header-modern d-flex align-items-center justify-content-between">
-                        <h5 class="modal-title" style="font-weight:700;font-size:1rem;">
-                            <i class="fas fa-plus me-2" style="color:var(--corporate-blue);"></i> Tambah Semester Baru
+                        <h5 class="modal-title">
+                            <i class="fas fa-plus me-2"></i> Tambah Semester Baru
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body-modern">
                         <div class="mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Tahun
-                                Akademik</label>
-                            <input type="text" class="form-control" id="tahun_akademik" name="tahun_akademik"
-                                required placeholder="Contoh: 2024/2025" pattern="\d{4}/\d{4}"
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
-                            <small
-                                style="color:var(--zinc-400);font-size:0.78rem;margin-top:4px;display:block;">Format:
-                                YYYY/YYYY</small>
+                            <label class="form-label-custom">Tahun Akademik</label>
+                            <input type="text" class="form-control-custom" id="tahun_akademik"
+                                name="tahun_akademik" required placeholder="Contoh: 2024/2025" pattern="\d{4}/\d{4}">
+                            <small class="form-hint">Format: YYYY/YYYY</small>
                         </div>
                         <div class="mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Semester</label>
-                            <select class="form-control" id="semester" name="semester" required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                            <label class="form-label-custom">Semester</label>
+                            <select class="form-select-custom" id="semester" name="semester" required>
                                 <option value="GANJIL">GANJIL</option>
                                 <option value="GENAP">GENAP</option>
                             </select>
                         </div>
-                        <div
-                            style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px;font-size:0.82rem;color:#92400e;">
+                        <div class="alert-flash warning" style="background:var(--nb-orange);color:var(--nb-black);">
                             <i class="fas fa-exclamation-triangle me-2"></i>
-                            Pastikan jadwal sudah dimasukkan untuk semester ini sebelum mengaktifkannya
+                            <div>
+                                <strong>Perhatian!</strong> Pastikan jadwal sudah dimasukkan untuk semester ini sebelum
+                                mengaktifkannya.
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer-modern">
-                        <button type="button" class="btn-outline-sm" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" name="add_semester" class="btn-primary-solid"
-                            style="padding:8px 20px;">
-                            <i class="fas fa-save"></i> Simpan Semester
+                        <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i> Batal
+                        </button>
+                        <button type="submit" name="add_semester" class="btn-modal-primary">
+                            <i class="fas fa-save me-1"></i> Simpan Semester
                         </button>
                     </div>
                 </form>
@@ -984,6 +1227,7 @@
             document.getElementById('sidebar').classList.toggle('show');
             document.getElementById('sidebarOverlay').classList.toggle('show');
         }
+
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 const s = document.getElementById('sidebar');
@@ -999,28 +1243,32 @@
         document.addEventListener('DOMContentLoaded', function() {
             const tahunInput = document.getElementById('tahun_akademik');
             if (tahunInput && !tahunInput.value) {
-                const y = new Date().getFullYear();
-                tahunInput.value = `${y}/${y + 1}`;
-            }
-            if (tahunInput) {
-                tahunInput.addEventListener('input', function(e) {
-                    let v = e.target.value.replace(/\D/g, '');
-                    if (v.length > 4) v = v.substring(0, 4) + '/' + v.substring(4, 8);
-                    e.target.value = v;
-                });
-            }
-            // Auto-hide notifications
-            setTimeout(function() {
-                const c = document.getElementById('notification-container');
-                if (c) {
-                    c.style.transition = 'opacity 0.5s ease';
-                    c.style.opacity = '0';
-                    setTimeout(() => {
-                        c.style.display = 'none';
-                    }, 500);
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = now.getMonth();
+                let tahun1, tahun2;
+                if (month >= 6) {
+                    tahun1 = year;
+                    tahun2 = year + 1;
+                } else {
+                    tahun1 = year - 1;
+                    tahun2 = year;
                 }
-            }, 5000);
+                tahunInput.value = `${tahun1}/${tahun2}`;
+            }
         });
+
+        // Auto-hide notifications
+        setTimeout(function() {
+            const container = document.getElementById('notification-container');
+            if (container) {
+                container.style.transition = 'opacity 0.5s ease';
+                container.style.opacity = '0';
+                setTimeout(() => {
+                    container.style.display = 'none';
+                }, 500);
+            }
+        }, 5000);
     </script>
 </body>
 

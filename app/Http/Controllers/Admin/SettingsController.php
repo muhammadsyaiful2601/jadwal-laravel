@@ -269,7 +269,7 @@ class SettingsController extends Controller
 
             $this->logActivity($request->session()->get('user_id'), 'Backup Database', 'Backup database berhasil: ' . $filename);
 
-            return response()->download($filePath)->deleteFileAfterSend(true);
+            return redirect('/admin/manage-settings')->with('success', 'Backup database berhasil dibuat!');
         } catch (\Exception $e) {
             // Fallback: PHP-based backup
             return $this->phpBackup($dbName ?? env('DB_DATABASE', 'jadwal_kampus'), $backupDir ?? storage_path('app/backups'), $filename ?? 'backup_fallback_' . date('Y-m-d_His') . '.sql', $request);
@@ -330,10 +330,148 @@ class SettingsController extends Controller
 
             $this->logActivity($request->session()->get('user_id'), 'Backup Database (PHP)', 'Backup database berhasil: ' . $filename);
 
-            return response()->download($filePath)->deleteFileAfterSend(true);
+            return redirect('/admin/manage-settings')->with('success', 'Backup database berhasil dibuat!');
         } catch (\Exception $e) {
             return redirect('/admin/manage-settings')->with('error', 'Gagal backup database: ' . $e->getMessage());
         }
+    }
+
+    public function clearCache(Request $request)
+    {
+        if (!$request->session()->has('user_id')) {
+            return redirect('/login');
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
+        // Check if superadmin
+        if ($request->session()->get('role') !== 'superadmin') {
+            return redirect('/admin/manage-settings')->with('error', 'Akses ditolak! Hanya superadmin yang dapat melakukan aksi ini.');
+        }
+
+        try {
+            // Clear application cache
+            \Illuminate\Support\Facades\Artisan::call('cache:clear');
+
+            // Clear route cache
+            \Illuminate\Support\Facades\Artisan::call('route:clear');
+
+            // Clear view cache
+            \Illuminate\Support\Facades\Artisan::call('view:clear');
+
+            // Clear configuration cache
+            \Illuminate\Support\Facades\Artisan::call('config:clear');
+
+            $this->logActivity($request->session()->get('user_id'), 'Clear Cache', 'Menghapus semua cache sistem');
+
+            return redirect('/admin/manage-settings')->with('success', 'Semua cache berhasil dibersihkan!');
+        } catch (\Exception $e) {
+            return redirect('/admin/manage-settings')->with('error', 'Gagal membersihkan cache: ' . $e->getMessage());
+        }
+    }
+
+    public function backupHistory(Request $request)
+    {
+        if (!$request->session()->has('user_id')) {
+            return redirect('/login');
+        }
+
+        // Check if superadmin
+        if ($request->session()->get('role') !== 'superadmin') {
+            return redirect('/admin/manage-settings')->with('error', 'Akses ditolak! Hanya superadmin yang dapat melihat riwayat backup.');
+        }
+
+        $backupDir = storage_path('app/backups');
+        $backups = [];
+
+        if (is_dir($backupDir)) {
+            $files = glob($backupDir . '/backup_*.sql');
+
+            foreach ($files as $file) {
+                $backups[] = [
+                    'filename' => basename($file),
+                    'path' => $file,
+                    'size' => filesize($file),
+                    'size_formatted' => $this->formatBytes(filesize($file)),
+                    'created_at' => date('Y-m-d H:i:s', filemtime($file)),
+                ];
+            }
+
+            // Sort by newest first
+            usort($backups, function ($a, $b) {
+                return strcmp($b['created_at'], $a['created_at']);
+            });
+        }
+
+        return view('admin.backup-history', compact('backups'));
+    }
+
+    public function downloadBackup(Request $request, $filename)
+    {
+        if (!$request->session()->has('user_id')) {
+            return redirect('/login');
+        }
+
+        // Check if superadmin
+        if ($request->session()->get('role') !== 'superadmin') {
+            return redirect('/admin/manage-settings')->with('error', 'Akses ditolak!');
+        }
+
+        $backupDir = storage_path('app/backups');
+        $filePath = $backupDir . '/' . $filename;
+
+        // Security check: ensure filename is valid and file exists
+        if (!preg_match('/^backup_.+\.sql$/', $filename) || !file_exists($filePath)) {
+            return redirect('/admin/backup-history')->with('error', 'File backup tidak ditemukan!');
+        }
+
+        $this->logActivity($request->session()->get('user_id'), 'Download Backup', 'Mengunduh backup: ' . $filename);
+
+        return response()->download($filePath);
+    }
+
+    public function deleteBackup(Request $request, $filename)
+    {
+        if (!$request->session()->has('user_id')) {
+            return redirect('/login');
+        }
+
+        // Check if superadmin
+        if ($request->session()->get('role') !== 'superadmin') {
+            return redirect('/admin/manage-settings')->with('error', 'Akses ditolak!');
+        }
+
+        $backupDir = storage_path('app/backups');
+        $filePath = $backupDir . '/' . $filename;
+
+        // Security check
+        if (!preg_match('/^backup_.+\.sql$/', $filename) || !file_exists($filePath)) {
+            return redirect('/admin/backup-history')->with('error', 'File backup tidak ditemukan!');
+        }
+
+        try {
+            unlink($filePath);
+
+            $this->logActivity($request->session()->get('user_id'), 'Hapus Backup', 'Menghapus backup: ' . $filename);
+
+            return redirect('/admin/backup-history')->with('success', 'Backup berhasil dihapus!');
+        } catch (\Exception $e) {
+            return redirect('/admin/backup-history')->with('error', 'Gagal menghapus backup: ' . $e->getMessage());
+        }
+    }
+
+    private function formatBytes($bytes, $precision = 2)
+    {
+        $units = ['B', 'KB', 'MB', 'GB'];
+
+        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
+            $bytes /= 1024;
+        }
+
+        return round($bytes, $precision) . ' ' . $units[$i];
     }
 
     private function logActivity($userId, $action, $description)

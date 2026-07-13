@@ -1,28 +1,342 @@
+<style>
+    /* Modern Modal Styles */
+    .modal-content-modern {
+        border-radius: var(--nb-radius);
+        border: var(--nb-border-thick);
+        box-shadow: var(--nb-shadow-lg);
+        background: var(--nb-white);
+    }
+
+    .modal-header-modern {
+        padding: 20px 24px;
+        border-bottom: var(--nb-border);
+        background: var(--nb-purple);
+        color: var(--nb-white);
+    }
+
+    .modal-header-modern .modal-title {
+        font-family: var(--font-display);
+        font-weight: 700;
+        color: var(--nb-white);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 1rem;
+        margin-bottom: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .modal-header-modern .btn-close {
+        filter: invert(1);
+        opacity: 0.8;
+        transition: all 0.15s ease;
+    }
+
+    .modal-header-modern .btn-close:hover {
+        opacity: 1;
+        transform: rotate(90deg);
+    }
+
+    .modal-body-modern {
+        padding: 24px;
+        max-height: 65vh;
+        overflow-y: auto;
+    }
+
+    .modal-footer-modern {
+        padding: 16px 24px;
+        border-top: var(--nb-border);
+        background: var(--nb-offwhite);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+    }
+
+    .form-label-custom {
+        font-family: var(--font-display);
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--nb-black);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control-custom {
+        border: var(--nb-border);
+        border-radius: var(--nb-radius-sm);
+        padding: 12px 16px;
+        font-family: var(--font-body);
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--nb-black);
+        background: var(--nb-white);
+        outline: none;
+        transition: all 0.2s ease;
+        width: 100%;
+        box-shadow: var(--nb-shadow-sm);
+    }
+
+    .form-control-custom:focus {
+        border-color: var(--nb-black);
+        box-shadow: var(--nb-shadow);
+        transform: translate(-2px, -2px);
+    }
+
+    .form-control-custom::placeholder {
+        color: var(--nb-dark);
+        opacity: 0.5;
+    }
+
+    .form-select-custom {
+        border: var(--nb-border);
+        border-radius: var(--nb-radius-sm);
+        padding: 10px 14px;
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--nb-black);
+        background: var(--nb-white);
+        outline: none;
+        transition: all 0.15s ease;
+        width: 100%;
+        box-shadow: var(--nb-shadow-sm);
+        cursor: pointer;
+    }
+
+    .form-select-custom:focus {
+        border-color: var(--nb-black);
+        box-shadow: var(--nb-shadow);
+        transform: translate(-2px, -2px);
+    }
+
+    .form-hint {
+        display: block;
+        margin-top: 6px;
+        font-size: 0.8rem;
+        color: var(--nb-dark);
+        font-weight: 600;
+    }
+
+    .modal-section-title {
+        font-family: var(--font-display);
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--nb-white);
+        background: var(--nb-dark);
+        padding: 10px 16px;
+        border-radius: var(--nb-radius-sm);
+        margin-bottom: 18px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 2px solid var(--nb-black);
+        box-shadow: var(--nb-shadow-sm);
+    }
+
+    .modal-section-title i {
+        font-size: 0.85rem;
+        color: var(--nb-yellow);
+    }
+
+    .form-group-modal {
+        margin-bottom: 18px;
+    }
+
+    .form-group-modal:last-child {
+        margin-bottom: 0;
+    }
+
+    .input-icon-wrapper {
+        position: relative;
+    }
+
+    .input-icon-wrapper .input-icon-left {
+        position: absolute;
+        left: 12px;
+        top: 38px;
+        background: var(--nb-yellow);
+        border: 2px solid var(--nb-black);
+        border-radius: var(--nb-radius-sm);
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        color: var(--nb-black);
+        z-index: 2;
+        box-shadow: var(--nb-shadow-sm);
+    }
+
+    .input-icon-wrapper .form-control-custom,
+    .input-icon-wrapper .form-select-custom {
+        padding-left: 48px;
+        padding-top: 14px;
+        padding-bottom: 14px;
+    }
+
+    .form-row-enhanced {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+        margin-bottom: 20px;
+    }
+
+    .form-row-enhanced.three-cols {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .form-divider {
+        height: 3px;
+        background: repeating-linear-gradient(45deg,
+                var(--nb-gray),
+                var(--nb-gray) 4px,
+                var(--nb-offwhite) 4px,
+                var(--nb-offwhite) 8px);
+        border-radius: 2px;
+        margin: 24px 0;
+        border: none;
+        box-shadow: var(--nb-shadow-sm);
+    }
+
+    .readonly-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--nb-green);
+        color: var(--nb-black);
+        font-family: var(--font-display);
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: var(--nb-radius-sm);
+        border: 2px solid var(--nb-black);
+        box-shadow: var(--nb-shadow-sm);
+        margin-top: 8px;
+    }
+
+    .readonly-badge i {
+        font-size: 0.65rem;
+    }
+
+    .btn-modal-primary {
+        padding: 12px 28px;
+        background: var(--nb-purple);
+        color: var(--nb-white);
+        border: var(--nb-border);
+        border-radius: var(--nb-radius-sm);
+        font-family: var(--font-display);
+        font-size: 0.85rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: var(--nb-shadow-sm);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-modal-primary:hover {
+        background: var(--nb-pink);
+        color: var(--nb-black);
+        transform: translate(-2px, -2px);
+        box-shadow: var(--nb-shadow);
+    }
+
+    .btn-modal-primary:active {
+        transform: translate(2px, 2px);
+        box-shadow: none;
+    }
+
+    .btn-modal-secondary {
+        padding: 12px 28px;
+        background: var(--nb-white);
+        color: var(--nb-black);
+        border: var(--nb-border);
+        border-radius: var(--nb-radius-sm);
+        font-family: var(--font-display);
+        font-size: 0.85rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: var(--nb-shadow-sm);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-modal-secondary:hover {
+        background: var(--nb-gray);
+        transform: translate(-2px, -2px);
+        box-shadow: var(--nb-shadow);
+    }
+
+    .btn-modal-secondary:active {
+        transform: translate(2px, 2px);
+        box-shadow: none;
+    }
+
+    @media (max-width: 768px) {
+        .form-row-enhanced {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row-enhanced.three-cols {
+            grid-template-columns: 1fr;
+        }
+
+        .modal-footer-modern {
+            flex-direction: column-reverse;
+        }
+
+        .modal-footer-modern button {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
 <!-- Add Modal -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content modal-content-custom">
+        <div class="modal-content modal-content-modern">
             <form method="POST" action="{{ url('/admin/manage-schedule/store') }}" id="addScheduleForm">
                 @csrf
-                <div class="modal-header-custom d-flex align-items-center justify-content-between">
-                    <h5 class="modal-title" style="font-weight:700;font-size:1rem;">
-                        <i class="fas fa-plus me-2" style="color:var(--corporate-blue);"></i> Tambah Jadwal Baru
+                <div class="modal-header-modern d-flex align-items-center justify-content-between">
+                    <h5 class="modal-title">
+                        <i class="fas fa-plus me-2"></i> Tambah Jadwal Baru
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body-custom">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Kelas</label>
-                            <input type="text" name="kelas" class="form-control" required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                <div class="modal-body-modern">
+                    <div class="modal-section-title">
+                        <i class="fas fa-info-circle"></i> Informasi Kelas
+                    </div>
+                    <div class="form-row-enhanced">
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Kelas</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-users"></i>
+                            </span>
+                            <input type="text" name="kelas" class="form-control-custom" required
+                                placeholder="Contoh: TI-1A">
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Hari</label>
-                            <select name="hari" class="form-control" required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Hari</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-calendar-day"></i>
+                            </span>
+                            <select name="hari" class="form-select-custom" required>
                                 <option value="">Pilih Hari</option>
                                 <option value="SENIN">SENIN</option>
                                 <option value="SELASA">SELASA</option>
@@ -32,80 +346,104 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Jam
-                                Ke</label>
-                            <input type="number" name="jam_ke" class="form-control" min="1" max="10"
-                                required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+
+                    <hr class="form-divider">
+
+                    <div class="modal-section-title">
+                        <i class="fas fa-clock"></i> Waktu Kuliah
+                    </div>
+                    <div class="form-row-enhanced three-cols">
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Jam Ke</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-hashtag"></i>
+                            </span>
+                            <input type="number" name="jam_ke" class="form-control-custom" min="1"
+                                max="10" required placeholder="1-10">
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Waktu
-                                Mulai</label>
-                            <input type="time" name="waktu_mulai" class="form-control" required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Waktu Mulai</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-play"></i>
+                            </span>
+                            <input type="time" name="waktu_mulai" class="form-control-custom" required>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Waktu
-                                Selesai</label>
-                            <input type="time" name="waktu_selesai" class="form-control" required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Waktu Selesai</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-stop"></i>
+                            </span>
+                            <input type="time" name="waktu_selesai" class="form-control-custom" required>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Mata
-                                Kuliah</label>
-                            <input type="text" name="mata_kuliah" class="form-control" required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+
+                    <hr class="form-divider">
+
+                    <div class="modal-section-title">
+                        <i class="fas fa-book"></i> Mata Kuliah & Dosen
+                    </div>
+                    <div class="form-row-enhanced">
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Mata Kuliah</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-book-open"></i>
+                            </span>
+                            <input type="text" name="mata_kuliah" class="form-control-custom" required
+                                placeholder="Nama mata kuliah">
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Dosen</label>
-                            <input type="text" name="dosen" class="form-control" required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Dosen</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-user-tie"></i>
+                            </span>
+                            <input type="text" name="dosen" class="form-control-custom" required
+                                placeholder="Nama dosen">
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Ruang</label>
-                            <select name="ruang" class="form-control" required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+
+                    <hr class="form-divider">
+
+                    <div class="modal-section-title">
+                        <i class="fas fa-map-marker-alt"></i> Ruangan & Semester
+                    </div>
+                    <div class="form-row-enhanced three-cols">
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Ruang</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-door-open"></i>
+                            </span>
+                            <select name="ruang" class="form-select-custom" required>
                                 <option value="">Pilih Ruang</option>
                                 @foreach ($rooms as $room)
                                     <option value="{{ $room }}">{{ $room }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Semester</label>
-                            <input type="text" name="semester" class="form-control" value="{{ $semesterAktif }}"
-                                readonly
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;background:#f4f4f5;color:var(--zinc-600);">
+                        <div>
+                            <label class="form-label-custom">Semester</label>
+                            <input type="text" name="semester" class="form-control-custom"
+                                value="{{ $semesterAktif }}" readonly>
+                            <span class="readonly-badge">
+                                <i class="fas fa-lock"></i> Otomatis
+                            </span>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Tahun
-                                Akademik</label>
-                            <input type="text" name="tahun_akademik" class="form-control"
-                                value="{{ $tahunAkademikAktif }}" readonly
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;background:#f4f4f5;color:var(--zinc-600);">
+                        <div>
+                            <label class="form-label-custom">Tahun Akademik</label>
+                            <input type="text" name="tahun_akademik" class="form-control-custom"
+                                value="{{ $tahunAkademikAktif }}" readonly>
+                            <span class="readonly-badge">
+                                <i class="fas fa-lock"></i> Otomatis
+                            </span>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer-custom"
-                    style="padding:16px 24px;border-top:1px solid var(--zinc-100);display:flex;justify-content:flex-end;gap:10px;">
-                    <button type="button" class="btn-outline-secondary-custom" data-bs-dismiss="modal"
-                        style="padding:8px 20px;">Batal</button>
-                    <button type="submit" class="btn-primary-solid" style="padding:8px 20px;" id="btnSaveSchedule">
-                        <i class="fas fa-save me-2"></i> Simpan</button>
+                <div class="modal-footer-modern">
+                    <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i> Batal
+                    </button>
+                    <button type="submit" class="btn-modal-primary" id="btnSaveSchedule">
+                        <i class="fas fa-save me-1"></i> Simpan
+                    </button>
                 </div>
             </form>
         </div>
@@ -115,29 +453,35 @@
 <!-- Edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content modal-content-custom">
+        <div class="modal-content modal-content-modern">
             <form method="POST" action="" id="editScheduleForm">
                 @csrf
                 <input type="hidden" name="id" id="edit_id">
-                <div class="modal-header-custom d-flex align-items-center justify-content-between">
-                    <h5 class="modal-title" style="font-weight:700;font-size:1rem;">
-                        <i class="fas fa-edit me-2" style="color:var(--corporate-blue);"></i> Edit Jadwal
+                <div class="modal-header-modern d-flex align-items-center justify-content-between">
+                    <h5 class="modal-title">
+                        <i class="fas fa-edit me-2"></i> Edit Jadwal
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body-custom">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Kelas</label>
-                            <input type="text" name="kelas" id="edit_kelas" class="form-control" required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                <div class="modal-body-modern">
+                    <div class="modal-section-title">
+                        <i class="fas fa-info-circle"></i> Informasi Kelas
+                    </div>
+                    <div class="form-row-enhanced">
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Kelas</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-users"></i>
+                            </span>
+                            <input type="text" name="kelas" id="edit_kelas" class="form-control-custom"
+                                required placeholder="Contoh: TI-1A">
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Hari</label>
-                            <select name="hari" id="edit_hari" class="form-control" required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Hari</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-calendar-day"></i>
+                            </span>
+                            <select name="hari" id="edit_hari" class="form-select-custom" required>
                                 <option value="">Pilih Hari</option>
                                 <option value="SENIN">SENIN</option>
                                 <option value="SELASA">SELASA</option>
@@ -147,86 +491,105 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Jam
-                                Ke</label>
-                            <input type="number" name="jam_ke" id="edit_jam_ke" class="form-control"
-                                min="1" max="10" required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+
+                    <hr class="form-divider">
+
+                    <div class="modal-section-title">
+                        <i class="fas fa-clock"></i> Waktu Kuliah
+                    </div>
+                    <div class="form-row-enhanced three-cols">
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Jam Ke</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-hashtag"></i>
+                            </span>
+                            <input type="number" name="jam_ke" id="edit_jam_ke" class="form-control-custom"
+                                min="1" max="10" required placeholder="1-10">
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Waktu
-                                Mulai</label>
-                            <input type="time" name="waktu_mulai" id="edit_waktu_mulai" class="form-control"
-                                required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Waktu Mulai</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-play"></i>
+                            </span>
+                            <input type="time" name="waktu_mulai" id="edit_waktu_mulai"
+                                class="form-control-custom" required>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Waktu
-                                Selesai</label>
-                            <input type="time" name="waktu_selesai" id="edit_waktu_selesai" class="form-control"
-                                required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Waktu Selesai</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-stop"></i>
+                            </span>
+                            <input type="time" name="waktu_selesai" id="edit_waktu_selesai"
+                                class="form-control-custom" required>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Mata
-                                Kuliah</label>
-                            <input type="text" name="mata_kuliah" id="edit_mata_kuliah" class="form-control"
-                                required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+
+                    <hr class="form-divider">
+
+                    <div class="modal-section-title">
+                        <i class="fas fa-book"></i> Mata Kuliah & Dosen
+                    </div>
+                    <div class="form-row-enhanced">
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Mata Kuliah</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-book-open"></i>
+                            </span>
+                            <input type="text" name="mata_kuliah" id="edit_mata_kuliah"
+                                class="form-control-custom" required placeholder="Nama mata kuliah">
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Dosen</label>
-                            <input type="text" name="dosen" id="edit_dosen" class="form-control" required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Dosen</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-user-tie"></i>
+                            </span>
+                            <input type="text" name="dosen" id="edit_dosen" class="form-control-custom"
+                                required placeholder="Nama dosen">
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Ruang</label>
-                            <select name="ruang" id="edit_ruang" class="form-control" required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+
+                    <hr class="form-divider">
+
+                    <div class="modal-section-title">
+                        <i class="fas fa-map-marker-alt"></i> Ruangan & Semester
+                    </div>
+                    <div class="form-row-enhanced three-cols">
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Ruang</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-door-open"></i>
+                            </span>
+                            <select name="ruang" id="edit_ruang" class="form-select-custom" required>
                                 <option value="">Pilih Ruang</option>
                                 @foreach ($rooms as $room)
                                     <option value="{{ $room }}">{{ $room }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Semester</label>
-                            <select name="semester" id="edit_semester" class="form-control" required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                        <div>
+                            <label class="form-label-custom">Semester</label>
+                            <select name="semester" id="edit_semester" class="form-select-custom" required>
                                 <option value="GANJIL">GANJIL</option>
                                 <option value="GENAP">GENAP</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label
-                                style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Tahun
-                                Akademik</label>
+                        <div class="input-icon-wrapper">
+                            <label class="form-label-custom">Tahun Akademik</label>
+                            <span class="input-icon-left">
+                                <i class="fas fa-graduation-cap"></i>
+                            </span>
                             <input type="text" name="tahun_akademik" id="edit_tahun_akademik"
-                                class="form-control" placeholder="Contoh: 2024/2025" required
-                                style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;">
+                                class="form-control-custom" placeholder="Contoh: 2024/2025" required>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer-custom"
-                    style="padding:16px 24px;border-top:1px solid var(--zinc-100);display:flex;justify-content:flex-end;gap:10px;">
-                    <button type="button" class="btn-outline-secondary-custom" data-bs-dismiss="modal"
-                        style="padding:8px 20px;">Batal</button>
-                    <button type="submit" class="btn-primary-solid" style="padding:8px 20px;"
-                        id="btnUpdateSchedule">
-                        <i class="fas fa-save me-2"></i> Perbarui</button>
+                <div class="modal-footer-modern">
+                    <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i> Batal
+                    </button>
+                    <button type="submit" class="btn-modal-primary" id="btnUpdateSchedule">
+                        <i class="fas fa-save me-1"></i> Perbarui
+                    </button>
                 </div>
             </form>
         </div>
@@ -234,14 +597,11 @@
 </div>
 
 <script>
-    // Notification function
     function showNotification(type, message) {
         const container = document.getElementById('notification-container');
         const alertClass = type === 'success' ? 'alert-flash success' : 'alert-flash error';
         const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
-
         container.innerHTML = '<div class="' + alertClass + '"><i class="fas ' + icon + '"></i> ' + message + '</div>';
-
         setTimeout(function() {
             container.style.transition = 'opacity 0.5s ease';
             container.style.opacity = '0';
@@ -251,9 +611,7 @@
         }, 5000);
     }
 
-    // Global editSchedule function
     function editSchedule(data) {
-        // Populate the edit modal fields
         document.getElementById('edit_id').value = data.id;
         document.getElementById('edit_kelas').value = data.kelas;
         document.getElementById('edit_hari').value = data.hari;
@@ -262,8 +620,6 @@
         document.getElementById('edit_dosen').value = data.dosen;
         document.getElementById('edit_semester').value = data.semester;
         document.getElementById('edit_tahun_akademik').value = data.tahun_akademik;
-
-        // Parse waktu to get waktu_mulai and waktu_selesai
         if (data.waktu) {
             var waktuParts = data.waktu.split(' - ');
             if (waktuParts.length === 2) {
@@ -271,14 +627,8 @@
                 document.getElementById('edit_waktu_selesai').value = waktuParts[1].trim();
             }
         }
-
-        // Set room dropdown
         document.getElementById('edit_ruang').value = data.ruang;
-
-        // Set form action URL with the schedule ID
         document.getElementById('editScheduleForm').action = '{{ url('/admin/manage-schedule/update') }}/' + data.id;
-
-        // Show the modal
         var editModal = new bootstrap.Modal(document.getElementById('editModal'));
         editModal.show();
     }
@@ -286,12 +636,8 @@
     $(document).ready(function() {
         $('#addScheduleForm').on('submit', function(e) {
             e.preventDefault();
-
             var btn = $('#btnSaveSchedule');
-            var originalText = btn.html();
-            btn.prop('disabled', true);
-            btn.html('<i class="fas fa-spinner fa-spin me-2"></i> Menyimpan...');
-
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i> Menyimpan...');
             $.ajax({
                 url: $(this).attr('action'),
                 type: 'POST',
@@ -301,32 +647,108 @@
                         showNotification('success', response.message);
                         $('#addModal').modal('hide');
                         $('#addScheduleForm')[0].reset();
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1000);
+                        setTimeout(() => location.reload(), 1000);
                     } else {
                         showNotification('error', response.message);
                     }
                 },
                 error: function() {
-                    showNotification('error', 'Terjadi kesalahan. Silakan coba lagi.');
+                    showNotification('error', 'Terjadi kesalahan.');
                 },
                 complete: function() {
-                    btn.prop('disabled', false);
-                    btn.html(originalText);
+                    btn.prop('disabled', false).html(
+                        '<i class="fas fa-save me-1"></i> Simpan');
                 }
             });
         });
 
-        // Edit form AJAX submission
+        var bulkIndex = 1;
+        $('#btnAddMoreSchedule').click(function(e) {
+            e.preventDefault();
+            var container = $('#bulkSchedulesContainer');
+            var template = $('.bulk-schedule-item').first().clone();
+            template.attr('data-index', bulkIndex);
+            template.find('.item-number').text(bulkIndex + 1);
+            template.find('input, select').each(function() {
+                var name = $(this).attr('name');
+                if (name && name.indexOf('schedules[') >= 0) {
+                    $(this).attr('name', name.replace(/schedules\[\d+\]/, 'schedules[' +
+                        bulkIndex + ']'));
+                }
+                if ($(this).is('input[type="text"]') || $(this).is('input[type="time"]') || $(
+                        this).is('input[type="number"]')) {
+                    $(this).val('');
+                } else if ($(this).is('select')) {
+                    $(this).prop('selectedIndex', 0);
+                }
+            });
+            var removeBtn =
+                '<button type="button" class="btn-remove-item" onclick="removeBulkItem(this)"><i class="fas fa-trash-alt"></i> Hapus</button>';
+            template.append(removeBtn);
+            container.append(template);
+            bulkIndex++;
+            $('html, body').animate({
+                scrollTop: template.offset().top - 100
+            }, 300);
+        });
+
+        window.removeBulkItem = function(btn) {
+            if (confirm('Hapus jadwal ini?')) {
+                $(btn).closest('.bulk-schedule-item').remove();
+                reindexBulk();
+            }
+        };
+
+        function reindexBulk() {
+            var index = 0;
+            $('.bulk-schedule-item').each(function() {
+                $(this).attr('data-index', index);
+                $(this).find('.item-number').text(index + 1);
+                $(this).find('input, select').each(function() {
+                    var name = $(this).attr('name');
+                    if (name && name.indexOf('schedules[') >= 0) {
+                        $(this).attr('name', name.replace(/schedules\[\d+\]/, 'schedules[' +
+                            index + ']'));
+                    }
+                });
+                index++;
+            });
+            bulkIndex = index;
+        }
+
+        $('#bulkAddForm').on('submit', function(e) {
+            e.preventDefault();
+            var btn = $('#btnBulkSave');
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i> Menyimpan...');
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        showNotification('success', response.message);
+                        $('#bulkAddModal').modal('hide');
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showNotification('error', response.message);
+                        btn.prop('disabled', false).html(
+                            '<i class="fas fa-save me-1"></i> Simpan Semua');
+                    }
+                },
+                error: function(xhr) {
+                    var msg = xhr.responseJSON && xhr.responseJSON.message ? xhr
+                        .responseJSON.message : 'Terjadi kesalahan.';
+                    showNotification('error', msg);
+                    btn.prop('disabled', false).html(
+                        '<i class="fas fa-save me-1"></i> Simpan Semua');
+                }
+            });
+        });
+
         $('#editScheduleForm').on('submit', function(e) {
             e.preventDefault();
-
             var btn = $('#btnUpdateSchedule');
-            var originalText = btn.html();
-            btn.prop('disabled', true);
-            btn.html('<i class="fas fa-spinner fa-spin me-2"></i> Menyimpan...');
-
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i> Menyimpan...');
             $.ajax({
                 url: $(this).attr('action'),
                 type: 'POST',
@@ -335,137 +757,268 @@
                     if (response.success) {
                         showNotification('success', response.message);
                         $('#editModal').modal('hide');
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1000);
+                        setTimeout(() => location.reload(), 1000);
                     } else {
                         showNotification('error', response.message);
                     }
                 },
                 error: function(xhr) {
-                    var msg = 'Terjadi kesalahan. Silakan coba lagi.';
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        msg = xhr.responseJSON.message;
-                    }
+                    var msg = xhr.responseJSON && xhr.responseJSON.message ? xhr
+                        .responseJSON.message : 'Terjadi kesalahan.';
                     showNotification('error', msg);
                 },
                 complete: function() {
-                    btn.prop('disabled', false);
-                    btn.html(originalText);
+                    btn.prop('disabled', false).html(
+                        '<i class="fas fa-save me-1"></i> Perbarui');
                 }
             });
         });
 
-        // Delete All AJAX
-        $('#btnDeleteAll').on('click', function() {
-            if (!confirm('Yakin hapus SEMUA data jadwal? Tindakan ini tidak dapat dibatalkan.')) {
-                return false;
-            }
-
-            var btn = $(this);
-            var originalText = btn.html();
-
-            $.ajax({
-                url: '{{ url('/admin/manage-schedule/delete-all') }}',
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    if (response.success) {
-                        showNotification('success', response.message);
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1500);
-                    } else {
-                        showNotification('error', response.message);
+        $('#btnDeleteAll').click(function(e) {
+            e.preventDefault();
+            if (confirm('Yakin hapus SEMUA data jadwal? Tindakan ini tidak dapat dibatalkan.')) {
+                $.ajax({
+                    url: '{{ url('/admin/manage-schedule/delete-all') }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            showNotification('success', response.message);
+                            setTimeout(() => location.reload(), 1500);
+                        } else {
+                            showNotification('error', response.message);
+                        }
+                    },
+                    error: function() {
+                        showNotification('error', 'Terjadi kesalahan.');
                     }
-                },
-                error: function() {
-                    showNotification('error', 'Terjadi kesalahan. Silakan coba lagi.');
-                }
-            });
+                });
+            }
         });
     });
 </script>
 
 <!-- Bulk Add Modal -->
 <div class="modal fade" id="bulkAddModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content modal-content-custom">
-            <form method="POST" action="{{ url('/admin/manage-schedule/bulk-store') }}">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content modal-content-modern">
+            <form method="POST" action="{{ url('/admin/manage-schedule/store-bulk') }}" id="bulkAddForm">
                 @csrf
-                <div class="modal-header-custom d-flex align-items-center justify-content-between">
-                    <h5 class="modal-title" style="font-weight:700;font-size:1rem;">
-                        <i class="fas fa-layer-group me-2" style="color:var(--corporate-blue);"></i> Tambah Jadwal
-                        Massal
+                <div class="modal-header-modern d-flex align-items-center justify-content-between">
+                    <h5 class="modal-title">
+                        <i class="fas fa-layer-group me-2"></i> Tambah Jadwal Massal
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body-custom">
-                    <div class="alert alert-info"
-                        style="background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:10px;padding:14px 18px;font-size:0.85rem;">
-                        <i class="fas fa-info-circle me-2"></i> Masukkan data jadwal dalam format CSV dengan kolom:
-                        Kelas, Hari, Jam Ke, Waktu Mulai, Waktu Selesai, Mata Kuliah, Dosen, Ruang, Semester, Tahun
-                        Akademik
+                <div class="modal-body-modern">
+                    <div class="alert-flash info"
+                        style="background:var(--nb-teal);color:var(--nb-black);margin-bottom:20px;">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <div>
+                            <strong>Input Multiple Jadwal:</strong> Tambahkan beberapa jadwal sekaligus dengan mengisi
+                            form di bawah ini. Klik tombol <strong>"Tambah Form"</strong> untuk menambahkan entri baru.
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label
-                            style="font-size:0.82rem;font-weight:600;color:var(--zinc-700);margin-bottom:6px;display:block;">Data
-                            CSV</label>
-                        <textarea name="bulk_data" class="form-control" rows="10"
-                            placeholder="Kelas,Hari,Jam Ke,Waktu Mulai,Waktu Selesai,Mata Kuliah,Dosen,Ruang,Semester,Tahun Akademik&#10;TI-1A,SENIN,1,08:00,09:40,Pemrograman Web,John Doe,R-101,GANJIL,2024/2025"
-                            required
-                            style="padding:10px 14px;border:1.5px solid var(--zinc-200);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;width:100%;"></textarea>
+
+                    <div id="bulkSchedulesContainer">
+                        <div class="bulk-schedule-item" data-index="0">
+                            <div class="modal-section-title">
+                                <i class="fas fa-calendar-alt"></i> Jadwal ke-<span class="item-number">1</span>
+                            </div>
+                            <div class="form-row-enhanced">
+                                <div class="input-icon-wrapper">
+                                    <label class="form-label-custom">Kelas</label>
+                                    <span class="input-icon-left"><i class="fas fa-users"></i></span>
+                                    <input type="text" name="schedules[0][kelas]" class="form-control-custom"
+                                        required placeholder="Contoh: TI-1A">
+                                </div>
+                                <div class="input-icon-wrapper">
+                                    <label class="form-label-custom">Hari</label>
+                                    <span class="input-icon-left"><i class="fas fa-calendar-day"></i></span>
+                                    <select name="schedules[0][hari]" class="form-select-custom" required>
+                                        <option value="">Pilih Hari</option>
+                                        <option value="SENIN">SENIN</option>
+                                        <option value="SELASA">SELASA</option>
+                                        <option value="RABU">RABU</option>
+                                        <option value="KAMIS">KAMIS</option>
+                                        <option value="JUMAT">JUMAT</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row-enhanced three-cols">
+                                <div class="input-icon-wrapper">
+                                    <label class="form-label-custom">Jam Ke</label>
+                                    <span class="input-icon-left"><i class="fas fa-hashtag"></i></span>
+                                    <input type="number" name="schedules[0][jam_ke]" class="form-control-custom"
+                                        min="1" max="10" required placeholder="1-10">
+                                </div>
+                                <div class="input-icon-wrapper">
+                                    <label class="form-label-custom">Waktu Mulai</label>
+                                    <span class="input-icon-left"><i class="fas fa-play"></i></span>
+                                    <input type="time" name="schedules[0][waktu_mulai]"
+                                        class="form-control-custom" required>
+                                </div>
+                                <div class="input-icon-wrapper">
+                                    <label class="form-label-custom">Waktu Selesai</label>
+                                    <span class="input-icon-left"><i class="fas fa-stop"></i></span>
+                                    <input type="time" name="schedules[0][waktu_selesai]"
+                                        class="form-control-custom" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row-enhanced">
+                                <div class="input-icon-wrapper">
+                                    <label class="form-label-custom">Mata Kuliah</label>
+                                    <span class="input-icon-left"><i class="fas fa-book-open"></i></span>
+                                    <input type="text" name="schedules[0][mata_kuliah]"
+                                        class="form-control-custom" required placeholder="Nama mata kuliah">
+                                </div>
+                                <div class="input-icon-wrapper">
+                                    <label class="form-label-custom">Dosen</label>
+                                    <span class="input-icon-left"><i class="fas fa-user-tie"></i></span>
+                                    <input type="text" name="schedules[0][dosen]" class="form-control-custom"
+                                        required placeholder="Nama dosen">
+                                </div>
+                            </div>
+
+                            <div class="form-row-enhanced three-cols">
+                                <div class="input-icon-wrapper">
+                                    <label class="form-label-custom">Ruang</label>
+                                    <span class="input-icon-left"><i class="fas fa-door-open"></i></span>
+                                    <select name="schedules[0][ruang]" class="form-select-custom" required>
+                                        <option value="">Pilih Ruang</option>
+                                        @foreach ($rooms as $room)
+                                            <option value="{{ $room }}">{{ $room }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label-custom">Semester</label>
+                                    <input type="text" name="schedules[0][semester]" class="form-control-custom"
+                                        value="{{ $semesterAktif }}" readonly>
+                                    <span class="readonly-badge"><i class="fas fa-lock"></i> Otomatis</span>
+                                </div>
+                                <div class="input-icon-wrapper">
+                                    <label class="form-label-custom">Tahun Akademik</label>
+                                    <span class="input-icon-left"><i class="fas fa-graduation-cap"></i></span>
+                                    <input type="text" name="schedules[0][tahun_akademik]"
+                                        class="form-control-custom" value="{{ $tahunAkademikAktif }}" readonly>
+                                    <span class="readonly-badge"><i class="fas fa-lock"></i> Otomatis</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+                    <button type="button" class="btn-outline-secondary-custom" id="btnAddMoreSchedule"
+                        style="width:100%;justify-content:center;margin-top:10px;">
+                        <i class="fas fa-plus"></i> Tambah Form
+                    </button>
                 </div>
-                <div class="modal-footer-custom"
-                    style="padding:16px 24px;border-top:1px solid var(--zinc-100);display:flex;justify-content:flex-end;gap:10px;">
-                    <button type="button" class="btn-outline-secondary-custom" data-bs-dismiss="modal"
-                        style="padding:8px 20px;">Batal</button>
-                    <button type="submit" class="btn-primary-solid" style="padding:8px 20px;"><i
-                            class="fas fa-upload me-2"></i> Import</button>
+                <div class="modal-footer-modern">
+                    <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i> Batal
+                    </button>
+                    <button type="submit" class="btn-modal-primary" id="btnBulkSave">
+                        <i class="fas fa-save me-1"></i> Simpan Semua
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<style>
+    .bulk-schedule-item {
+        background: var(--nb-offwhite);
+        border: var(--nb-border);
+        border-radius: var(--nb-radius);
+        padding: 20px;
+        margin-bottom: 16px;
+        position: relative;
+    }
+
+    .bulk-schedule-item .item-number {
+        background: var(--nb-yellow);
+        padding: 4px 12px;
+        border-radius: var(--nb-radius-sm);
+        border: 2px solid var(--nb-black);
+        box-shadow: var(--nb-shadow-sm);
+        font-weight: 700;
+    }
+
+    .btn-remove-item {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: var(--nb-red);
+        color: var(--nb-white);
+        border: var(--nb-border);
+        border-radius: var(--nb-radius-sm);
+        padding: 8px 14px;
+        font-family: var(--font-display);
+        font-size: 0.78rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        box-shadow: var(--nb-shadow-sm);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-remove-item:hover {
+        background: var(--nb-black);
+        transform: translate(-2px, -2px);
+        box-shadow: var(--nb-shadow);
+    }
+
+    .bulk-schedule-item:first-child .btn-remove-item {
+        display: none !important;
+    }
+</style>
+
 <!-- Delete All Modal -->
 <div class="modal fade" id="deleteAllModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content modal-content-custom">
-            <div class="modal-header-custom d-flex align-items-center justify-content-between"
-                style="border-color:#fecaca;">
-                <h5 class="modal-title" style="font-weight:700;font-size:1rem;color:#b91c1c;">
+        <div class="modal-content modal-content-modern">
+            <div class="modal-header-modern d-flex align-items-center justify-content-between"
+                style="border-color:var(--nb-red);">
+                <h5 class="modal-title" style="color:var(--nb-white);">
                     <i class="fas fa-exclamation-triangle me-2"></i> Konfirmasi Penghapusan
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body-custom">
+            <div class="modal-body-modern">
                 <div class="text-center mb-4">
                     <i class="fas fa-trash-alt"
-                        style="font-size:3rem;color:#fca5a5;margin-bottom:12px;display:block;"></i>
-                    <h5 style="font-weight:700;color:#b91c1c;font-size:1.1rem;">PERINGATAN!</h5>
+                        style="font-size:3rem;color:var(--nb-red);margin-bottom:12px;display:block;"></i>
+                    <h5 style="font-weight:700;color:var(--nb-red);font-size:1.1rem;text-transform:uppercase;">
+                        PERINGATAN!
+                    </h5>
                 </div>
                 <div
-                    style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:16px;margin-bottom:20px;">
-                    <h6 style="font-size:0.85rem;font-weight:600;color:#991b1b;margin-bottom:8px;"><i
-                            class="fas fa-exclamation-circle me-2"></i>Tindakan ini akan:</h6>
-                    <ul style="margin-bottom:0;padding-left:20px;font-size:0.85rem;color:#991b1b;">
+                    style="background:var(--nb-red);border:var(--nb-border);border-radius:var(--nb-radius-sm);padding:16px;margin-bottom:20px;color:var(--nb-white);">
+                    <h6 style="font-size:0.85rem;font-weight:700;color:var(--nb-white);margin-bottom:8px;">
+                        <i class="fas fa-exclamation-circle me-2"></i>Tindakan ini akan:
+                    </h6>
+                    <ul style="margin-bottom:0;padding-left:20px;font-size:0.85rem;font-weight:600;">
                         <li>Menghapus <strong>SEMUA {{ count($schedules) }} data</strong> jadwal</li>
                         <li>Data yang dihapus <strong>TIDAK DAPAT DIPULIHKAN</strong></li>
                     </ul>
                 </div>
             </div>
-            <div class="modal-footer-custom"
-                style="padding:16px 24px;border-top:1px solid var(--zinc-100);display:flex;justify-content:space-between;">
-                <button type="button" class="btn-outline-secondary-custom" data-bs-dismiss="modal"
-                    style="padding:8px 20px;">Batal</button>
+            <div class="modal-footer-modern d-flex justify-content-between">
+                <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Batal
+                </button>
                 <form method="POST" action="{{ url('/admin/manage-schedule/delete-all') }}">
                     @csrf
-                    <button type="submit" class="btn-destructive-outline" style="padding:8px 20px;"><i
-                            class="fas fa-trash-alt me-2"></i> Ya, Hapus Semua!</button>
+                    <button type="submit" class="btn-destructive-outline">
+                        <i class="fas fa-trash-alt me-1"></i> Ya, Hapus Semua!
+                    </button>
                 </form>
             </div>
         </div>

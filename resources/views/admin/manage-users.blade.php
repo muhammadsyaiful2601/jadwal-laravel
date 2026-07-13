@@ -7,28 +7,37 @@
     <title>Kelola Admin - Admin Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
     <style>
         :root {
-            --canvas-bg: #f1f5f9;
-            --card-bg: #ffffff;
-            --card-radius: 16px;
-            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.05);
-            --card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.08);
-            --corporate-blue: #1d4ed8;
-            --corporate-blue-hover: #1e3a8a;
-            --zinc-900: #18181b;
-            --zinc-800: #27272a;
-            --zinc-700: #3f3f46;
-            --zinc-600: #52525b;
-            --zinc-500: #71717a;
-            --zinc-400: #a1a1aa;
-            --zinc-300: #d4d4d8;
-            --zinc-200: #e4e4e7;
-            --zinc-100: #f4f4f5;
-            --zinc-50: #fafafa;
+            --nb-black: #000000;
+            --nb-white: #FFFFFF;
+            --nb-offwhite: #F8F7F4;
+            --nb-yellow: #FFE66D;
+            --nb-red: #FF6B6B;
+            --nb-teal: #4ECDC4;
+            --nb-pink: #F38181;
+            --nb-green: #95E1D3;
+            --nb-purple: #A66CFF;
+            --nb-orange: #FFB347;
+            --nb-blue: #6BB5FF;
+            --nb-gray: #E8E8E8;
+            --nb-dark: #1A1A2E;
+            --nb-border: 3px solid #000;
+            --nb-border-thick: 4px solid #000;
+            --nb-shadow: 6px 6px 0px #000;
+            --nb-shadow-sm: 4px 4px 0px #000;
+            --nb-shadow-lg: 8px 8px 0px #000;
+            --nb-shadow-hover: 10px 10px 0px #000;
+            --nb-radius: 12px;
+            --nb-radius-sm: 8px;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
         }
 
         * {
@@ -38,10 +47,13 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--canvas-bg);
+            font-family: var(--font-body);
+            background: var(--nb-offwhite);
+            color: var(--nb-black);
+            line-height: 1.6;
             min-height: 100vh;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         .main-content {
@@ -52,15 +64,16 @@
 
         /* Top Bar */
         .top-bar {
-            background: var(--card-bg);
+            background: var(--nb-white);
             padding: 16px 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid var(--zinc-100);
+            border-bottom: var(--nb-border);
             position: sticky;
             top: 0;
             z-index: 500;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .top-bar-left {
@@ -71,20 +84,36 @@
 
         .top-bar-toggle {
             display: none;
-            background: none;
-            border: none;
+            background: var(--nb-white);
+            border: var(--nb-border);
             font-size: 1.2rem;
-            color: var(--zinc-600);
+            color: var(--nb-black);
             cursor: pointer;
-            padding: 4px;
+            padding: 8px 12px;
+            border-radius: var(--nb-radius-sm);
+            box-shadow: var(--nb-shadow-sm);
+            transition: all 0.15s ease;
+        }
+
+        .top-bar-toggle:hover {
+            background: var(--nb-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .top-bar-toggle:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
         }
 
         .top-bar-left h4 {
-            font-size: 1.2rem;
+            font-family: var(--font-display);
+            font-size: 1.3rem;
             font-weight: 700;
-            color: var(--zinc-800);
+            color: var(--nb-black);
             margin-bottom: 0;
             letter-spacing: -0.3px;
+            text-transform: uppercase;
         }
 
         .top-bar-right {
@@ -94,29 +123,33 @@
         }
 
         .top-bar-date {
+            font-family: var(--font-display);
             font-size: 0.85rem;
-            color: var(--zinc-500);
-            font-weight: 500;
+            color: var(--nb-dark);
+            font-weight: 600;
         }
 
         .top-bar-right .dropdown-toggle {
-            background: var(--zinc-50);
-            border: 1px solid var(--zinc-200);
-            border-radius: 10px;
-            padding: 8px 16px;
+            background: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 10px 16px;
+            font-family: var(--font-body);
             font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--zinc-700);
+            font-weight: 600;
+            color: var(--nb-black);
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
             transition: all 0.15s ease;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .top-bar-right .dropdown-toggle:hover {
-            background: var(--zinc-100);
-            border-color: var(--zinc-300);
+            background: var(--nb-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
         .top-bar-right .dropdown-toggle::after {
@@ -124,47 +157,61 @@
         }
 
         .top-bar-right .dropdown-menu {
-            border-radius: 12px;
-            border: 1px solid var(--zinc-200);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-            padding: 6px;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow);
+            padding: 8px;
             min-width: 180px;
+            background: var(--nb-white);
         }
 
         .top-bar-right .dropdown-item {
-            border-radius: 8px;
-            padding: 8px 12px;
+            border-radius: var(--nb-radius-sm);
+            padding: 10px 14px;
+            font-family: var(--font-body);
             font-size: 0.85rem;
-            color: var(--zinc-700);
+            font-weight: 600;
+            color: var(--nb-black);
             display: flex;
             align-items: center;
             gap: 10px;
+            transition: all 0.15s ease;
         }
 
         .top-bar-right .dropdown-item:hover {
-            background: var(--zinc-50);
+            background: var(--nb-yellow);
+            color: var(--nb-black);
+        }
+
+        .top-bar-right .dropdown-item.text-danger {
+            color: var(--nb-red);
         }
 
         .top-bar-right .dropdown-item.text-danger:hover {
-            background: #fef2f2;
+            background: var(--nb-red);
+            color: var(--nb-white);
         }
 
         .top-bar-right .dropdown-divider {
             margin: 4px 0;
-            border-color: var(--zinc-100);
+            border-color: var(--nb-gray);
         }
 
         .maintenance-badge-top {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: #fef2f2;
-            color: #b91c1c;
+            background: var(--nb-orange);
+            color: var(--nb-black);
+            font-family: var(--font-display);
             font-size: 0.75rem;
-            font-weight: 600;
-            padding: 4px 12px;
-            border-radius: 20px;
-            border: 1px solid #fecaca;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            box-shadow: var(--nb-shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .content-wrapper {
@@ -176,64 +223,124 @@
         }
 
         .page-title-section h4 {
-            font-size: 1.3rem;
+            font-family: var(--font-display);
+            font-size: 1.5rem;
             font-weight: 700;
-            color: var(--zinc-800);
-            margin-bottom: 4px;
+            color: var(--nb-black);
+            margin-bottom: 6px;
             letter-spacing: -0.3px;
+            text-transform: uppercase;
         }
 
         .page-title-section p {
-            font-size: 0.88rem;
-            color: var(--zinc-500);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            color: var(--nb-dark);
             margin-bottom: 0;
+            font-weight: 500;
         }
 
-        /* Cards */
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
-            border: 1px solid rgba(0, 0, 0, 0.02);
-            margin-bottom: 20px;
+        /* Alert Cards */
+        .alert-custom {
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            font-weight: 600;
+            box-shadow: var(--nb-shadow-sm);
         }
 
-        .card-body {
-            padding: 24px;
+        .alert-custom.info {
+            background: var(--nb-blue);
+            color: var(--nb-white);
+            border-left: 5px solid var(--nb-black);
+        }
+
+        .alert-custom.warning {
+            background: var(--nb-orange);
+            color: var(--nb-black);
+            border-left: 5px solid var(--nb-black);
+        }
+
+        .alert-custom i {
+            font-size: 1.1rem;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        /* Action Button */
+        .btn-add-admin {
+            padding: 12px 24px;
+            background: var(--nb-purple);
+            color: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--nb-shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-add-admin:hover {
+            background: var(--nb-pink);
+            color: var(--nb-black);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .btn-add-admin:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
 
         /* Table Card */
         .table-card {
-            background: var(--card-bg);
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
-            border: 1px solid rgba(0, 0, 0, 0.02);
+            background: var(--nb-white);
+            border-radius: var(--nb-radius);
+            box-shadow: var(--nb-shadow);
+            border: var(--nb-border);
             margin-bottom: 28px;
+            overflow: hidden;
         }
 
         .table-card-header {
             padding: 20px 24px;
-            border-bottom: 1px solid var(--zinc-100);
+            border-bottom: var(--nb-border);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
+            background: var(--nb-purple);
         }
 
         .table-card-header h5 {
-            font-size: 0.95rem;
+            font-family: var(--font-display);
+            font-size: 1rem;
             font-weight: 700;
-            color: var(--zinc-800);
+            color: var(--nb-white);
             margin-bottom: 0;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .table-card-header h5 i {
-            color: var(--zinc-400);
-            font-size: 0.9rem;
+            font-size: 1rem;
         }
 
         .table-card-body {
@@ -248,95 +355,112 @@
         }
 
         .user-cell .avatar {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            background: var(--nb-purple);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 0.75rem;
+            color: var(--nb-white);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.875rem;
             flex-shrink: 0;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .user-cell .username {
-            font-weight: 600;
-            color: var(--zinc-800);
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--nb-black);
         }
 
         /* Badges */
-        .badge {
-            font-size: 0.6875rem;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 6px;
+        .badge-you {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-        }
-
-        .badge-you {
-            background: #dbeafe;
-            color: #1d4ed8;
+            background: var(--nb-blue);
+            color: var(--nb-white);
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            font-weight: 700;
             padding: 2px 8px;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            border-radius: 4px;
+            border-radius: var(--nb-radius-sm);
             margin-left: 6px;
+            border: 2px solid var(--nb-black);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .badge-role {
             padding: 3px 12px;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            border-radius: 6px;
-            background: var(--zinc-100);
-            color: var(--zinc-700);
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            font-weight: 700;
+            border-radius: var(--nb-radius-sm);
+            background: var(--nb-gray);
+            color: var(--nb-black);
             letter-spacing: 0.02em;
+            border: 2px solid var(--nb-black);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .badge-role.superadmin {
-            background: #f1f5f9;
-            color: #475569;
-            border: 1px solid var(--zinc-200);
+            background: var(--nb-orange);
+            color: var(--nb-black);
         }
 
         .badge-status {
             padding: 3px 10px;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            border-radius: 6px;
-            background: #d1fae5;
-            color: #059669;
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            font-weight: 700;
+            border-radius: var(--nb-radius-sm);
+            border: 2px solid var(--nb-black);
+            box-shadow: var(--nb-shadow-sm);
+        }
+
+        .badge-status.active {
+            background: var(--nb-green);
+            color: var(--nb-black);
+        }
+
+        .badge-status.inactive {
+            background: var(--nb-red);
+            color: var(--nb-white);
         }
 
         .badge-protected {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            background: #fef3c7;
-            color: #b45309;
+            background: var(--nb-yellow);
+            color: var(--nb-black);
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            font-weight: 700;
             padding: 2px 8px;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            border-radius: 4px;
+            border-radius: var(--nb-radius-sm);
             margin-left: 4px;
-            cursor: help;
+            border: 2px solid var(--nb-black);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .badge-lockout {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            background: #fee2e2;
-            color: #dc2626;
+            background: var(--nb-red);
+            color: var(--nb-white);
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            font-weight: 700;
             padding: 2px 8px;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            border-radius: 4px;
+            border-radius: var(--nb-radius-sm);
             margin-left: 4px;
+            border: 2px solid var(--nb-black);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .status-group {
@@ -346,145 +470,362 @@
             gap: 4px;
         }
 
+        .badge-verified {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--nb-green);
+            color: var(--nb-black);
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: var(--nb-radius-sm);
+            margin-left: 4px;
+            border: 2px solid var(--nb-black);
+            box-shadow: var(--nb-shadow-sm);
+        }
+
+        .badge-unverified {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--nb-orange);
+            color: var(--nb-black);
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: var(--nb-radius-sm);
+            margin-left: 4px;
+            border: 2px solid var(--nb-black);
+            box-shadow: var(--nb-shadow-sm);
+        }
+
         /* Action Buttons */
         .action-btn {
-            width: 32px;
-            height: 32px;
-            padding: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            background: var(--nb-white);
+            color: var(--nb-black);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 6px;
-            border: 1px solid transparent;
-            background: transparent;
-            color: var(--zinc-500);
             cursor: pointer;
             transition: all 0.15s ease;
-            font-size: 0.875rem;
             text-decoration: none;
+            font-size: 0.85rem;
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .action-btn:hover {
-            background: var(--zinc-50);
-            border-color: var(--zinc-200);
-            color: var(--zinc-800);
+            background: var(--nb-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
         }
 
         .action-btn:disabled {
-            opacity: 0.35;
+            opacity: 0.4;
             cursor: not-allowed;
         }
 
-        .action-btn.edit {
-            color: #475569;
-        }
-
         .action-btn.edit:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-            color: #1e293b;
-        }
-
-        .action-btn.password {
-            color: #475569;
+            background: var(--nb-teal);
+            color: var(--nb-black);
         }
 
         .action-btn.password:hover {
-            background: #eff6ff;
-            border-color: #bfdbfe;
-            color: #1e40af;
-        }
-
-        .action-btn.danger {
-            color: #dc2626;
+            background: var(--nb-blue);
+            color: var(--nb-white);
         }
 
         .action-btn.danger:hover {
-            background: #fee2e2;
-            border-color: #fecaca;
-            color: #dc2626;
+            background: var(--nb-red);
+            color: var(--nb-white);
         }
 
         .action-group {
             display: flex;
-            gap: 4px;
+            gap: 6px;
         }
 
-        .btn-add-admin {
-            background: #1e293b;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-add-admin:hover {
-            background: #0f172a;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
-        }
-
-        .btn-add-admin:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
+        /* Table */
         .table-clean {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.85rem;
+            font-family: var(--font-body);
+            font-size: 0.88rem;
         }
 
         .table-clean thead {
-            background: var(--zinc-50);
+            background: var(--nb-offwhite);
         }
 
         .table-clean thead th {
-            padding: 12px 24px;
-            font-weight: 600;
+            padding: 14px 18px;
+            font-family: var(--font-display);
+            font-weight: 700;
             font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
-            color: var(--zinc-500);
-            border-bottom: 1px solid var(--zinc-100);
+            letter-spacing: 0.5px;
+            color: var(--nb-black);
+            border-bottom: var(--nb-border);
             text-align: left;
             white-space: nowrap;
         }
 
         .table-clean tbody tr {
-            transition: background 0.12s ease;
+            transition: all 0.15s ease;
+            border-bottom: 1px solid var(--nb-gray);
         }
 
         .table-clean tbody tr:hover {
-            background: var(--zinc-50);
-        }
-
-        .table-clean tbody tr:not(:last-child) td {
-            border-bottom: 1px solid var(--zinc-100);
+            background: var(--nb-yellow);
+            transform: scale(1.01);
         }
 
         .table-clean tbody td {
-            padding: 12px 24px;
-            color: var(--zinc-700);
-            font-weight: 400;
+            padding: 14px 18px;
+            color: var(--nb-black);
+            font-weight: 500;
             vertical-align: middle;
         }
 
         .table-clean tbody tr:nth-child(even) {
-            background: rgba(0, 0, 0, 0.015);
+            background: var(--nb-offwhite);
         }
 
         .table-clean tbody tr:nth-child(even):hover {
-            background: var(--zinc-50);
+            background: var(--nb-yellow);
+        }
+
+        /* Mobile Cards */
+        .mobile-user-card {
+            background: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--nb-shadow-sm);
+        }
+
+        .mobile-user-card .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: var(--nb-border);
+        }
+
+        .mobile-user-card .card-body {
+            padding: 0;
+        }
+
+        .mobile-user-card .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            font-size: 0.85rem;
+        }
+
+        .mobile-user-card .info-label {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--nb-dark);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+        }
+
+        .mobile-user-card .info-value {
+            font-weight: 600;
+            color: var(--nb-black);
+        }
+
+        /* Modal */
+        .modal-content-custom {
+            border-radius: var(--nb-radius);
+            border: var(--nb-border-thick);
+            box-shadow: var(--nb-shadow-lg);
+        }
+
+        .modal-header-custom {
+            padding: 20px 24px;
+            border-bottom: var(--nb-border);
+            background: var(--nb-purple);
+        }
+
+        .modal-header-custom .modal-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--nb-white);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-header-custom .btn-close {
+            filter: invert(1);
+        }
+
+        .modal-body-custom {
+            padding: 24px;
+        }
+
+        .modal-footer-custom {
+            padding: 16px 24px;
+            border-top: var(--nb-border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-modal-secondary {
+            padding: 10px 20px;
+            background: var(--nb-white);
+            color: var(--nb-black);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: var(--nb-shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-modal-secondary:hover {
+            background: var(--nb-gray);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .btn-modal-primary {
+            padding: 10px 20px;
+            background: var(--nb-purple);
+            color: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: var(--nb-shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-modal-primary:hover {
+            background: var(--nb-pink);
+            color: var(--nb-black);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 100;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--nb-shadow);
+        }
+
+        .fab:hover {
+            transform: translate(-2px, -2px) scale(1.05);
+            box-shadow: var(--nb-shadow-hover);
+        }
+
+        /* Forms */
+        .form-label-custom {
+            font-family: var(--font-display);
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--nb-black);
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control-custom {
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 10px 14px;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--nb-black);
+            background: var(--nb-white);
+            outline: none;
+            transition: all 0.15s ease;
+            width: 100%;
+            box-shadow: var(--nb-shadow-sm);
+        }
+
+        .form-control-custom:focus {
+            border-color: var(--nb-black);
+            box-shadow: var(--nb-shadow);
+            transform: translate(-2px, -2px);
+        }
+
+        .form-select-custom {
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 10px 14px;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--nb-black);
+            background: var(--nb-white);
+            outline: none;
+            transition: all 0.15s ease;
+            width: 100%;
+            box-shadow: var(--nb-shadow-sm);
+        }
+
+        .form-select-custom:focus {
+            border-color: var(--nb-black);
+            box-shadow: var(--nb-shadow);
+            transform: translate(-2px, -2px);
+        }
+
+        .form-check-input-custom {
+            width: 18px;
+            height: 18px;
+            border: var(--nb-border);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .form-check-input-custom:checked {
+            background-color: var(--nb-purple);
+            border-color: var(--nb-black);
+        }
+
+        /* Alert Info */
+        .alert-info-custom {
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            padding: 12px 16px;
+            background: var(--nb-offwhite);
+            font-size: 0.82rem;
+        }
+
+        .alert-info-custom strong {
+            color: var(--nb-black);
         }
 
         /* Responsive */
@@ -526,6 +867,13 @@
             .top-bar-date {
                 display: none;
             }
+
+            .fab {
+                bottom: 16px;
+                right: 16px;
+                width: 48px;
+                height: 48px;
+            }
         }
     </style>
 </head>
@@ -555,6 +903,8 @@
                         <i class="fas fa-chevron-down" style="font-size:0.7rem; opacity:0.6;"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{{ url('/admin/dashboard') }}"><i
+                                    class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                         <li><a class="dropdown-item" href="{{ url('/admin/profile') }}"><i class="fas fa-user"></i>
                                 Profile</a></li>
                         <li>
@@ -582,39 +932,32 @@
             </div>
 
             @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show mb-4" role="alert"
-                    style="border-radius: 8px;">
-                    <i class="fas fa-check-circle me-2"></i>
+                <div class="alert-custom info">
+                    <i class="fas fa-check-circle"></i>
                     {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
 
             @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert"
-                    style="border-radius: 8px;">
-                    <i class="fas fa-exclamation-circle me-2"></i>
+                <div class="alert-custom warning">
+                    <i class="fas fa-exclamation-circle"></i>
                     {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
 
             @if (!$isSuperAdmin)
-                <div class="card" style="border: 1px solid #dbeafe; background: #eff6ff;">
-                    <div class="card-body" style="padding: 16px 20px;">
-                        <h6 style="font-weight: 600; color: #1e40af; margin-bottom: 8px;">
-                            <i class="fas fa-info-circle me-2"></i>Informasi Hak Akses
-                        </h6>
-                        <p class="mb-0" style="font-size: 0.875rem; color: #1e3a8a;">
-                            Sebagai <strong>Admin Biasa</strong>, Anda dapat: Melihat daftar admin, mengaktifkan akun
-                            non-aktif, mengedit username dan email akun sendiri.
-                            <strong>Tidak dapat:</strong> mengedit superadmin, menghapus admin, menambah admin baru.
-                        </p>
+                <div class="alert-custom info">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>Informasi Hak Akses</strong><br>
+                        Sebagai <strong>Admin Biasa</strong>, Anda dapat: Melihat daftar admin, mengaktifkan akun
+                        non-aktif, mengedit username dan email akun sendiri.
+                        <strong>Tidak dapat:</strong> mengedit superadmin, menghapus admin, menambah admin baru.
                     </div>
                 </div>
             @endif
 
-            <!-- Action Button Row -->
+            <!-- Action Button -->
             <div class="d-flex justify-content-end mb-3">
                 @if ($isSuperAdmin)
                     <button class="btn-add-admin" data-bs-toggle="modal" data-bs-target="#addModal">
@@ -625,12 +968,8 @@
 
             <!-- Data Table -->
             <div class="table-card">
-                <!-- Desktop View - Table -->
-                <div class="table-responsive d-none d-md-block">
-                    <div class="table-card-header">
-                        <h5><i class="fas fa-users"></i> Daftar Admin</h5>
-                    </div>
-                    <div class="table-card-body">
+                <div class="table-card-body">
+                    <div style="overflow-x: auto;">
                         <table class="table-clean" id="usersTableDesktop">
                             <thead>
                                 <tr>
@@ -640,7 +979,7 @@
                                     <th>Role</th>
                                     <th>Status</th>
                                     <th>Terakhir Login</th>
-                                    <th style="width: 130px;">Aksi</th>
+                                    <th style="width: 180px;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -692,7 +1031,7 @@
                                         }
                                     @endphp
                                     <tr>
-                                        <td>{{ $no++ }}</td>
+                                        <td style="color:var(--nb-dark); font-weight:600;">{{ $no++ }}</td>
                                         <td>
                                             <div class="user-cell">
                                                 <div class="avatar">{{ strtoupper(substr($user->username, 0, 1)) }}
@@ -708,13 +1047,11 @@
                                                 {{ $user->email }}
                                                 @if ($user->role !== 'superadmin' && $isSuperAdmin)
                                                     @if ($user->email_verified_at)
-                                                        <span class="badge-status"
-                                                            style="background: #d1fae5; color: #059669; font-size: 0.65rem; padding: 2px 6px; margin-left: 4px;">
+                                                        <span class="badge-verified">
                                                             <i class="fas fa-check-circle"></i> Terverifikasi
                                                         </span>
                                                     @else
-                                                        <span class="badge-status"
-                                                            style="background: #fef3c7; color: #b45309; font-size: 0.65rem; padding: 2px 6px; margin-left: 4px;">
+                                                        <span class="badge-unverified">
                                                             <i class="fas fa-clock"></i> Belum Verifikasi
                                                         </span>
                                                     @endif
@@ -732,7 +1069,7 @@
                                         <td>
                                             <div class="status-group">
                                                 <span
-                                                    class="badge-status">{{ $user->is_active ? 'AKTIF' : 'NONAKTIF' }}</span>
+                                                    class="badge-status {{ $user->is_active ? 'active' : 'inactive' }}">{{ $user->is_active ? 'AKTIF' : 'NONAKTIF' }}</span>
                                                 @if ($is_protected && $user->is_active)
                                                     <span class="badge-protected" data-bs-toggle="tooltip"
                                                         title="{{ $protection_reason }}">
@@ -753,7 +1090,8 @@
                                                 @endif
                                             </div>
                                         </td>
-                                        <td>{{ $user->last_login ? date('d/m/Y H:i', strtotime($user->last_login)) : '-' }}
+                                        <td style="font-weight:600;">
+                                            {{ $user->last_login ? date('d/m/Y H:i', strtotime($user->last_login)) : '-' }}
                                         </td>
                                         <td>
                                             <div class="action-group">
@@ -795,7 +1133,7 @@
                                                     @endif
                                                     @if ($user->role !== 'superadmin' && !$user->email_verified_at && $user->email)
                                                         <a href="{{ url('/admin/manage-users/send-verification?verify=' . $user->id) }}"
-                                                            class="action-btn" style="color: #16a34a;"
+                                                            class="action-btn"
                                                             onclick="return confirm('Kirim link verifikasi ke email {{ $user->email }}?')"
                                                             title="Kirim Verifikasi">
                                                             <i class="fas fa-paper-plane"></i>
@@ -824,151 +1162,7 @@
                         </table>
                     </div>
                 </div>
-
-                <!-- Mobile View -->
-                <div class="d-block d-md-none p-3" id="mobileUserList">
-                    @foreach ($users as $user)
-                        @php
-                            $is_protected = false;
-                            $protection_reason = '';
-                            $can_edit = true;
-                            $can_delete = true;
-                            $can_change_password = false;
-                            $is_locked = false;
-
-                            if (
-                                isset($user->locked_until) &&
-                                $user->locked_until &&
-                                strtotime($user->locked_until) > time()
-                            ) {
-                                $is_locked = true;
-                            }
-
-                            if (!$isSuperAdmin) {
-                                if ($user->role == 'superadmin') {
-                                    $is_protected = true;
-                                    $protection_reason = 'Superadmin - hanya dapat dilihat';
-                                    $can_edit = false;
-                                    $can_delete = false;
-                                    $can_change_password = false;
-                                }
-
-                                if ($user->id != $currentUserId) {
-                                    $can_delete = false;
-                                }
-
-                                if ($user->id == $currentUserId) {
-                                    $can_change_password = true;
-                                }
-                            } else {
-                                $can_change_password = true;
-                            }
-
-                            if ($user->other_active_count == 0 && $user->is_active) {
-                                $is_protected = true;
-                                $protection_reason = 'Akun aktif terakhir';
-                                $can_delete = false;
-                            }
-                        @endphp
-                        <div class="card mb-3" style="border: 1px solid var(--zinc-200); border-radius: 12px;">
-                            <div class="card-body" style="padding: 16px;">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div class="user-cell">
-                                        <div class="avatar" style="width: 36px; height: 36px; font-size: 0.875rem;">
-                                            {{ strtoupper(substr($user->username, 0, 1)) }}
-                                        </div>
-                                        <div>
-                                            <strong style="font-weight: 600;">{{ $user->username }}</strong>
-                                            @if ($user->id == $currentUserId)
-                                                <span class="badge-you">Anda</span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <span class="badge-role {{ $user->role == 'superadmin' ? 'superadmin' : '' }}">
-                                        {{ strtoupper($user->role) }}
-                                    </span>
-                                </div>
-
-                                <div class="mb-2">
-                                    <small style="color: var(--zinc-500); font-weight: 500;">Email:</small>
-                                    <div class="small" style="font-weight: 400;">{{ $user->email ?? '-' }}</div>
-                                </div>
-
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <div>
-                                        <span
-                                            class="badge-status">{{ $user->is_active ? 'AKTIF' : 'NONAKTIF' }}</span>
-                                        @if ($is_protected && $user->is_active)
-                                            <span class="badge-protected" title="{{ $protection_reason }}">
-                                                <i class="fas fa-shield-alt"></i>
-                                            </span>
-                                        @endif
-                                    </div>
-                                    <small style="color: var(--zinc-500); font-weight: 500;">
-                                        {{ $user->last_login ? date('d/m/Y H:i', strtotime($user->last_login)) : '-' }}
-                                    </small>
-                                </div>
-
-                                <div class="action-group mt-3">
-                                    <button class="action-btn" onclick="editUser({{ json_encode($user) }})"
-                                        {{ !$can_edit ? 'disabled' : '' }}>
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-
-                                    @if ($can_change_password)
-                                        <a href="{{ url('/admin/change-password?id=' . $user->id) }}"
-                                            class="action-btn" title="Ganti Password">
-                                            <i class="fas fa-key"></i>
-                                        </a>
-                                    @else
-                                        <button class="action-btn" disabled>
-                                            <i class="fas fa-key"></i>
-                                        </button>
-                                    @endif
-
-                                    @if ($isSuperAdmin)
-                                        @if ($is_locked)
-                                            <a href="{{ url('/admin/manage-users?cancel_lockout=' . $user->id) }}"
-                                                class="action-btn" onclick="return confirm('Batalkan lockout?')"
-                                                title="Batalkan Lockout">
-                                                <i class="fas fa-unlock-alt"></i>
-                                            </a>
-                                        @elseif($user->failed_attempts > 0)
-                                            <a href="{{ url('/admin/manage-users?reset_lockout=' . $user->id) }}"
-                                                class="action-btn" onclick="return confirm('Reset lockout?')"
-                                                title="Reset Lockout">
-                                                <i class="fas fa-redo"></i>
-                                            </a>
-                                        @endif
-                                    @endif
-
-                                    @if ($can_delete && $isSuperAdmin)
-                                        <a href="{{ url('/admin/manage-users?delete=' . $user->id) }}"
-                                            class="action-btn danger"
-                                            onclick="return confirm('Yakin hapus admin ini?')">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    @else
-                                        <button class="action-btn" disabled>
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
             </div>
-
-            <!-- Floating Action Button for Mobile -->
-            @if ($isSuperAdmin)
-                <div class="d-block d-md-none" style="position: fixed; bottom: 24px; right: 24px; z-index: 100;">
-                    <button class="btn-add-admin" data-bs-toggle="modal" data-bs-target="#addModal"
-                        style="width: 56px; height: 56px; border-radius: 50%; padding: 0; justify-content: center;">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                </div>
-            @endif
         </div>
     </div>
 
@@ -976,51 +1170,47 @@
     @if ($isSuperAdmin)
         <div class="modal fade" id="addModal" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content"
-                    style="border: none; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+                <div class="modal-content modal-content-custom">
                     <form method="POST" action="{{ url('/admin/manage-users/store') }}">
                         @csrf
-                        <div class="modal-header"
-                            style="border-bottom: 1px solid var(--zinc-100); padding: 20px 24px;">
-                            <h5 class="modal-title" style="font-weight: 700; font-size: 1.125rem;">Tambah Admin Baru
+                        <div class="modal-header modal-header-custom">
+                            <h5 class="modal-title">
+                                <i class="fas fa-user-plus me-2"></i> Tambah Admin Baru
                             </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
-                        <div class="modal-body" style="padding: 24px;">
+                        <div class="modal-body modal-body-custom">
                             <div class="mb-3">
-                                <label
-                                    style="font-weight: 600; font-size: 0.875rem; margin-bottom: 6px; display: block;">Username</label>
-                                <input type="text" name="username" class="form-control" required
-                                    style="border-radius: 8px; border: 1px solid var(--zinc-200); padding: 8px 12px;">
+                                <label class="form-label-custom">Username</label>
+                                <input type="text" name="username" class="form-control-custom" required>
                             </div>
                             <div class="mb-3">
-                                <label
-                                    style="font-weight: 600; font-size: 0.875rem; margin-bottom: 6px; display: block;">Password</label>
-                                <input type="password" name="password" class="form-control" required minlength="6"
-                                    style="border-radius: 8px; border: 1px solid var(--zinc-200); padding: 8px 12px;">
-                                <small style="color: var(--zinc-500); font-size: 0.75rem;">Minimal 6 karakter</small>
+                                <label class="form-label-custom">Password</label>
+                                <input type="password" name="password" class="form-control-custom" required
+                                    minlength="6">
+                                <small
+                                    style="color:var(--nb-dark);font-size:0.75rem;margin-top:4px;display:block;font-weight:500;">Minimal
+                                    6 karakter</small>
                             </div>
                             <div class="mb-3">
-                                <label
-                                    style="font-weight: 600; font-size: 0.875rem; margin-bottom: 6px; display: block;">Email</label>
-                                <input type="email" name="email" class="form-control"
-                                    style="border-radius: 8px; border: 1px solid var(--zinc-200); padding: 8px 12px;">
+                                <label class="form-label-custom">Email</label>
+                                <input type="email" name="email" class="form-control-custom">
                             </div>
                             <div class="mb-3">
-                                <label
-                                    style="font-weight: 600; font-size: 0.875rem; margin-bottom: 6px; display: block;">Role</label>
-                                <select name="role" class="form-select" required
-                                    style="border-radius: 8px; border: 1px solid var(--zinc-200); padding: 8px 12px;">
+                                <label class="form-label-custom">Role</label>
+                                <select name="role" class="form-select-custom" required>
                                     <option value="admin">Admin</option>
                                     <option value="superadmin">Superadmin</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="modal-footer" style="border-top: 1px solid var(--zinc-100); padding: 16px 24px;">
-                            <button type="button" class="btn" data-bs-dismiss="modal"
-                                style="background: var(--zinc-50); color: var(--zinc-700); border: 1px solid var(--zinc-200); border-radius: 8px; font-weight: 600; padding: 8px 16px;">Batal</button>
-                            <button type="submit" class="btn"
-                                style="background: #1e293b; color: white; border: none; border-radius: 8px; font-weight: 600; padding: 8px 16px;">Simpan</button>
+                        <div class="modal-footer-custom">
+                            <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times me-1"></i> Batal
+                            </button>
+                            <button type="submit" class="btn-modal-primary">
+                                <i class="fas fa-save me-1"></i> Simpan
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -1031,67 +1221,66 @@
     <!-- Modal Edit -->
     <div class="modal fade" id="editModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content"
-                style="border: none; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+            <div class="modal-content modal-content-custom">
                 <form method="POST" action="{{ url('/admin/manage-users/update') }}">
                     @csrf
-                    <div class="modal-header" style="border-bottom: 1px solid var(--zinc-100); padding: 20px 24px;">
-                        <h5 class="modal-title" style="font-weight: 700; font-size: 1.125rem;">Edit Admin</h5>
+                    <div class="modal-header modal-header-custom">
+                        <h5 class="modal-title">
+                            <i class="fas fa-user-edit me-2"></i> Edit Admin
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="modal-body" style="padding: 24px;">
+                    <div class="modal-body modal-body-custom">
                         <input type="hidden" name="id" id="edit_id">
                         <div class="mb-3">
-                            <label
-                                style="font-weight: 600; font-size: 0.875rem; margin-bottom: 6px; display: block;">Username</label>
-                            <input type="text" name="username" id="edit_username" class="form-control" required
-                                style="border-radius: 8px; border: 1px solid var(--zinc-200); padding: 8px 12px;">
+                            <label class="form-label-custom">Username</label>
+                            <input type="text" name="username" id="edit_username" class="form-control-custom"
+                                required>
                         </div>
                         <div class="mb-3">
-                            <label
-                                style="font-weight: 600; font-size: 0.875rem; margin-bottom: 6px; display: block;">Email</label>
-                            <input type="email" name="email" id="edit_email" class="form-control"
-                                style="border-radius: 8px; border: 1px solid var(--zinc-200); padding: 8px 12px;">
+                            <label class="form-label-custom">Email</label>
+                            <input type="email" name="email" id="edit_email" class="form-control-custom">
                         </div>
 
                         <div class="mb-3">
-                            <label
-                                style="font-weight: 600; font-size: 0.875rem; margin-bottom: 6px; display: block;">Role</label>
-                            <select name="role" id="edit_role" class="form-select" required
-                                style="border-radius: 8px; border: 1px solid var(--zinc-200); padding: 8px 12px;">
+                            <label class="form-label-custom">Role</label>
+                            <select name="role" id="edit_role" class="form-select-custom" required>
                                 <option value="admin">Admin</option>
                                 <option value="superadmin">Superadmin</option>
                             </select>
                         </div>
 
-                        <div class="mb-3 form-check" style="display: flex; align-items: center; gap: 8px;">
-                            <input type="checkbox" name="is_active" id="edit_is_active" class="form-check-input"
-                                style="border-radius: 4px;">
+                        <div class="mb-3" style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" name="is_active" id="edit_is_active"
+                                class="form-check-input-custom">
                             <label class="form-check-label" for="edit_is_active"
-                                style="font-weight: 600; font-size: 0.875rem;">Aktif</label>
+                                style="font-weight: 700; font-size: 0.85rem;">
+                                Aktif
+                            </label>
                         </div>
 
-                        <div id="protection_info" class="alert alert-info d-none"
-                            style="border-radius: 8px; border: 1px solid #bfdbfe; background: #eff6ff;">
-                            <small style="color: #1e40af;">
+                        <div id="protection_info" class="alert-info-custom d-none">
+                            <small style="color: var(--nb-dark);">
                                 <i class="fas fa-info-circle me-1"></i>
                                 <span id="protection_message"></span>
                             </small>
                         </div>
 
-                        <div id="last_active_warning" class="alert alert-warning d-none"
-                            style="border-radius: 8px; border: 1px solid #fde68a; background: #fffbeb;">
-                            <small style="color: #92400e;">
+                        <div id="last_active_warning" class="alert-info-custom d-none"
+                            style="background: var(--nb-orange);">
+                            <small style="color: var(--nb-black);">
                                 <i class="fas fa-exclamation-triangle me-1"></i>
                                 <span id="last_active_message"></span>
                             </small>
                         </div>
                     </div>
-                    <div class="modal-footer" style="border-top: 1px solid var(--zinc-100); padding: 16px 24px;">
-                        <button type="button" class="btn" data-bs-dismiss="modal"
-                            style="background: var(--zinc-50); color: var(--zinc-700); border: 1px solid var(--zinc-200); border-radius: 8px; font-weight: 600; padding: 8px 16px;">Batal</button>
-                        <button type="submit" class="btn"
-                            style="background: #1e293b; color: white; border: none; border-radius: 8px; font-weight: 600; padding: 8px 16px;">Update</button>
+                    <div class="modal-footer-custom">
+                        <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i> Batal
+                        </button>
+                        <button type="submit" class="btn-modal-primary">
+                            <i class="fas fa-save me-1"></i> Update
+                        </button>
                     </div>
                 </form>
             </div>
@@ -1103,6 +1292,22 @@
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
     <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('show');
+            document.getElementById('sidebarOverlay').classList.toggle('show');
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const s = document.getElementById('sidebar');
+                const o = document.getElementById('sidebarOverlay');
+                if (s.classList.contains('show')) {
+                    s.classList.remove('show');
+                    o.classList.remove('show');
+                }
+            }
+        });
+
         $(document).ready(function() {
             $('#usersTableDesktop').DataTable({
                 "language": {

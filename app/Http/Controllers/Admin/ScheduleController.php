@@ -437,64 +437,68 @@ class ScheduleController extends Controller
             return $check;
         }
 
-        $request->validate([
-            'kelas' => 'required|string',
-            'hari' => 'required|string',
-            'semester' => 'required|string',
-            'tahun_akademik' => 'required|string',
-            'groups' => 'required|array|min:1',
-            'groups.*.mata_kuliah' => 'required|string',
-            'groups.*.dosen' => 'required|string',
-            'groups.*.ruang' => 'required|string',
-            'groups.*.jam_ke_list' => 'required|array|min:1',
-        ]);
+        if ($request->ajax()) {
+            try {
+                $schedules = $request->input('schedules', []);
 
-        $kelas = $request->input('kelas');
-        $hari = $request->input('hari');
-        $semester = $request->input('semester');
-        $tahunAkademik = $request->input('tahun_akademik');
-        $groups = $request->input('groups');
-
-        $entries = [];
-        $conflictMessages = [];
-        $usedJamKe = [];
-
-        foreach ($groups as $group) {
-            $mataKuliah = trim($group['mata_kuliah']);
-            $dosen = trim($group['dosen']);
-            $ruang = trim($group['ruang']);
-            $jamKeList = array_map('intval', $group['jam_ke_list']);
-
-            foreach ($jamKeList as $jamKe) {
-                if (in_array($jamKe, $usedJamKe)) {
-                    $conflictMessages[] = "Slot '$mataKuliah': Jam ke-$jamKe sudah digunakan di slot lain pada hari yang sama.";
-                } else {
-                    $usedJamKe[] = $jamKe;
+                if (empty($schedules) || !is_array($schedules)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Tidak ada data jadwal yang dikirim.'
+                    ]);
                 }
 
-                $slot = $this->getTimeSlotByJamKe($jamKe);
-                if (!$slot) {
-                    $conflictMessages[] = "Jam ke-$jamKe tidak valid.";
-                    continue;
-                }
+                $entries = [];
+                $conflictMessages = [];
+                $successCount = 0;
 
-                list($mulai, $selesai) = $slot;
-                $waktu = "$mulai - $selesai";
+                foreach ($schedules as $index => $schedule) {
+                    // Validate each schedule
+                    if (
+                        empty($schedule['kelas']) || empty($schedule['hari']) ||
+                        empty($schedule['jam_ke']) || empty($schedule['waktu_mulai']) ||
+                        empty($schedule['waktu_selesai']) || empty($schedule['mata_kuliah']) ||
+                        empty($schedule['dosen']) || empty($schedule['ruang'])
+                    ) {
+                        $conflictMessages[] = "Data jadwal ke-" . ($index + 1) . ": Semua field harus diisi";
+                        continue;
+                    }
 
-                $conflicts = $this->checkScheduleConflict(
-                    $kelas,
-                    $hari,
-                    $mulai,
-                    $selesai,
-                    $semester,
-                    $tahunAkademik,
-                    $dosen,
-                    $ruang
-                );
+                    $kelas = trim($schedule['kelas']);
+                    $hari = trim($schedule['hari']);
+                    $jamKe = intval($schedule['jam_ke']);
+                    $waktuMulai = trim($schedule['waktu_mulai']);
+                    $waktuSelesai = trim($schedule['waktu_selesai']);
+                    $mataKuliah = trim($schedule['mata_kuliah']);
+                    $dosen = trim($schedule['dosen']);
+                    $ruang = trim($schedule['ruang']);
+                    $semester = trim($schedule['semester']);
+                    $tahunAkademik = trim($schedule['tahun_akademik']);
+                    $waktu = "$waktuMulai - $waktuSelesai";
 
-                if (!empty($conflicts)) {
-                    $conflictMessages[] = "Mata kuliah '$mataKuliah' jam ke-$jamKe ($waktu): " . implode(', ', $conflicts);
-                } else {
+                    // Validate jam_ke range
+                    if ($jamKe < 1 || $jamKe > 10) {
+                        $conflictMessages[] = "Data jadwal ke-" . ($index + 1) . ": Jam ke-$jamKe tidak valid (harus 1-10)";
+                        continue;
+                    }
+
+                    // Check conflicts
+                    $conflicts = $this->checkScheduleConflict(
+                        $kelas,
+                        $hari,
+                        $waktuMulai,
+                        $waktuSelesai,
+                        $semester,
+                        $tahunAkademik,
+                        $dosen,
+                        $ruang
+                    );
+
+                    if (!empty($conflicts)) {
+                        $conflictMessages[] = "Data jadwal ke-" . ($index + 1) . " ($mataKuliah): " . implode(', ', $conflicts);
+                        continue;
+                    }
+
                     $entries[] = [
                         'kelas' => $kelas,
                         'hari' => $hari,
@@ -505,13 +509,123 @@ class ScheduleController extends Controller
                         'ruang' => $ruang,
                         'semester' => $semester,
                         'tahun_akademik' => $tahunAkademik,
+                        'created_at' => now(),
+                        'updated_at' => now(),
                     ];
                 }
+
+                if (!empty($conflictMessages)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Terdapat kesalahan pada beberapa data:<br>" . implode("<br>", $conflictMessages),
+                        'conflicts' => $conflictMessages
+                    ]);
+                }
+
+                if (empty($entries)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Tidak ada data valid untuk disimpan.'
+                    ]);
+                }
+
+                DB::transaction(function () use ($entries) {
+                    foreach ($entries as $entry) {
+                        DB::table('schedules')->insert($entry);
+                    }
+                });
+
+                $this->logActivity(
+                    $request->session()->get('user_id'),
+                    'Tambah Massal Jadwal',
+                    "Berhasil menambahkan " . count($entries) . " jadwal sekaligus"
+                );
+
+                return response()->json([
+                    'success' => true,
+                    'message' => "Berhasil menambahkan " . count($entries) . " jadwal sekaligus!",
+                    'count' => count($entries)
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                ]);
             }
         }
 
+        // Non-AJAX fallback
+        $schedules = $request->input('schedules', []);
+
+        if (empty($schedules) || !is_array($schedules)) {
+            return back()->with('error', 'Tidak ada data jadwal yang dikirim.');
+        }
+
+        $entries = [];
+        $conflictMessages = [];
+
+        foreach ($schedules as $index => $schedule) {
+            if (
+                empty($schedule['kelas']) || empty($schedule['hari']) ||
+                empty($schedule['jam_ke']) || empty($schedule['waktu_mulai']) ||
+                empty($schedule['waktu_selesai']) || empty($schedule['mata_kuliah']) ||
+                empty($schedule['dosen']) || empty($schedule['ruang'])
+            ) {
+                $conflictMessages[] = "Data jadwal ke-" . ($index + 1) . ": Semua field harus diisi";
+                continue;
+            }
+
+            $kelas = trim($schedule['kelas']);
+            $hari = trim($schedule['hari']);
+            $jamKe = intval($schedule['jam_ke']);
+            $waktuMulai = trim($schedule['waktu_mulai']);
+            $waktuSelesai = trim($schedule['waktu_selesai']);
+            $mataKuliah = trim($schedule['mata_kuliah']);
+            $dosen = trim($schedule['dosen']);
+            $ruang = trim($schedule['ruang']);
+            $semester = trim($schedule['semester']);
+            $tahunAkademik = trim($schedule['tahun_akademik']);
+            $waktu = "$waktuMulai - $waktuSelesai";
+
+            // Validate jam_ke range
+            if ($jamKe < 1 || $jamKe > 10) {
+                $conflictMessages[] = "Data jadwal ke-" . ($index + 1) . ": Jam ke-$jamKe tidak valid (harus 1-10)";
+                continue;
+            }
+
+            $conflicts = $this->checkScheduleConflict(
+                $kelas,
+                $hari,
+                $waktuMulai,
+                $waktuSelesai,
+                $semester,
+                $tahunAkademik,
+                $dosen,
+                $ruang
+            );
+
+            if (!empty($conflicts)) {
+                $conflictMessages[] = "Data jadwal ke-" . ($index + 1) . " ($mataKuliah): " . implode(', ', $conflicts);
+                continue;
+            }
+
+            $entries[] = [
+                'kelas' => $kelas,
+                'hari' => $hari,
+                'jam_ke' => $jamKe,
+                'waktu' => $waktu,
+                'mata_kuliah' => $mataKuliah,
+                'dosen' => $dosen,
+                'ruang' => $ruang,
+                'semester' => $semester,
+                'tahun_akademik' => $tahunAkademik,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
         if (!empty($conflictMessages)) {
-            return back()->with('error', "Terdapat bentrok jadwal:<br>" . implode("<br>", $conflictMessages));
+            return back()->with('error', "Terdapat kesalahan:<br>" . implode("<br>", $conflictMessages));
         }
 
         if (empty($entries)) {
@@ -520,17 +634,14 @@ class ScheduleController extends Controller
 
         DB::transaction(function () use ($entries) {
             foreach ($entries as $entry) {
-                DB::table('schedules')->insert(array_merge($entry, [
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]));
+                DB::table('schedules')->insert($entry);
             }
         });
 
         $this->logActivity(
             $request->session()->get('user_id'),
-            'Tambah Massal Jadwal (Multi Slot)',
-            "Kelas: $kelas, Hari: $hari, " . count($entries) . " slot dari " . count($groups) . " mata kuliah"
+            'Tambah Massal Jadwal',
+            "Berhasil menambahkan " . count($entries) . " jadwal sekaligus"
         );
 
         return redirect('/admin/manage-schedule')->with('success', "Berhasil menambahkan " . count($entries) . " jadwal sekaligus.");

@@ -3,119 +3,296 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Daftar Super Admin - Jadwal Kuliah</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
-        body {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding: 20px;
+        /* =============================================
+               NEOBRUTALISM STYLES - Auth Pages
+               ============================================= */
+        :root {
+            --nb-black: #000000;
+            --nb-white: #FFFFFF;
+            --nb-offwhite: #F8F7F4;
+            --nb-yellow: #FFE66D;
+            --nb-red: #FF6B6B;
+            --nb-teal: #4ECDC4;
+            --nb-pink: #F38181;
+            --nb-green: #95E1D3;
+            --nb-purple: #A66CFF;
+            --nb-orange: #FFB347;
+            --nb-blue: #6BB5FF;
+            --nb-gray: #E8E8E8;
+            --nb-dark: #1A1A2E;
+            --nb-border: 3px solid #000;
+            --nb-border-thick: 4px solid #000;
+            --nb-shadow: 6px 6px 0px #000;
+            --nb-shadow-sm: 4px 4px 0px #000;
+            --nb-shadow-lg: 8px 8px 0px #000;
+            --nb-shadow-hover: 10px 10px 0px #000;
+            --nb-radius: 12px;
+            --nb-radius-sm: 8px;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
         }
 
-        .register-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            max-width: 500px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--nb-yellow);
+            color: var(--nb-black);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .register-wrapper {
+            max-width: 520px;
             margin: 0 auto;
             width: 100%;
         }
 
+        .register-card {
+            background: var(--nb-white);
+            border: var(--nb-border-thick);
+            border-radius: var(--nb-radius);
+            overflow: hidden;
+            box-shadow: var(--nb-shadow-lg);
+        }
+
         .register-header {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 30px;
+            background: var(--nb-purple);
+            color: var(--nb-white);
+            padding: 32px;
             text-align: center;
+            border-bottom: var(--nb-border-thick);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: var(--nb-yellow);
+            border: var(--nb-border);
+            border-radius: 0;
+            transform: rotate(15deg);
+        }
+
+        .register-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            width: 120px;
+            height: 120px;
+            background: var(--nb-teal);
+            border: var(--nb-border);
+            border-radius: 0;
+            transform: rotate(-20deg);
         }
 
         .register-header h2 {
+            font-family: var(--font-display);
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            font-size: 1.75rem;
+            position: relative;
+            z-index: 2;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        .register-header p {
+            font-size: 0.95rem;
+            font-weight: 600;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
         }
 
         .register-body {
-            padding: 40px;
+            padding: 36px;
         }
 
-        .form-control {
-            border-radius: 10px;
-            padding: 12px 20px;
-            border: 2px solid #e0e0e0;
-            transition: all 0.3s;
-        }
-
-        .form-control:focus {
-            border-color: #f093fb;
-            box-shadow: 0 0 0 0.2rem rgba(240, 147, 251, 0.25);
-        }
-
-        .input-group-text {
-            background: #f093fb;
-            border: none;
-            color: white;
-            border-radius: 10px 0 0 10px;
-            padding: 12px 20px;
-        }
-
-        .btn-register {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border: none;
-            color: white;
-            padding: 14px;
-            border-radius: 10px;
+        .alert {
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            font-size: 0.88rem;
             font-weight: 600;
-            transition: all 0.3s;
-            font-size: 1rem;
-        }
-
-        .btn-register:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(240, 147, 251, 0.3);
-            color: white;
-        }
-
-        .btn-register:active {
-            transform: translateY(-1px);
+            box-shadow: var(--nb-shadow-sm);
         }
 
         .alert-warning-custom {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            border: none;
-            color: #856404;
-            border-radius: 10px;
+            background: var(--nb-orange);
+            color: var(--nb-black);
+            border-left: 5px solid var(--nb-black);
+        }
+
+        .alert-danger {
+            background: var(--nb-red);
+            color: var(--nb-white);
+            border-left: 5px solid var(--nb-black);
+        }
+
+        .alert-success {
+            background: var(--nb-green);
+            color: var(--nb-black);
+            border-left: 5px solid var(--nb-black);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--nb-black);
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group-text {
+            background: var(--nb-yellow);
+            border: var(--nb-border);
+            color: var(--nb-black);
+            border-radius: var(--nb-radius-sm) 0 0 var(--nb-radius-sm);
+            padding: 14px 18px;
+            font-weight: 700;
+            border-right: none;
+        }
+
+        .form-control {
+            border: var(--nb-border);
+            border-radius: 0 var(--nb-radius-sm) var(--nb-radius-sm) 0;
+            padding: 14px 18px;
+            border-left: none;
+            font-size: 0.92rem;
+            font-family: var(--font-body);
+            color: var(--nb-black);
+            background: var(--nb-white);
+            transition: all 0.2s ease;
+            outline: none;
+            box-shadow: var(--nb-shadow-sm);
+            font-weight: 600;
+        }
+
+        .form-control:focus {
+            box-shadow: var(--nb-shadow);
+            transform: translate(-2px, -2px);
+            border-color: var(--nb-black);
+        }
+
+        .form-control::placeholder {
+            color: var(--nb-dark);
+            opacity: 0.5;
+            font-weight: 500;
+        }
+
+        .btn-register {
+            background: var(--nb-teal);
+            color: var(--nb-black);
+            border: var(--nb-border-thick);
+            border-radius: var(--nb-radius-sm);
+            padding: 16px;
+            font-family: var(--font-display);
+            font-weight: 700;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: var(--nb-shadow);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-register:hover {
+            background: var(--nb-green);
+            transform: translate(-3px, -3px);
+            box-shadow: var(--nb-shadow-hover);
+            color: var(--nb-black);
+        }
+
+        .btn-register:active {
+            transform: translate(3px, 3px);
+            box-shadow: none;
+        }
+
+        .text-center {
+            text-align: center;
         }
 
         .back-link {
-            color: #f5576c;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
+            margin-top: 16px;
         }
 
-        .back-link:hover {
-            color: #f093fb;
+        .back-link a {
+            color: var(--nb-purple);
+            font-weight: 700;
             text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .back-link a:hover {
+            color: var(--nb-black);
+            transform: translateY(-2px);
+        }
+
+        .form-text {
+            display: block;
+            margin-top: 6px;
+            font-size: 0.8rem;
+            color: var(--nb-dark);
+            font-weight: 600;
         }
 
         @media (max-width: 576px) {
             .register-header {
-                padding: 20px;
+                padding: 24px;
             }
 
             .register-body {
-                padding: 25px;
+                padding: 24px;
+            }
+
+            .register-header h2 {
+                font-size: 1.5rem;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
+    <div class="register-wrapper">
         <div class="register-card">
             <!-- Register Header -->
             <div class="register-header">
@@ -142,7 +319,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                     <div class="text-center">
-                        <a href="{{ url('/login') }}" class="btn btn-register w-100">
+                        <a href="{{ url('/login') }}" class="btn btn-register">
                             <i class="fas fa-sign-in-alt me-2"></i> Login Sekarang
                         </a>
                     </div>
@@ -157,7 +334,7 @@
                     <!-- Register Form -->
                     <form method="POST" action="{{ url('/register-superadmin') }}" id="registerForm">
                         @csrf
-                        <div class="mb-3">
+                        <div class="form-group">
                             <label for="username" class="form-label">
                                 <i class="fas fa-user me-1"></i> Username
                             </label>
@@ -170,7 +347,7 @@
                             </div>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="form-group">
                             <label for="email" class="form-label">
                                 <i class="fas fa-envelope me-1"></i> Email
                             </label>
@@ -181,10 +358,10 @@
                                 <input type="email" class="form-control" id="email" name="email"
                                     value="{{ old('email') }}" placeholder="Masukkan email (opsional)">
                             </div>
-                            <small class="text-muted">Email hanya digunakan untuk recovery account</small>
+                            <small class="form-text">Email hanya digunakan untuk recovery account</small>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="form-group">
                             <label for="password" class="form-label">
                                 <i class="fas fa-lock me-1"></i> Password
                             </label>
@@ -197,7 +374,7 @@
                             </div>
                         </div>
 
-                        <div class="mb-4">
+                        <div class="form-group">
                             <label for="password_confirmation" class="form-label">
                                 <i class="fas fa-lock me-1"></i> Konfirmasi Password
                             </label>
@@ -210,12 +387,12 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-register w-100 mb-3">
+                        <button type="submit" class="btn btn-register">
                             <i class="fas fa-user-plus me-2"></i> Daftarkan Super Admin
                         </button>
 
-                        <div class="text-center">
-                            <a href="{{ url('/login') }}" class="back-link">
+                        <div class="text-center back-link">
+                            <a href="{{ url('/login') }}">
                                 <i class="fas fa-arrow-left me-1"></i> Kembali ke Login
                             </a>
                         </div>
