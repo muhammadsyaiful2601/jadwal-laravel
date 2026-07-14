@@ -13,6 +13,14 @@
         href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <style>
+        #notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
         :root {
             --nb-black: #000000;
             --nb-white: #FFFFFF;

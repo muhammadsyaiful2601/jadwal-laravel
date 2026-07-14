@@ -14,6 +14,14 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
     <style>
+        #notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
         :root {
             --nb-black: #000000;
             --nb-white: #FFFFFF;
@@ -879,6 +887,21 @@
 </head>
 
 <body>
+    <div id="notification-container">
+        @if (session('success'))
+            <div class="alert-custom info">
+                <i class="fas fa-check-circle"></i>
+                {{ session('success') }}
+            </div>
+        @endif
+        @if (session('error'))
+            <div class="alert-custom warning">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ session('error') }}
+            </div>
+        @endif
+    </div>
+
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
     @include('components.admin.sidebar')
@@ -930,20 +953,6 @@
                 <h4>Daftar Admin</h4>
                 <p>Kelola pengguna dengan akses admin</p>
             </div>
-
-            @if (session('success'))
-                <div class="alert-custom info">
-                    <i class="fas fa-check-circle"></i>
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if (session('error'))
-                <div class="alert-custom warning">
-                    <i class="fas fa-exclamation-circle"></i>
-                    {{ session('error') }}
-                </div>
-            @endif
 
             @if (!$isSuperAdmin)
                 <div class="alert-custom info">

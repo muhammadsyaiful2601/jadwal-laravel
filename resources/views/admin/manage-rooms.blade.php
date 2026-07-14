@@ -14,6 +14,14 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
     <style>
+        #notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
         :root {
             --nb-black: #000000;
             --nb-white: #FFFFFF;
@@ -716,6 +724,29 @@
 
         .btn-modal-secondary:hover {
             background: var(--nb-gray);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .btn-modal-primary {
+            padding: 10px 20px;
+            background: var(--nb-purple);
+            color: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: var(--nb-shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-modal-primary:hover {
+            background: var(--nb-pink);
+            color: var(--nb-black);
             transform: translate(-2px, -2px);
             box-shadow: var(--nb-shadow);
         }
