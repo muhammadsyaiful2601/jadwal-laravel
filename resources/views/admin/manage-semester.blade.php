@@ -846,6 +846,40 @@
             transform: translate(-2px, -2px);
         }
 
+        .form-select-custom {
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 10px 14px;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--nb-black);
+            background: var(--nb-white);
+            outline: none;
+            transition: all 0.15s ease;
+            width: 100%;
+            box-shadow: var(--nb-shadow-sm);
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23000' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 14px;
+            cursor: pointer;
+        }
+
+        .form-select-custom:focus {
+            border-color: var(--nb-black);
+            box-shadow: var(--nb-shadow);
+            transform: translate(-2px, -2px);
+        }
+
+        .form-select-custom option {
+            padding: 10px;
+            font-weight: 600;
+        }
+
         .form-label-custom {
             font-family: var(--font-display);
             font-size: 0.82rem;

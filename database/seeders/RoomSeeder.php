@@ -10,18 +10,11 @@ class RoomSeeder extends Seeder
     public function run(): void
     {
         $rooms = [
-            ['nama_ruang' => 'Lab. Komputer A', 'kapasitas' => 30, 'fasilitas' => 'Komputer, LCD, AC, Wi-Fi', 'deskripsi' => 'Laboratorium komputer untuk praktikum'],
-            ['nama_ruang' => 'Lab. Komputer B', 'kapasitas' => 35, 'fasilitas' => 'Komputer, LCD, AC, Wi-Fi', 'deskripsi' => 'Laboratorium komputer untuk praktikum'],
-            ['nama_ruang' => 'Lab. Jaringan', 'kapasitas' => 25, 'fasilitas' => 'Router, Switch, Server, AC', 'deskripsi' => 'Laboratorium jaringan komputer'],
-            ['nama_ruang' => 'Lab. Multimedia', 'kapasitas' => 20, 'fasilitas' => 'Komputer High-End, Kamera, Green Screen, AC', 'deskripsi' => 'Laboratorium multimedia dan desain grafis'],
-            ['nama_ruang' => 'Ruang 101', 'kapasitas' => 40, 'fasilitas' => 'Meja, Kursi, Whiteboard, LCD', 'deskripsi' => 'Ruang kuliah reguler'],
-            ['nama_ruang' => 'Ruang 102', 'kapasitas' => 40, 'fasilitas' => 'Meja, Kursi, Whiteboard, LCD', 'deskripsi' => 'Ruang kuliah reguler'],
-            ['nama_ruang' => 'Ruang 201', 'kapasitas' => 45, 'fasilitas' => 'Meja, Kursi, Whiteboard, LCD, AC', 'deskripsi' => 'Ruang kuliah reguler'],
-            ['nama_ruang' => 'Ruang 202', 'kapasitas' => 45, 'fasilitas' => 'Meja, Kursi, Whiteboard, LCD, AC', 'deskripsi' => 'Ruang kuliah reguler'],
-            ['nama_ruang' => 'Aula', 'kapasitas' => 200, 'fasilitas' => 'Sound System, Proyektor, AC, Panggung', 'deskripsi' => 'Aula serbaguna untuk acara besar'],
-            ['nama_ruang' => 'Perpustakaan', 'kapasitas' => 50, 'fasilitas' => 'Buku, Meja Baca, AC, Wi-Fi', 'deskripsi' => 'Perpustakaan kampus'],
-            ['nama_ruang' => 'Ruang Dosen', 'kapasitas' => 10, 'fasilitas' => 'Meja, Kursi, AC, Wi-Fi', 'deskripsi' => 'Ruang kerja dosen'],
-            ['nama_ruang' => 'Lab. Bahasa', 'kapasitas' => 25, 'fasilitas' => 'Headset, Komputer, AC', 'deskripsi' => 'Laboratorium bahasa untuk pembelajaran listening dan speaking'],
+            ['nama_ruang' => 'Ruang Serbaguna', 'kapasitas' => 50, 'fasilitas' => 'Meja, Kursi, Whiteboard, LCD, Proyektor, AC', 'deskripsi' => 'Ruang serbaguna untuk berbagai kegiatan perkuliahan'],
+            ['nama_ruang' => 'Labor Jaringan', 'kapasitas' => 25, 'fasilitas' => 'Router, Switch, Server, Komputer, AC', 'deskripsi' => 'Laboratorium jaringan komputer'],
+            ['nama_ruang' => 'Labor Multi Media', 'kapasitas' => 20, 'fasilitas' => 'Komputer High-End, Kamera, Green Screen, AC, Audio System', 'deskripsi' => 'Laboratorium multimedia dan desain grafis'],
+            ['nama_ruang' => 'Ruang Sipil', 'kapasitas' => 30, 'fasilitas' => 'Meja Gambar, Komputer, Alat Ukur, AC', 'deskripsi' => 'Ruang praktikum teknik sipil'],
+            ['nama_ruang' => 'Labor Perakitan', 'kapasitas' => 20, 'fasilitas' => 'Meja Kerja, Alat Perakitan, Komponen Elektronik, AC', 'deskripsi' => 'Laboratorium perakitan dan praktikum elektronika'],
         ];
 
         foreach ($rooms as $room) {

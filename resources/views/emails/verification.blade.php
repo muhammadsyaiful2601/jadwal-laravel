@@ -7,8 +7,8 @@
     <title>Verifikasi Email</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f5;
+            font-family: 'Space Grotesk', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #F8F7F4;
             margin: 0;
             padding: 0;
         }
@@ -16,29 +16,34 @@
         .container {
             max-width: 600px;
             margin: 40px auto;
-            background: #ffffff;
-            border-radius: 16px;
+            background: #FFFFFF;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 3px solid #000;
+            box-shadow: 8px 8px 0px #000;
         }
 
         .header {
-            background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
+            background: #A66CFF;
             padding: 40px 30px;
             text-align: center;
+            border-bottom: 3px solid #000;
         }
 
         .header h1 {
-            color: #ffffff;
+            color: #FFFFFF;
             font-size: 24px;
             margin: 0;
             font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .header p {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.85);
             font-size: 14px;
             margin-top: 8px;
+            font-weight: 600;
         }
 
         .body {
@@ -46,53 +51,78 @@
         }
 
         .body h2 {
-            color: #18181b;
+            color: #000000;
             font-size: 20px;
             margin-bottom: 16px;
+            font-weight: 700;
         }
 
         .body p {
-            color: #52525b;
+            color: #1A1A2E;
             font-size: 15px;
             line-height: 1.6;
             margin-bottom: 20px;
+            font-weight: 500;
         }
 
         .btn {
             display: inline-block;
             padding: 14px 32px;
-            background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
-            color: #ffffff;
+            background: #FFE66D;
+            color: #000000;
             text-decoration: none;
-            border-radius: 10px;
-            font-weight: 600;
+            border-radius: 8px;
+            font-weight: 700;
             font-size: 15px;
             margin: 20px 0;
+            border: 3px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            transition: all 0.15s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .btn:hover {
-            background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #000;
+            background: #F38181;
         }
 
         .footer {
             padding: 20px 30px;
             text-align: center;
-            border-top: 1px solid #e4e4e7;
+            border-top: 3px solid #000;
+            background: #F8F7F4;
         }
 
         .footer p {
-            color: #a1a1aa;
+            color: #1A1A2E;
             font-size: 12px;
             margin: 0;
+            font-weight: 600;
         }
 
         .info-box {
-            background: #f4f4f5;
-            border-radius: 10px;
+            background: #FFE66D;
+            border-radius: 8px;
             padding: 16px 20px;
             margin: 20px 0;
             font-size: 13px;
-            color: #71717a;
+            color: #000000;
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            font-weight: 600;
+        }
+
+        .link-text {
+            color: #A66CFF;
+            font-weight: 700;
+            word-break: break-all;
+        }
+
+        .gray-text {
+            color: #1A1A2E;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -116,9 +146,9 @@
                 </a>
             </div>
 
-            <p style="font-size: 14px; color: #71717a;">
+            <p style="font-size: 14px; color: #1A1A2E; font-weight: 600;">
                 Atau salin link berikut ke browser Anda:<br>
-                <span style="color: #1d4ed8; word-break: break-all;">{{ $verificationUrl }}</span>
+                <span class="link-text">{{ $verificationUrl }}</span>
             </p>
 
             <div class="info-box">
@@ -126,7 +156,7 @@
                 verifikasi email, abaikan email ini.
             </div>
 
-            <p style="font-size: 14px; color: #71717a; margin-top: 24px;">
+            <p style="font-size: 14px; color: #1A1A2E; margin-top: 24px; font-weight: 600;">
                 Salam,<br>
                 <strong>Tim Sistem Informasi Jadwal Kuliah</strong>
             </p>
