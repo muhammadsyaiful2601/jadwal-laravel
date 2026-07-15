@@ -198,7 +198,6 @@
 
         .content-wrapper {
             padding: 28px 32px;
-            max-width: 960px;
         }
 
         .page-title-section {
@@ -885,7 +884,17 @@
                             </select>
                             <span class="form-hint">Atur kecepatan animasi running text</span>
                         </div>
-                        <div></div>
+                        <div class="form-group-custom">
+                            <label>&nbsp;</label>
+                            <div
+                                style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--nb-offwhite);border-radius:var(--nb-radius-sm);border:var(--nb-border);height:44px;box-shadow:var(--nb-shadow-sm);">
+                                <i class="fas fa-tachometer-alt" style="color:var(--nb-purple);font-size:1rem;"></i>
+                                <small style="font-weight:600;color:var(--nb-dark);font-size:0.8rem;">
+                                    <strong>Tips:</strong> Gunakan kecepatan <strong>Normal</strong> untuk tampilan
+                                    standar
+                                </small>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="color-picker-row" style="margin-bottom:20px;">
