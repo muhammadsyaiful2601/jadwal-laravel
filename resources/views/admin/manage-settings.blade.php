@@ -308,6 +308,18 @@
             cursor: not-allowed;
         }
 
+        select.form-control-modern {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23000' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 14px;
+            cursor: pointer;
+            padding-right: 36px;
+        }
+
         textarea.form-control-modern {
             resize: vertical;
         }
@@ -390,14 +402,8 @@
             gap: 20px;
         }
 
-        .color-input-wrap {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
         .color-input-wrap input[type="color"] {
-            width: 48px;
+            width: 56px;
             height: 48px;
             border: var(--nb-border);
             border-radius: var(--nb-radius-sm);
@@ -418,6 +424,15 @@
             font-size: 0.82rem;
             color: var(--nb-black);
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 48px;
+            background: var(--nb-offwhite);
+            padding: 8px 14px;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            width: 100%;
         }
 
         .color-input-wrap .color-label small {
@@ -425,6 +440,23 @@
             display: block;
             font-size: 0.75rem;
             font-weight: 500;
+        }
+
+        .color-input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-value-text {
+            font-family: var(--font-display);
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--nb-black);
+            background: var(--nb-white);
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 2px solid var(--nb-black);
         }
 
         /* Preview Box */

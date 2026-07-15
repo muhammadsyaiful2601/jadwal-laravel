@@ -9,21 +9,24 @@ use Illuminate\Support\Facades\Storage;
 
 class RoomController extends Controller
 {
+    // Fungsi pembantu untuk mendapatkan nama disk secara dinamis dari .env
+    private function getDisk()
+    {
+        return config('filesystems.default');
+    }
+
     public function index(Request $request)
     {
         if (!$request->session()->has('user_id')) {
             return redirect('/login');
         }
 
-        // Get all rooms
         $rooms = DB::table('rooms')->orderBy('nama_ruang')->get();
 
-        // Statistics
         $totalRooms = $rooms->count();
         $withPhoto = $rooms->where('foto_path', '!=', null)->count();
         $totalCapacity = $rooms->sum('kapasitas');
 
-        // Get used rooms
         $usedRooms = DB::table('schedules')->distinct('ruang')->pluck('ruang')->toArray();
         $usedCount = count($usedRooms);
 
@@ -71,13 +74,13 @@ class RoomController extends Controller
                     'updated_at' => now(),
                 ]);
 
-                // Upload foto jika ada
                 if ($request->hasFile('foto')) {
                     $foto = $request->file('foto');
                     $extension = $foto->getClientOriginalExtension();
                     $filename = 'room_' . $roomId . '_' . time() . '.' . $extension;
 
-                    $foto->storeAs('uploads/rooms', $filename, 'public');
+                    // Mengunggah secara dinamis sesuai disk (.env) dengan visibilitas public
+                    Storage::disk($this->getDisk())->putFileAs('uploads/rooms', $foto, $filename, 'public');
 
                     DB::table('rooms')->where('id', $roomId)->update([
                         'foto_path' => $filename,
@@ -102,11 +105,9 @@ class RoomController extends Controller
             }
         }
 
-        // Non-AJAX fallback
         return $this->storeLegacy($request);
     }
 
-    // Legacy method for non-AJAX fallback
     private function storeLegacy(Request $request)
     {
         $request->validate([
@@ -139,7 +140,7 @@ class RoomController extends Controller
                 $extension = $foto->getClientOriginalExtension();
                 $filename = 'room_' . $roomId . '_' . time() . '.' . $extension;
 
-                $foto->storeAs('uploads/rooms', $filename, 'public');
+                Storage::disk($this->getDisk())->putFileAs('uploads/rooms', $foto, $filename, 'public');
 
                 DB::table('rooms')->where('id', $roomId)->update([
                     'foto_path' => $filename,
@@ -164,7 +165,6 @@ class RoomController extends Controller
             return redirect('/login');
         }
 
-        // If ID is not in route, get it from POST data
         if (!$id) {
             $id = $request->input('id');
         }
@@ -197,7 +197,6 @@ class RoomController extends Controller
                 $kapasitas = $request->input('kapasitas', 0);
                 $fasilitas = trim($request->input('fasilitas', ''));
 
-                // Update data ruangan
                 DB::table('rooms')->where('id', $id)->update([
                     'nama_ruang' => $namaRuang,
                     'deskripsi' => $deskripsi,
@@ -206,21 +205,20 @@ class RoomController extends Controller
                     'updated_at' => now(),
                 ]);
 
-                // Upload foto baru jika ada
                 if ($request->hasFile('foto')) {
                     $foto = $request->file('foto');
                     $extension = $foto->getClientOriginalExtension();
                     $filename = 'room_' . $id . '_' . time() . '.' . $extension;
 
-                    // Hapus foto lama jika ada
+                    // Hapus foto lama dari disk yang aktif
                     if ($room->foto_path) {
-                        $oldPath = 'public/uploads/rooms/' . $room->foto_path;
-                        if (Storage::exists($oldPath)) {
-                            Storage::delete($oldPath);
+                        $oldPath = 'uploads/rooms/' . $room->foto_path;
+                        if (Storage::disk($this->getDisk())->exists($oldPath)) {
+                            Storage::disk($this->getDisk())->delete($oldPath);
                         }
                     }
 
-                    $foto->storeAs('uploads/rooms', $filename, 'public');
+                    Storage::disk($this->getDisk())->putFileAs('uploads/rooms', $foto, $filename, 'public');
 
                     DB::table('rooms')->where('id', $id)->update([
                         'foto_path' => $filename,
@@ -242,11 +240,9 @@ class RoomController extends Controller
             }
         }
 
-        // Non-AJAX fallback
         return $this->updateLegacy($request, $id);
     }
 
-    // Legacy method for non-AJAX fallback
     private function updateLegacy(Request $request, $id)
     {
         $room = DB::table('rooms')->where('id', $id)->first();
@@ -284,13 +280,13 @@ class RoomController extends Controller
                 $filename = 'room_' . $id . '_' . time() . '.' . $extension;
 
                 if ($room->foto_path) {
-                    $oldPath = 'public/uploads/rooms/' . $room->foto_path;
-                    if (Storage::exists($oldPath)) {
-                        Storage::delete($oldPath);
+                    $oldPath = 'uploads/rooms/' . $room->foto_path;
+                    if (Storage::disk($this->getDisk())->exists($oldPath)) {
+                        Storage::disk($this->getDisk())->delete($oldPath);
                     }
                 }
 
-                $foto->storeAs('uploads/rooms', $filename, 'public');
+                Storage::disk($this->getDisk())->putFileAs('uploads/rooms', $foto, $filename, 'public');
 
                 DB::table('rooms')->where('id', $id)->update([
                     'foto_path' => $filename,
@@ -330,9 +326,7 @@ class RoomController extends Controller
                     ]);
                 }
 
-                // Cek apakah ruangan digunakan di jadwal
                 $used = DB::table('schedules')->where('ruang', $room->nama_ruang)->count();
-
                 if ($used > 0) {
                     return response()->json([
                         'success' => false,
@@ -340,11 +334,10 @@ class RoomController extends Controller
                     ]);
                 }
 
-                // Hapus foto jika ada
                 if ($room->foto_path) {
-                    $fotoPath = 'public/uploads/rooms/' . $room->foto_path;
-                    if (Storage::exists($fotoPath)) {
-                        Storage::delete($fotoPath);
+                    $fotoPath = 'uploads/rooms/' . $room->foto_path;
+                    if (Storage::disk($this->getDisk())->exists($fotoPath)) {
+                        Storage::disk($this->getDisk())->delete($fotoPath);
                     }
                 }
 
@@ -364,14 +357,17 @@ class RoomController extends Controller
             }
         }
 
-        // Non-AJAX fallback
+        return $this->destroyLegacy($request, $id);
+    }
+
+    private function destroyLegacy(Request $request, $id)
+    {
         $room = DB::table('rooms')->where('id', $id)->first();
         if (!$room) {
             return redirect('/admin/manage-rooms')->with('error', 'Ruangan tidak ditemukan');
         }
 
         $used = DB::table('schedules')->where('ruang', $room->nama_ruang)->count();
-
         if ($used > 0) {
             return redirect('/admin/manage-rooms')->with('error', 'Ruangan tidak dapat dihapus karena masih digunakan dalam jadwal!');
         }
@@ -380,14 +376,13 @@ class RoomController extends Controller
 
         try {
             if ($room->foto_path) {
-                $fotoPath = 'public/uploads/rooms/' . $room->foto_path;
-                if (Storage::exists($fotoPath)) {
-                    Storage::delete($fotoPath);
+                $fotoPath = 'uploads/rooms/' . $room->foto_path;
+                if (Storage::disk($this->getDisk())->exists($fotoPath)) {
+                    Storage::disk($this->getDisk())->delete($fotoPath);
                 }
             }
 
             DB::table('rooms')->where('id', $id)->delete();
-
             DB::commit();
 
             $this->logActivity($request->session()->get('user_id'), 'Hapus Ruangan', "ID: $id");
@@ -415,13 +410,11 @@ class RoomController extends Controller
                     ]);
                 }
 
-                // Hapus file foto
-                $fotoPath = 'public/uploads/rooms/' . $room->foto_path;
-                if (Storage::exists($fotoPath)) {
-                    Storage::delete($fotoPath);
+                $fotoPath = 'uploads/rooms/' . $room->foto_path;
+                if (Storage::disk($this->getDisk())->exists($fotoPath)) {
+                    Storage::disk($this->getDisk())->delete($fotoPath);
                 }
 
-                // Update database
                 DB::table('rooms')->where('id', $id)->update([
                     'foto_path' => null,
                     'updated_at' => now(),
@@ -441,16 +434,20 @@ class RoomController extends Controller
             }
         }
 
-        // Non-AJAX fallback
+        return $this->deletePhotoLegacy($request, $id);
+    }
+
+    private function deletePhotoLegacy(Request $request, $id)
+    {
         $room = DB::table('rooms')->where('id', $id)->first();
         if (!$room || !$room->foto_path) {
             return redirect('/admin/manage-rooms')->with('error', 'Foto tidak ditemukan');
         }
 
         try {
-            $fotoPath = 'public/uploads/rooms/' . $room->foto_path;
-            if (Storage::exists($fotoPath)) {
-                Storage::delete($fotoPath);
+            $fotoPath = 'uploads/rooms/' . $room->foto_path;
+            if (Storage::disk($this->getDisk())->exists($fotoPath)) {
+                Storage::disk($this->getDisk())->delete($fotoPath);
             }
 
             DB::table('rooms')->where('id', $id)->update([
@@ -476,5 +473,10 @@ class RoomController extends Controller
             'user_agent' => request()->userAgent(),
             'created_at' => now(),
         ]);
+    }
+
+    private function checkSuperadminVerified(Request $request)
+    {
+        return true;
     }
 }
