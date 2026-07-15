@@ -16,6 +16,7 @@ class Schedule extends Model
         'mata_kuliah',
         'dosen',
         'ruang',
+        'foto',
         'semester',
         'tahun_akademik',
     ];

@@ -2031,6 +2031,858 @@
         }
 
         /* Animations */
+        /* =============================================
+               REAL-TIME CLOCK - Neobrutalism
+               ============================================= */
+        .live-clock-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--nb-black);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 8px 16px;
+            box-shadow: var(--nb-shadow-sm);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .live-clock-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--nb-yellow), var(--nb-purple), var(--nb-yellow));
+            background-size: 200% 100%;
+            animation: gradientShift 2s ease infinite;
+        }
+
+        .live-clock-wrapper::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--nb-teal), var(--nb-pink), var(--nb-teal));
+            background-size: 200% 100%;
+            animation: gradientShift 2s ease infinite reverse;
+        }
+
+        .clock-icon {
+            font-size: 1rem;
+            color: var(--nb-yellow);
+            animation: pulseIcon 2s ease-in-out infinite;
+        }
+
+        .clock-icon i {
+            font-size: 1rem;
+        }
+
+        .clock-display {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--nb-white);
+            letter-spacing: 0.05em;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .clock-display .clock-time {
+            background: var(--nb-dark);
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .clock-display .clock-date {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--nb-gray);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            padding-left: 10px;
+        }
+
+        .clock-separator {
+            animation: blink 1s step-end infinite;
+            color: var(--nb-yellow);
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Big clock widget */
+        .big-clock-widget {
+            background: var(--nb-white);
+            border: var(--nb-border-thick);
+            border-radius: var(--nb-radius);
+            padding: 20px 28px;
+            box-shadow: var(--nb-shadow);
+            display: inline-flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+            background-image:
+                radial-gradient(circle at 80% 20%, rgba(166, 108, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(78, 205, 196, 0.08) 0%, transparent 50%);
+            transition: all 0.3s ease;
+        }
+
+        .big-clock-widget:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow-hover);
+        }
+
+        .big-clock-widget::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--nb-yellow), var(--nb-purple));
+        }
+
+        .big-clock-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--nb-yellow);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--nb-black);
+            box-shadow: var(--nb-shadow-sm);
+            flex-shrink: 0;
+            animation: pulseIcon 2s ease-in-out infinite;
+        }
+
+        .big-clock-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .big-clock-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--nb-dark);
+            margin-bottom: 4px;
+        }
+
+        .big-clock-time {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--nb-black);
+            line-height: 1;
+            letter-spacing: -0.02em;
+            text-shadow: 2px 2px 0 var(--nb-yellow);
+        }
+
+        .big-clock-date {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--nb-dark);
+            margin-top: 4px;
+        }
+
+        /* =============================================
+               ANIMATED GRADIENT BACKGROUND
+               ============================================= */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            background: linear-gradient(135deg,
+                    var(--nb-offwhite) 0%,
+                    rgba(166, 108, 255, 0.05) 25%,
+                    rgba(78, 205, 196, 0.05) 50%,
+                    rgba(255, 230, 109, 0.05) 75%,
+                    var(--nb-offwhite) 100%);
+            background-size: 400% 400%;
+            animation: gradientShiftBg 15s ease infinite;
+        }
+
+        @keyframes gradientShiftBg {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            25% {
+                background-position: 100% 0%;
+            }
+
+            50% {
+                background-position: 100% 100%;
+            }
+
+            75% {
+                background-position: 0% 100%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* =============================================
+               MOUSE GLOW TRAIL
+               ============================================= */
+        .mouse-glow {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(166, 108, 255, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            will-change: transform;
+        }
+
+        .mouse-glow.visible {
+            opacity: 1;
+        }
+
+        .mouse-glow-trail {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--nb-purple);
+            border: 2px solid var(--nb-black);
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease;
+            opacity: 0;
+            box-shadow: var(--nb-shadow-sm);
+        }
+
+        .mouse-glow-trail.visible {
+            opacity: 1;
+        }
+
+        /* =============================================
+               TIME-BASED GREETING
+               ============================================= */
+        .greeting-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 8px 16px;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.875rem;
+            color: var(--nb-black);
+            box-shadow: var(--nb-shadow-sm);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .greeting-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--nb-yellow), var(--nb-purple), var(--nb-teal));
+            background-size: 200% 100%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        .greeting-badge:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .greeting-badge .greeting-emoji {
+            font-size: 1.25rem;
+            animation: wave 2s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(10deg);
+            }
+
+            75% {
+                transform: rotate(-5deg);
+            }
+        }
+
+        /* =============================================
+               ANIMATED NUMBER COUNTER
+               ============================================= */
+        .count-animate {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .count-animate.count-pop {
+            animation: countPop 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes countPop {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+                color: var(--nb-yellow);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* =============================================
+               RIPPLE EFFECT ON CLICK
+               ============================================= */
+        .ripple-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(166, 108, 255, 0.3);
+            border: 2px solid var(--nb-black);
+            transform: scale(0);
+            animation: rippleAnim 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes rippleAnim {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* =============================================
+               STAMP BADGE ANIMATION
+               ============================================= */
+        .stamp-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: var(--nb-yellow);
+            border: 2px solid var(--nb-black);
+            border-radius: 4px;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 0.6875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--nb-black);
+            box-shadow: var(--nb-shadow-sm);
+            transform: rotate(-3deg);
+            animation: stampAppear 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .stamp-badge:nth-child(2) {
+            transform: rotate(2deg);
+            background: var(--nb-purple);
+            color: var(--nb-white);
+        }
+
+        .stamp-badge:nth-child(3) {
+            transform: rotate(-1deg);
+            background: var(--nb-teal);
+        }
+
+        @keyframes stampAppear {
+            0% {
+                transform: rotate(-10deg) scale(0) translateY(-20px);
+                opacity: 0;
+            }
+
+            60% {
+                transform: rotate(2deg) scale(1.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: rotate(-3deg) scale(1);
+            }
+        }
+
+        .stamp-badge i {
+            font-size: 0.75rem;
+        }
+
+        /* =============================================
+               CARD 3D STACK ENTRANCE
+               ============================================= */
+        .schedule-list-card {
+            transform-style: preserve-3d;
+            perspective: 1200px;
+        }
+
+        .schedule-list-card.entrance {
+            animation: cardEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+        }
+
+        @keyframes cardEntrance {
+            0% {
+                opacity: 0;
+                transform: perspective(1200px) rotateX(10deg) rotateY(-10deg) translateY(60px) scale(0.9);
+            }
+
+            60% {
+                opacity: 1;
+                transform: perspective(1200px) rotateX(-2deg) rotateY(2deg) translateY(-5px) scale(1.02);
+            }
+
+            100% {
+                opacity: 1;
+                transform: perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1);
+            }
+        }
+
+        /* =============================================
+               INTERACTIVE BACKGROUND PARTICLES
+               ============================================= */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 4px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .particle.visible {
+            opacity: 1;
+        }
+
+        .particle.shape-circle {
+            border-radius: 50%;
+        }
+
+        .particle.shape-square {
+            border-radius: 2px;
+        }
+
+        .particle.shape-triangle {
+            width: 0 !important;
+            height: 0 !important;
+            background: transparent !important;
+            border-left: solid transparent;
+            border-right: solid transparent;
+            border-bottom: solid;
+        }
+
+        /* =============================================
+               LIVE PULSE INDICATOR
+               ============================================= */
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--nb-red);
+            color: var(--nb-white);
+            padding: 6px 14px;
+            border-radius: var(--nb-radius-sm);
+            border: var(--nb-border);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.8125rem;
+            box-shadow: var(--nb-shadow-sm);
+            animation: livePulse 2s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+            margin-left: 10px;
+        }
+
+        .live-indicator::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--nb-white);
+            border-radius: 50%;
+            border: 2px solid var(--nb-black);
+            animation: liveDot 1.5s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes liveDot {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+            }
+
+            50% {
+                transform: scale(0.7);
+                opacity: 0.7;
+                box-shadow: 0 0 0 8px rgba(255, 255, 255, 0);
+            }
+        }
+
+        @keyframes livePulse {
+
+            0%,
+            100% {
+                box-shadow: var(--nb-shadow-sm), 0 0 0 0 rgba(255, 107, 107, 0.4);
+            }
+
+            50% {
+                box-shadow: var(--nb-shadow), 0 0 0 12px rgba(255, 107, 107, 0);
+            }
+        }
+
+        /* =============================================
+               PROGRESS BAR FOR CURRENT CLASS
+               ============================================= */
+        .class-progress-container {
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: var(--nb-dark);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            box-shadow: var(--nb-shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .class-progress-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--nb-yellow), var(--nb-purple));
+        }
+
+        .class-progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--nb-white);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .class-progress-bar {
+            height: 12px;
+            background: var(--nb-dark);
+            border: 2px solid var(--nb-black);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .class-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--nb-yellow), var(--nb-purple), var(--nb-pink));
+            background-size: 200% 100%;
+            border-radius: 4px;
+            transition: width 1s ease;
+            animation: gradientShift 3s ease infinite;
+            position: relative;
+        }
+
+        .class-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            filter: blur(4px);
+        }
+
+        .class-progress-percent {
+            font-family: var(--font-display);
+            font-size: 0.8125rem;
+            font-weight: 800;
+            color: var(--nb-yellow);
+            background: var(--nb-black);
+            padding: 1px 8px;
+            border-radius: 3px;
+        }
+
+        /* =============================================
+               SCROLL REVEAL ANIMATIONS
+               ============================================= */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px) scale(0.98);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, opacity;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-50px) rotateY(-5deg);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, opacity;
+        }
+
+        .reveal-left.visible {
+            opacity: 1;
+            transform: translateX(0) rotateY(0);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(50px) rotateY(5deg);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, opacity;
+        }
+
+        .reveal-right.visible {
+            opacity: 1;
+            transform: translateX(0) rotateY(0);
+        }
+
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.85);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, opacity;
+        }
+
+        .reveal-scale.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Delay classes */
+        .delay-100 {
+            transition-delay: 0.1s;
+        }
+
+        .delay-200 {
+            transition-delay: 0.2s;
+        }
+
+        .delay-300 {
+            transition-delay: 0.3s;
+        }
+
+        .delay-400 {
+            transition-delay: 0.4s;
+        }
+
+        .delay-500 {
+            transition-delay: 0.5s;
+        }
+
+        /* =============================================
+               INTERACTIVE SCHEDULE CARD HOVER
+               ============================================= */
+        .schedule-list-card {
+            cursor: pointer;
+        }
+
+        .schedule-list-card .schedule-course {
+            transition: all 0.3s ease;
+        }
+
+        .schedule-list-card:hover .schedule-course {
+            transform: translateX(5px);
+        }
+
+        .schedule-list-card .schedule-meta-item {
+            transition: all 0.3s ease;
+        }
+
+        .schedule-list-card:hover .schedule-meta-item {
+            transform: translateX(3px);
+        }
+
+        .schedule-list-card .schedule-meta-item:nth-child(2) {
+            transition-delay: 0.05s;
+        }
+
+        .schedule-list-card .schedule-meta-item:nth-child(3) {
+            transition-delay: 0.1s;
+        }
+
+        /* Color accent overlay on hover */
+        .schedule-list-card::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: -4px;
+            bottom: -4px;
+            background: var(--nb-black);
+            border-radius: var(--nb-radius);
+            z-index: -1;
+            transition: all 0.3s ease;
+        }
+
+        .schedule-list-card.color-accent-purple::after {
+            background: var(--nb-purple) !important;
+        }
+
+        .schedule-list-card.color-accent-teal::after {
+            background: var(--nb-teal) !important;
+        }
+
+        .schedule-list-card.color-accent-pink::after {
+            background: var(--nb-pink) !important;
+        }
+
+        .schedule-list-card.color-accent-orange::after {
+            background: var(--nb-orange) !important;
+        }
+
+        .schedule-list-card.color-accent-green::after {
+            background: var(--nb-green) !important;
+        }
+
+        .schedule-list-card.color-accent-blue::after {
+            background: var(--nb-blue) !important;
+        }
+
+        /* =============================================
+               SMOOTH SCROLL INDICATOR
+               ============================================= */
+        .scroll-indicator {
+            text-align: center;
+            padding: 20px 0 10px;
+            animation: bounceIndicator 2s ease-in-out infinite;
+        }
+
+        .scroll-indicator span {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--nb-dark);
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        .scroll-indicator span i {
+            font-size: 1rem;
+            animation: bounceArrow 2s ease-in-out infinite;
+        }
+
+        @keyframes bounceIndicator {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(6px);
+            }
+        }
+
+        @keyframes bounceArrow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            50% {
+                transform: translateY(4px);
+                opacity: 0.5;
+            }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -2076,45 +2928,56 @@
         }
 
         /* Schedule list cards with staggered animation */
-        .schedule-list-card {
+        /* Default animation is now handled by .entrance class from JS */
+        .schedule-list-card:not(.entrance) {
             animation: slideInCard 0.6s ease forwards;
         }
 
-        .schedule-list-card:nth-child(1) {
+        .schedule-list-card:not(.entrance):nth-child(1) {
             animation-delay: 0.05s;
         }
 
-        .schedule-list-card:nth-child(2) {
+        .schedule-list-card:not(.entrance):nth-child(2) {
             animation-delay: 0.1s;
         }
 
-        .schedule-list-card:nth-child(3) {
+        .schedule-list-card:not(.entrance):nth-child(3) {
             animation-delay: 0.15s;
         }
 
-        .schedule-list-card:nth-child(4) {
+        .schedule-list-card:not(.entrance):nth-child(4) {
             animation-delay: 0.2s;
         }
 
-        .schedule-list-card:nth-child(5) {
+        .schedule-list-card:not(.entrance):nth-child(5) {
             animation-delay: 0.25s;
         }
 
-        .schedule-list-card:nth-child(6) {
+        .schedule-list-card:not(.entrance):nth-child(6) {
             animation-delay: 0.3s;
         }
 
-        .schedule-list-card:nth-child(7) {
+        .schedule-list-card:not(.entrance):nth-child(7) {
             animation-delay: 0.35s;
         }
 
-        .schedule-list-card:nth-child(8) {
+        .schedule-list-card:not(.entrance):nth-child(8) {
             animation-delay: 0.4s;
         }
     </style>
 </head>
 
 <body class="{{ $maintenanceMode == '1' ? 'maintenance-active' : '' }}">
+
+    <!-- Animated Gradient Background -->
+    <div class="gradient-bg"></div>
+
+    <!-- Mouse Glow Trail -->
+    <div class="mouse-glow" id="mouseGlow"></div>
+    <div class="mouse-glow-trail" id="mouseGlowTrail"></div>
+
+    <!-- Interactive Background Particles Canvas -->
+    <div id="particles-canvas"></div>
 
     @if ($maintenanceMode == '1')
         <div class="maintenance-modal" id="maintenanceModal">
@@ -2144,13 +3007,31 @@
                 <div class="institution-info">
                     <h1>{{ $headerTitle1 ?? $institusiNama }}</h1>
                     <h2>{{ $headerTitle2 ?? $institusiLokasi }}</h2>
-                    <p class="institution-sub">{{ $programStudi }}<span class="institution-divider"> | </span>Tahun
-                        Akademik {{ $tahunAkademik }}</p>
+                    <p class="institution-sub">
+                        {{ $programStudi }}<span class="institution-divider"> | </span>Tahun
+                        Akademik {{ $tahunAkademik }}
+                    </p>
+                    <!-- Greeting Badge -->
+                    <div class="greeting-badge" style="margin-top: 8px;" id="greetingBadge">
+                        <span class="greeting-emoji" id="greetingEmoji">👋</span>
+                        <span id="greetingText">Selamat datang</span>
+                    </div>
                 </div>
                 <div class="logo-section">
                     <img src="{{ asset('jadwal-kampus/assets/images/logo_jurusan.png') }}" alt="Logo Jurusan"
                         class="logo-img"
                         onerror="this.onerror=null; this.src='https://via.placeholder.com/56x56/1e293b/ffffff?text=LOGO'">
+                </div>
+            </div>
+            <!-- Live Clock Widget di Header -->
+            <div class="header-content" style="margin-top: 12px; justify-content: center;">
+                <div class="live-clock-wrapper">
+                    <span class="clock-icon"><i class="fas fa-clock"></i></span>
+                    <div class="clock-display">
+                        <span class="clock-time" id="headerClockTime">{{ now()->format('H:i:s') }}</span>
+                        <span class="clock-date"
+                            id="headerClockDate">{{ now()->locale('id')->translatedFormat('l, d F Y') }}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2308,6 +3189,15 @@
             </div>
         @endif
 
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator reveal">
+            <span>
+                <i class="fas fa-chevron-down"></i>
+                Scroll untuk jadwal lengkap
+                <i class="fas fa-chevron-down"></i>
+            </span>
+        </div>
+
         <!-- Jadwal Terdekat Section -->
         <div class="current-next-section" id="currentNextSection">
             <div class="section-header">
@@ -2335,11 +3225,18 @@
             <div id="currentScheduleContent">
                 <div class="current-next-grid">
                     <!-- Card Kiri: Jadwal Berlangsung -->
-                    <div class="schedule-card accent-green tilt-3d" data-tilt>
+                    <div class="schedule-card accent-green tilt-3d reveal-left" data-tilt>
                         <div class="schedule-card-header success-bg">
-                            <h5 class="schedule-card-title">
+                            <h5 class="schedule-card-title"
+                                style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
                                 <i class="fas fa-play-circle"></i>
                                 Sedang Berlangsung
+                                @if ($jadwalBerlangsung)
+                                    <span class="live-indicator">
+                                        <span class="live-dot"></span>
+                                        LIVE
+                                    </span>
+                                @endif
                             </h5>
                         </div>
                         <div class="schedule-card-body">
@@ -2367,6 +3264,19 @@
                                             <i class="fas fa-clock"></i>
                                             <span>{{ $jadwalBerlangsung->waktu }}</span>
                                         </div>
+                                        <div class="class-progress-container" id="classProgressContainer">
+                                            <div class="class-progress-label">
+                                                <span><i class="fas fa-hourglass-half me-1"></i> Progress
+                                                    Perkuliahan</span>
+                                                <span class="class-progress-percent"
+                                                    id="classProgressPercent">0%</span>
+                                            </div>
+                                            <div class="class-progress-bar">
+                                                <div class="class-progress-fill" id="classProgressFill"
+                                                    style="width: 0%;"></div>
+                                            </div>
+                                        </div>
+
                                         <button class="btn-detail-modern"
                                             data-schedule='{{ json_encode($jadwalBerlangsung->toArray()) }}'>
                                             <i class="fas fa-info-circle"></i>
@@ -2393,7 +3303,7 @@
                     </div>
 
                     <!-- Card Kanan: Jadwal Berikutnya -->
-                    <div class="schedule-card accent-left tilt-3d" data-tilt>
+                    <div class="schedule-card accent-left tilt-3d reveal-right" data-tilt>
                         <div class="schedule-card-header primary-bg">
                             <div
                                 style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
@@ -2502,7 +3412,7 @@
                 </div>
 
                 <!-- Info Box -->
-                <div class="info-box">
+                <div class="info-box reveal">
                     <div class="info-box-content">
                         <i class="fas fa-info-circle info-box-icon"></i>
                         <div class="info-box-text">
@@ -2525,7 +3435,7 @@
                                 </div>
                                 <div class="info-tag">
                                     <i class="fas fa-clock"></i>
-                                    Waktu: <strong>{{ now()->format('H:i') }}</strong>
+                                    Waktu: <strong id="liveTimeInfoBox">{{ now()->format('H:i:s') }}</strong>
                                 </div>
                                 <div class="info-tag">
                                     <i class="fas fa-graduation-cap"></i>
@@ -2540,7 +3450,7 @@
 
         <!-- Daftar Jadwal Section -->
         <section class="schedule-list-section">
-            <div class="schedule-list-header">
+            <div class="schedule-list-header reveal">
                 <div>
                     <h2 class="section-title">
                         <i class="fas fa-calendar-alt"></i>
@@ -2558,7 +3468,7 @@
                 </div>
                 <span class="schedule-count-badge">
                     <i class="fas fa-calendar-check"></i>
-                    {{ count($jadwal) }} Jadwal
+                    <span class="count-animate" id="scheduleCount">{{ count($jadwal) }}</span> Jadwal
                 </span>
             </div>
 
@@ -2910,6 +3820,48 @@
         const firstClass = @json(!empty($kelasList) ? $kelasList[0] : 'A1');
         let waktuTungguDetik = {{ $waktuTungguDetik }};
         let countdownInterval = null;
+        let realtimeClockInterval = null;
+
+        /**
+         * Real-time Clock updater
+         * Updates the header clock and info box time every second
+         */
+        function startRealtimeClock() {
+            function updateClock() {
+                const now = new Date();
+
+                // Format time HH:MM:SS
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                const timeStr = hours + ':' + minutes + ':' + seconds;
+                const timeStrShort = hours + ':' + minutes;
+
+                // Format date in Indonesian
+                const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September',
+                    'Oktober', 'November', 'Desember'
+                ];
+                const dayName = days[now.getDay()];
+                const date = now.getDate();
+                const month = months[now.getMonth()];
+                const year = now.getFullYear();
+                const dateStr = dayName + ', ' + date + ' ' + month + ' ' + year;
+
+                // Update header clock
+                const headerTime = document.getElementById('headerClockTime');
+                const headerDate = document.getElementById('headerClockDate');
+                if (headerTime) headerTime.textContent = timeStr;
+                if (headerDate) headerDate.textContent = dateStr;
+
+                // Update info box time
+                const infoBoxTime = document.getElementById('liveTimeInfoBox');
+                if (infoBoxTime) infoBoxTime.textContent = timeStr;
+            }
+
+            updateClock();
+            realtimeClockInterval = setInterval(updateClock, 1000);
+        }
 
         function toggleSidebar() {
             const sidebar = document.getElementById('mobileSidebar');
@@ -2932,19 +3884,39 @@
             button.classList.add('active');
 
             if (type === 'hari') {
+                // Specific day selected
                 params.delete('semua_hari');
                 params.set('hari', value);
-                params.delete('kelas');
+                // Keep kelas if exists, otherwise add default first class
+                if (!params.has('kelas') || params.get('kelas') === '1') {
+                    params.set('kelas', firstClass);
+                }
                 params.delete('semua_kelas');
             } else if (type === 'semua_hari') {
+                // All days selected
                 params.set('semua_hari', '1');
                 params.delete('hari');
+                // Keep kelas if exists, otherwise use first class
+                if (!params.has('kelas')) {
+                    params.set('kelas', firstClass);
+                }
             } else if (type === 'kelas') {
+                // Specific class selected
                 params.delete('semua_kelas');
                 params.set('kelas', value);
+                // Keep hari if exists, otherwise use current day
+                if (!params.has('hari') || params.get('hari') === '1') {
+                    params.set('hari', currentDay);
+                }
+                params.delete('semua_hari');
             } else if (type === 'semua_kelas') {
+                // All classes selected
                 params.set('semua_kelas', '1');
                 params.delete('kelas');
+                // Keep hari if exists, otherwise use current day
+                if (!params.has('hari')) {
+                    params.set('hari', currentDay);
+                }
             }
 
             window.location.href = '?' + params.toString();
@@ -3116,6 +4088,435 @@
         }
 
         // =============================================
+        // MOUSE GLOW EFFECT
+        // =============================================
+        function initMouseGlow() {
+            const glow = document.getElementById('mouseGlow');
+            const trail = document.getElementById('mouseGlowTrail');
+            if (!glow || !trail) return;
+
+            let mouseX = -200,
+                mouseY = -200;
+            let trailX = -200,
+                trailY = -200;
+            let isVisible = false;
+            let timeoutId = null;
+
+            document.addEventListener('mousemove', function(e) {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+
+                if (!isVisible) {
+                    isVisible = true;
+                    glow.classList.add('visible');
+                    trail.classList.add('visible');
+                }
+
+                glow.style.left = mouseX + 'px';
+                glow.style.top = mouseY + 'px';
+
+                // Clear timeout
+                if (timeoutId) clearTimeout(timeoutId);
+                timeoutId = setTimeout(function() {
+                    isVisible = false;
+                    glow.classList.remove('visible');
+                    trail.classList.remove('visible');
+                }, 3000);
+            });
+
+            // Smooth trail following
+            function animateTrail() {
+                trailX += (mouseX - trailX) * 0.15;
+                trailY += (mouseY - trailY) * 0.15;
+
+                if (trail.style.opacity !== '0') {
+                    trail.style.left = trailX + 'px';
+                    trail.style.top = trailY + 'px';
+                }
+                requestAnimationFrame(animateTrail);
+            }
+            animateTrail();
+        }
+
+        // =============================================
+        // TIME-BASED GREETING
+        // =============================================
+        function initGreeting() {
+            const emojiEl = document.getElementById('greetingEmoji');
+            const textEl = document.getElementById('greetingText');
+            if (!emojiEl || !textEl) return;
+
+            function updateGreeting() {
+                const hour = new Date().getHours();
+                let emoji, text;
+
+                if (hour >= 3 && hour < 6) {
+                    emoji = '🌅';
+                    text = 'Selamat subuh';
+                } else if (hour >= 6 && hour < 10) {
+                    emoji = '☀️';
+                    text = 'Selamat pagi';
+                } else if (hour >= 10 && hour < 12) {
+                    emoji = '🌤️';
+                    text = 'Selamat siang';
+                } else if (hour >= 12 && hour < 15) {
+                    emoji = '🌞';
+                    text = 'Selamat siang';
+                } else if (hour >= 15 && hour < 18) {
+                    emoji = '🌅';
+                    text = 'Selamat sore';
+                } else if (hour >= 18 && hour < 21) {
+                    emoji = '🌆';
+                    text = 'Selamat petang';
+                } else {
+                    emoji = '🌙';
+                    text = 'Selamat malam';
+                }
+
+                emojiEl.textContent = emoji;
+                textEl.textContent = text;
+            }
+
+            updateGreeting();
+            setInterval(updateGreeting, 60000); // Check every minute
+        }
+
+        // =============================================
+        // RIPPLE EFFECT ON CLICK
+        // =============================================
+        function initRippleEffect() {
+            document.querySelectorAll('.schedule-list-card, .btn-detail-modern, .btn-filter-action').forEach(function(el) {
+                el.classList.add('ripple-container');
+                el.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const ripple = document.createElement('span');
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+
+                    ripple.className = 'ripple-effect';
+                    ripple.style.width = size + 'px';
+                    ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+
+                    this.appendChild(ripple);
+                    setTimeout(function() {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        }
+
+        // =============================================
+        // ANIMATED COUNTER
+        // =============================================
+        function initAnimatedCounter() {
+            const countEl = document.getElementById('scheduleCount');
+            if (!countEl) return;
+
+            const target = parseInt(countEl.textContent) || 0;
+
+            function animateCount() {
+                countEl.classList.add('count-pop');
+                setTimeout(function() {
+                    countEl.classList.remove('count-pop');
+                }, 400);
+            }
+
+            // Pop on load
+            setTimeout(animateCount, 300);
+
+            // Re-pop on scroll reveal
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        animateCount();
+                    }
+                });
+            });
+            observer.observe(countEl);
+        }
+
+        // =============================================
+        // CARD 3D STACK ENTRANCE (Enhanced)
+        // =============================================
+        function initCardEntrance() {
+            const cards = document.querySelectorAll('.schedule-list-card');
+            cards.forEach(function(card, index) {
+                // Only apply if card is not already visible via other animations
+                if (!card.classList.contains('active')) {
+                    card.style.opacity = '0';
+                    card.classList.add('entrance');
+                    card.style.animationDelay = (0.05 * index) + 's';
+                    card.style.animationDuration = '0.8s';
+                    card.style.animationFillMode = 'forwards';
+                }
+            });
+        }
+
+        // =============================================
+        // STAMP BADGES FOR EMPTY STATE
+        // =============================================
+        function initStampBadges() {
+            // Add stamp badges to empty state if needed
+            const emptyCards = document.querySelectorAll('.schedule-card-body.flex-center');
+            emptyCards.forEach(function(card) {
+                if (!card.querySelector('.stamp-badge')) {
+                    const header = card.closest('.schedule-card')?.querySelector('.schedule-card-header');
+                    if (header) {
+                        const stamps = document.createElement('div');
+                        stamps.style.cssText = 'display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px;';
+                        stamps.innerHTML = `
+                            <span class="stamp-badge"><i class="fas fa-check"></i> LIBUR</span>
+                            <span class="stamp-badge"><i class="fas fa-clock"></i> ISTIRAHAT</span>
+                        `;
+                        header.appendChild(stamps);
+                    }
+                }
+            });
+        }
+
+        // =============================================
+        // INTERACTIVE PARTICLES BACKGROUND
+        // =============================================
+        function initParticles() {
+            const canvas = document.getElementById('particles-canvas');
+            if (!canvas) return;
+
+            const shapes = ['circle', 'square', 'triangle'];
+            const colors = ['#A66CFF', '#4ECDC4', '#FFE66D', '#FF6B6B', '#F38181', '#95E1D3', '#FFB347', '#6BB5FF'];
+            const particles = [];
+            const particleCount = 35;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                const shape = shapes[Math.floor(Math.random() * shapes.length)];
+                const size = Math.floor(Math.random() * 16) + 6;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+
+                particle.classList.add('particle', 'shape-' + shape);
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+
+                if (shape === 'triangle') {
+                    particle.style.borderLeftWidth = (size / 2) + 'px';
+                    particle.style.borderRightWidth = (size / 2) + 'px';
+                    particle.style.borderBottomWidth = size + 'px';
+                    particle.style.borderBottomColor = color;
+                } else {
+                    particle.style.background = color;
+                    if (shape === 'square') {
+                        particle.style.borderRadius = '2px';
+                        particle.style.transform = 'rotate(' + Math.floor(Math.random() * 90) + 'deg)';
+                    }
+                }
+
+                const startX = Math.random() * window.innerWidth;
+                const startY = Math.random() * window.innerHeight;
+
+                particle.style.left = startX + 'px';
+                particle.style.top = startY + 'px';
+
+                canvas.appendChild(particle);
+
+                particles.push({
+                    el: particle,
+                    x: startX,
+                    y: startY,
+                    size: size,
+                    speedX: (Math.random() - 0.5) * 0.5,
+                    speedY: (Math.random() - 0.5) * 0.5,
+                    rotation: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 1,
+                    visible: false,
+                    delay: Math.random() * 3000
+                });
+            }
+
+            // Animate
+            function animateParticles() {
+                const now = Date.now();
+
+                particles.forEach(function(p) {
+                    // Show with delay
+                    if (!p.visible && now > p.delay) {
+                        p.visible = true;
+                        p.el.classList.add('visible');
+                    }
+
+                    if (!p.visible) return;
+
+                    // Move
+                    p.x += p.speedX;
+                    p.y += p.speedY;
+                    p.rotation += p.rotSpeed;
+
+                    // Wrap around
+                    if (p.x < -50) p.x = window.innerWidth + 50;
+                    if (p.x > window.innerWidth + 50) p.x = -50;
+                    if (p.y < -50) p.y = window.innerHeight + 50;
+                    if (p.y > window.innerHeight + 50) p.y = -50;
+
+                    p.el.style.left = p.x + 'px';
+                    p.el.style.top = p.y + 'px';
+
+                    if (p.el.style.transform) {
+                        p.el.style.transform = 'rotate(' + p.rotation + 'deg)';
+                    }
+                });
+
+                requestAnimationFrame(animateParticles);
+            }
+
+            animateParticles();
+
+            // Resize handler
+            window.addEventListener('resize', function() {
+                particles.forEach(function(p) {
+                    if (p.x > window.innerWidth) p.x = window.innerWidth * 0.8;
+                    if (p.y > window.innerHeight) p.y = window.innerHeight * 0.8;
+                });
+            });
+        }
+
+        // =============================================
+        // SCROLL REVEAL ANIMATIONS
+        // =============================================
+        function initScrollReveal() {
+            const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+
+            function checkReveal() {
+                const windowHeight = window.innerHeight;
+                const revealPoint = 100;
+
+                revealElements.forEach(function(el) {
+                    const revealTop = el.getBoundingClientRect().top;
+                    if (revealTop < windowHeight - revealPoint) {
+                        el.classList.add('visible');
+                    }
+                });
+            }
+
+            // Check on load
+            checkReveal();
+
+            // Check on scroll with throttling
+            let ticking = false;
+            window.addEventListener('scroll', function() {
+                if (!ticking) {
+                    window.requestAnimationFrame(function() {
+                        checkReveal();
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+
+            // Check on resize
+            window.addEventListener('resize', checkReveal);
+        }
+
+        // =============================================
+        // CLASS PROGRESS BAR (Current Schedule)
+        // =============================================
+        function initClassProgress() {
+            const container = document.getElementById('classProgressContainer');
+            if (!container) return;
+
+            // Get start & end time from the schedule
+            const scheduleDataEl = document.querySelector('.schedule-card.accent-green .btn-detail-modern');
+            if (!scheduleDataEl) return;
+
+            try {
+                const data = JSON.parse(scheduleDataEl.dataset.schedule);
+                const waktu = data.waktu || '';
+                const parts = waktu.split(' - ');
+                if (parts.length < 2) return;
+
+                const startTime = parts[0].trim();
+                const endTime = parts[1].trim();
+
+                function updateProgress() {
+                    const now = new Date();
+                    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+                    const startParts = startTime.split(':');
+                    const endParts = endTime.split(':');
+                    const startMinutes = parseInt(startParts[0]) * 60 + parseInt(startParts[1]);
+                    const endMinutes = parseInt(endParts[0]) * 60 + parseInt(endParts[1]);
+
+                    if (currentMinutes < startMinutes) {
+                        // Class hasn't started yet
+                        setProgress(0, '0%');
+                        return;
+                    }
+
+                    if (currentMinutes > endMinutes) {
+                        // Class has ended
+                        setProgress(100, '100%');
+                        return;
+                    }
+
+                    const totalDuration = endMinutes - startMinutes;
+                    const elapsed = currentMinutes - startMinutes;
+                    const percent = Math.min(100, Math.round((elapsed / totalDuration) * 100));
+
+                    setProgress(percent, percent + '%');
+                }
+
+                function setProgress(percent, text) {
+                    const fill = document.getElementById('classProgressFill');
+                    const label = document.getElementById('classProgressPercent');
+                    if (fill) fill.style.width = percent + '%';
+                    if (label) label.textContent = text;
+                }
+
+                updateProgress();
+                setInterval(updateProgress, 10000); // Update every 10 seconds
+            } catch (e) {
+                console.warn('Could not initialize class progress:', e);
+            }
+        }
+
+        // =============================================
+        // RANDOM COLOR ACCENT ON CARD HOVER
+        // =============================================
+        function initColorAccents() {
+            const cards = document.querySelectorAll('.schedule-list-card');
+            const accentClasses = [
+                'color-accent-purple',
+                'color-accent-teal',
+                'color-accent-pink',
+                'color-accent-orange',
+                'color-accent-green',
+                'color-accent-blue'
+            ];
+
+            cards.forEach(function(card) {
+                card.addEventListener('mouseenter', function() {
+                    // Remove any existing accent
+                    accentClasses.forEach(function(cls) {
+                        card.classList.remove(cls);
+                    });
+                    // Add random accent
+                    const randomClass = accentClasses[Math.floor(Math.random() * accentClasses.length)];
+                    card.classList.add(randomClass);
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    // Keep the accent for a moment then remove
+                    var self = this;
+                    setTimeout(function() {
+                        accentClasses.forEach(function(cls) {
+                            self.classList.remove(cls);
+                        });
+                    }, 500);
+                });
+            });
+        }
+
+        // =============================================
         // 3D TILT EFFECT - Vanilla JS
         // =============================================
         function initTiltEffect() {
@@ -3180,6 +4581,21 @@
                     toggleIcon.classList.add('fa-eye');
                 }
             }
+
+            // Start real-time clock
+            startRealtimeClock();
+
+            // Initialize interactive features
+            initMouseGlow();
+            initGreeting();
+            initParticles();
+            initScrollReveal();
+            initClassProgress();
+            initColorAccents();
+            initRippleEffect();
+            initAnimatedCounter();
+            initCardEntrance();
+            initStampBadges();
 
             // Countdown timer
             if (waktuTungguDetik > 0) {
@@ -3293,6 +4709,7 @@
 
         window.addEventListener('beforeunload', function() {
             if (countdownInterval) clearInterval(countdownInterval);
+            if (realtimeClockInterval) clearInterval(realtimeClockInterval);
         });
     </script>
 </body>

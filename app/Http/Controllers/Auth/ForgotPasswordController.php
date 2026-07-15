@@ -29,6 +29,9 @@ class ForgotPasswordController extends Controller
         $user = DB::table('users')->where('email', $email)->first();
 
         if (!$user) {
+            if ($request->ajax()) {
+                return response()->json(['message' => 'Email tidak terdaftar dalam sistem.'], 404);
+            }
             return back()->with('error', 'Email tidak terdaftar dalam sistem.');
         }
 
@@ -61,8 +64,15 @@ class ForgotPasswordController extends Controller
                 'created_at' => now(),
             ]);
 
+            if ($request->ajax()) {
+                return response()->json(['message' => 'Link reset password telah dikirim ke email ' . $email . '. Silakan cek inbox email Anda.']);
+            }
+
             return redirect('/forgot-password')->with('success', 'Link reset password telah dikirim ke email ' . $email . '. Silakan cek inbox email Anda.');
         } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json(['message' => 'Gagal mengirim email reset password: ' . $e->getMessage()], 500);
+            }
             return back()->with('error', 'Gagal mengirim email reset password: ' . $e->getMessage());
         }
     }

@@ -600,7 +600,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ url('/forgot-password') }}">
+                <form method="POST" action="{{ url('/forgot-password') }}" id="resetForm">
                     @csrf
 
                     <div class="form-group">
@@ -612,9 +612,9 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-primary-custom">
+                    <button type="submit" id="sendResetBtn" class="btn-primary-custom">
                         <i class="fas fa-paper-plane"></i>
-                        Kirim Link Reset
+                        <span id="btnText">Kirim Link Reset</span>
                     </button>
 
                     <div class="back-link">
@@ -625,12 +625,261 @@
                         </small>
                     </div>
                 </form>
+
+                <!-- Hidden notification area (shown after AJAX send) -->
+                <div id="emailNotification" class="alert-modern alert-success" style="display:none;">
+                    <div class="success-content">
+                        <div class="success-icon-wrapper">
+                            <i class="fas fa-envelope-open-text"></i>
+                        </div>
+                        <div class="success-text">
+                            <div class="success-title">
+                                ✅ Link Terkirim!
+                            </div>
+                            <span class="success-message" id="notificationMessage">
+                                Link reset password telah dikirim ke email Anda. Silakan cek inbox.
+                            </span>
+                            <div class="info-box" style="margin-top:10px;">
+                                <small>
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Cek folder <strong>Spam</strong> atau <strong>Promosi</strong> jika tidak
+                                    menemukan email di Inbox
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // === PERSISTENT COUNTDOWN TIMER ===
+        // Uses localStorage to survive page reloads
+        // Cooldown multiplies by 2 on each click (2x, 4x, 8x, 16x, ...)
+
+        const BASE_COOLDOWN = 30; // seconds
+        const STORAGE_KEY = 'reset_cooldown';
+        let countdownInterval = null;
+
+        // Load persisted state from localStorage
+        function loadCooldownState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return null;
+                const state = JSON.parse(raw);
+                // Calculate how much time has passed
+                const elapsed = (Date.now() - state.timestamp) / 1000;
+                const remaining = state.total_seconds - elapsed;
+                if (remaining <= 0) {
+                    localStorage.removeItem(STORAGE_KEY);
+                    return null;
+                }
+                return {
+                    remaining: Math.ceil(remaining),
+                    multiplier: state.multiplier,
+                    total_seconds: state.total_seconds,
+                    email: state.email
+                };
+            } catch (e) {
+                localStorage.removeItem(STORAGE_KEY);
+                return null;
+            }
+        }
+
+        function saveCooldownState(totalSeconds, multiplier, email) {
+            const state = {
+                total_seconds: totalSeconds,
+                multiplier: multiplier,
+                email: email,
+                timestamp: Date.now()
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function clearCooldownState() {
+            localStorage.removeItem(STORAGE_KEY);
+        }
+
+        const btn = document.getElementById('sendResetBtn');
+        const btnText = document.getElementById('btnText');
+        const form = document.getElementById('resetForm');
+        const emailInput = document.getElementById('email');
+        const notification = document.getElementById('emailNotification');
+        const notificationMessage = document.getElementById('notificationMessage');
+
+        // === On DOM load: restore cooldown only if email matches ===
+        document.addEventListener('DOMContentLoaded', function() {
+            const saved = loadCooldownState();
+            const currentEmail = emailInput.value.trim();
+            if (saved && saved.email === currentEmail) {
+                startCooldown(saved.remaining, saved.multiplier, false);
+            } else if (saved && saved.email !== currentEmail) {
+                // Different email - clear the cooldown
+                clearCooldownState();
+            }
+        });
+
+        // === On email change: reset cooldown if email differs ===
+        emailInput.addEventListener('input', function() {
+            const saved = loadCooldownState();
+            const currentEmail = this.value.trim();
+            if (saved && saved.email !== currentEmail) {
+                // Email changed - clear cooldown and reset button
+                clearCooldownState();
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                    countdownInterval = null;
+                }
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+                btnText.textContent = 'Kirim Link Reset';
+                const btnIcon = btn.querySelector('i');
+                if (btnIcon) {
+                    btnIcon.className = 'fas fa-paper-plane';
+                }
+            }
+        });
+
+        // === On button click: AJAX submit ===
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Validate email
+            const email = emailInput.value.trim();
+            if (!email) {
+                emailInput.focus();
+                return;
+            }
+
+            // Check if there's an active cooldown in localStorage
+            const saved = loadCooldownState();
+            if (saved) {
+                // If saved email matches current email, double the cooldown
+                if (saved.email === email) {
+                    const newMultiplier = saved.multiplier * 2;
+                    const newTotal = BASE_COOLDOWN * newMultiplier;
+                    startCooldown(newTotal, newMultiplier, true, email);
+                } else {
+                    // Email changed since cooldown started - reset
+                    clearCooldownState();
+                    const multiplier = 1;
+                    const totalSeconds = BASE_COOLDOWN * multiplier;
+                    startCooldown(totalSeconds, multiplier, true, email);
+                }
+                return;
+            }
+
+            // No cooldown - submit via AJAX
+            const multiplier = 1;
+            const totalSeconds = BASE_COOLDOWN * multiplier;
+            startCooldown(totalSeconds, multiplier, true, email);
+
+            // Show loading state
+            btnText.textContent = 'Mengirim...';
+            btn.disabled = true;
+
+            // AJAX submit
+            $.ajax({
+                url: form.action,
+                method: 'POST',
+                data: $(form).serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    // Show notification
+                    notificationMessage.textContent = response.message ||
+                        'Link reset password telah dikirim ke email ' + email + '. Silakan cek inbox.';
+                    notification.style.display = 'block';
+                    notification.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                },
+                error: function(xhr) {
+                    let msg = 'Gagal mengirim email. Silakan coba lagi.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        msg = xhr.responseJSON.message;
+                    } else if (xhr.responseJSON && xhr.responseJSON.error) {
+                        msg = xhr.responseJSON.error;
+                    } else if (xhr.status === 422) {
+                        const errors = xhr.responseJSON.errors;
+                        if (errors && errors.email) {
+                            msg = errors.email[0];
+                        }
+                    }
+                    // Show error notification
+                    notification.className = 'alert-modern alert-error';
+                    notificationMessage.textContent = msg;
+                    notification.style.display = 'block';
+                    notification.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+            });
+        });
+
+        function startCooldown(totalSeconds, multiplier, saveToStorage, email) {
+            // Clear any existing interval
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+
+            const remaining = Math.ceil(totalSeconds);
+
+            // Save to localStorage if requested
+            if (saveToStorage) {
+                saveCooldownState(totalSeconds, multiplier, email || emailInput.value.trim());
+            }
+
+            // Update button state immediately
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
+            btn.style.cursor = 'not-allowed';
+            btnText.textContent = `Tunggu ${formatTime(remaining)}`;
+
+            // If cooldown >= 60s, also update the button icon
+            const btnIcon = btn.querySelector('i');
+            if (btnIcon) {
+                btnIcon.className = 'fas fa-clock';
+            }
+
+            let countdown = remaining;
+
+            countdownInterval = setInterval(function() {
+                countdown--;
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownInterval = null;
+                    clearCooldownState();
+
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                    btnText.textContent = 'Kirim Link Reset';
+                    if (btnIcon) {
+                        btnIcon.className = 'fas fa-paper-plane';
+                    }
+                } else {
+                    btnText.textContent = `Tunggu ${formatTime(countdown)}`;
+                }
+            }, 1000);
+        }
+
+        function formatTime(seconds) {
+            const s = Math.max(0, Math.ceil(seconds));
+            if (s >= 60) {
+                const mins = Math.floor(s / 60);
+                const secs = s % 60;
+                return `${mins}m ${secs}s`;
+            }
+            return `${s}s`;
+        }
+    </script>
 </body>
 
 </html>

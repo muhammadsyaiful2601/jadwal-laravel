@@ -722,6 +722,194 @@
             }
         }
 
+        /* DataTables - Show Entries Dropdown & Search */
+        .dataTables_wrapper .dataTables_length {
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--nb-dark);
+        }
+
+        .dataTables_wrapper .dataTables_length label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0;
+        }
+
+        .dataTables_wrapper .dataTables_length select {
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 8px 14px;
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--nb-black);
+            background: var(--nb-white);
+            outline: none;
+            cursor: pointer;
+            box-shadow: var(--nb-shadow-sm);
+            transition: all 0.15s ease;
+            min-width: 70px;
+            appearance: auto;
+            -webkit-appearance: auto;
+            -moz-appearance: auto;
+        }
+
+        .dataTables_wrapper .dataTables_length select:hover {
+            background: var(--nb-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .dataTables_wrapper .dataTables_length select:focus {
+            border-color: var(--nb-black);
+            box-shadow: var(--nb-shadow);
+            transform: translate(-2px, -2px);
+        }
+
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--nb-dark);
+        }
+
+        .dataTables_wrapper .dataTables_filter label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 10px 16px 10px 40px;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--nb-black);
+            background: var(--nb-white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 12px center;
+            background-size: 18px;
+            outline: none;
+            box-shadow: var(--nb-shadow-sm);
+            transition: all 0.15s ease;
+            min-width: 220px;
+        }
+
+        .dataTables_wrapper .dataTables_filter input:focus {
+            border-color: var(--nb-black);
+            box-shadow: var(--nb-shadow);
+            transform: translate(-2px, -2px);
+            background-color: var(--nb-yellow);
+        }
+
+        .dataTables_wrapper .dataTables_filter input::placeholder {
+            color: #999;
+            font-weight: 500;
+        }
+
+        /* DataTables Pagination */
+        .dataTables_wrapper .dataTables_paginate {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+            padding-top: 16px;
+            border-top: 2px solid var(--nb-gray);
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 42px;
+            height: 42px;
+            padding: 0 16px;
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--nb-black);
+            background: var(--nb-white);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            box-shadow: var(--nb-shadow-sm);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+            user-select: none;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.disabled) {
+            background: var(--nb-yellow);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:active:not(.disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: var(--nb-black);
+            color: var(--nb-white);
+            border-color: var(--nb-black);
+            box-shadow: var(--nb-shadow);
+            transform: translate(-2px, -2px);
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+            background: var(--nb-dark);
+            color: var(--nb-white);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: var(--nb-gray);
+            color: var(--nb-dark);
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.previous,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.next {
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .dataTables_wrapper .dataTables_info {
+            font-family: var(--font-body);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--nb-dark);
+            padding-top: 20px;
+        }
+
+        .dataTables_wrapper .dataTables_info .dataTables_info_current,
+        .dataTables_wrapper .dataTables_info .dataTables_info_total {
+            font-weight: 700;
+            color: var(--nb-black);
+        }
+
+        .table-card-body .dataTables_wrapper {
+            padding: 20px 24px;
+        }
+
         @media (max-width: 576px) {
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
