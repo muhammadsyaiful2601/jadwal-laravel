@@ -3448,6 +3448,111 @@
             </div>
         </div>
 
+        <!-- Countdown Jadwal Mendatang Section -->
+        @if (!empty($jadwalMendatang) && count($jadwalMendatang) > 0)
+            <div class="current-next-section reveal" id="upcomingCountdownSection">
+                <div class="section-header">
+                    <div>
+                        <h3 class="section-title">
+                            <i class="fas fa-hourglass-half"></i>
+                            Countdown Jadwal Mendatang
+                        </h3>
+                        <p class="section-subtitle">Menghitung waktu menuju perkuliahan selanjutnya</p>
+                    </div>
+                </div>
+
+                <div class="schedule-list-grid">
+                    @foreach ($jadwalMendatang as $index => $item)
+                        @php
+                            $schedule = $item['schedule'];
+                            $waktuTunggu = $item['waktu_tunggu_detik'];
+                            $selisihHariItem = $item['selisih_hari'];
+                            $targetHariItem = $item['target_hari'];
+                            $isFirst = $index === 0;
+                        @endphp
+
+                        <div class="schedule-card {{ $isFirst ? 'accent-left' : '' }} reveal-scale"
+                            data-waktu-tunggu="{{ $waktuTunggu }}" data-index="{{ $index }}">
+                            <div class="schedule-card-header {{ $isFirst ? 'primary-bg' : '' }}">
+                                <h5 class="schedule-card-title"
+                                    style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+                                    <i class="fas fa-clock"></i>
+                                    {{ $schedule->mata_kuliah }}
+                                    @if ($isFirst)
+                                        <span class="live-indicator">
+                                            <span class="live-dot"></span>
+                                            NEXT
+                                        </span>
+                                    @endif
+                                </h5>
+                            </div>
+                            <div class="schedule-card-body">
+                                <div class="schedule-details">
+                                    <div class="schedule-info-row">
+                                        <i class="fas fa-user-tie"></i>
+                                        <span>{{ $schedule->dosen }}</span>
+                                    </div>
+                                    <div class="schedule-info-row">
+                                        <i class="fas fa-door-open"></i>
+                                        <span>Ruang {{ $schedule->ruang }}</span>
+                                    </div>
+                                    <div class="schedule-info-row">
+                                        <i class="fas fa-users"></i>
+                                        <span>Kelas {{ $schedule->kelas }}</span>
+                                    </div>
+                                    <div class="schedule-info-row">
+                                        <i class="fas fa-calendar-day"></i>
+                                        <span>
+                                            @if ($selisihHariItem == 0)
+                                                Hari Ini
+                                            @else
+                                                {{ $targetHariItem }} ({{ $selisihHariItem }} hari lagi)
+                                            @endif
+                                        </span>
+                                    </div>
+                                    <div class="schedule-info-row">
+                                        <i class="fas fa-clock"></i>
+                                        <span>{{ $schedule->waktu }}</span>
+                                    </div>
+
+                                    @if ($waktuTunggu > 0)
+                                        <div class="countdown-box">
+                                            <div class="countdown-label">
+                                                <i class="fas fa-hourglass-half me-1"></i>
+                                                Mulai dalam:
+                                            </div>
+                                            <div class="countdown-timer">
+                                                <div class="countdown-unit">
+                                                    <div class="countdown-value"
+                                                        id="countdownDays{{ $index }}">0</div>
+                                                    <div class="countdown-text">Hari</div>
+                                                </div>
+                                                <div class="countdown-unit">
+                                                    <div class="countdown-value"
+                                                        id="countdownHours{{ $index }}">00</div>
+                                                    <div class="countdown-text">Jam</div>
+                                                </div>
+                                                <div class="countdown-unit">
+                                                    <div class="countdown-value"
+                                                        id="countdownMinutes{{ $index }}">00</div>
+                                                    <div class="countdown-text">Menit</div>
+                                                </div>
+                                                <div class="countdown-unit">
+                                                    <div class="countdown-value"
+                                                        id="countdownSeconds{{ $index }}">00</div>
+                                                    <div class="countdown-text">Detik</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
         <!-- Daftar Jadwal Section -->
         <section class="schedule-list-section">
             <div class="schedule-list-header reveal">
@@ -3821,6 +3926,9 @@
         let waktuTungguDetik = {{ $waktuTungguDetik }};
         let countdownInterval = null;
         let realtimeClockInterval = null;
+
+        // Pass jadwalMendatang data to JavaScript
+        const jadwalMendatang = @json($jadwalMendatang);
 
         /**
          * Real-time Clock updater
@@ -4597,9 +4705,9 @@
             initCardEntrance();
             initStampBadges();
 
-            // Countdown timer
-            if (waktuTungguDetik > 0) {
-                startCountdownTimer();
+            // Countdown timers for upcoming courses
+            if (typeof jadwalMendatang !== 'undefined' && jadwalMendatang.length > 0) {
+                startMultipleCountdownTimers();
             }
 
             // Suggestion form handler
@@ -4676,6 +4784,54 @@
                 $('#suggestionMessage').removeClass('is-invalid is-valid');
             });
         });
+
+        // Multiple countdown timers for upcoming courses
+        window.startMultipleCountdownTimers = function() {
+            if (!jadwalMendatang || jadwalMendatang.length === 0) return;
+
+            const intervals = [];
+
+            jadwalMendatang.forEach(function(item, index) {
+                if (!item.waktu_tunggu_detik || item.waktu_tunggu_detik <= 0) return;
+
+                let remainingSeconds = item.waktu_tunggu_detik;
+
+                function updateCountdown() {
+                    if (remainingSeconds <= 0) {
+                        window.location.reload();
+                        return;
+                    }
+                    const days = Math.floor(remainingSeconds / (24 * 3600));
+                    const hours = Math.floor((remainingSeconds % (24 * 3600)) / 3600);
+                    const minutes = Math.floor((remainingSeconds % 3600) / 60);
+                    const seconds = remainingSeconds % 60;
+
+                    const daysEl = document.getElementById('countdownDays' + index);
+                    const hoursEl = document.getElementById('countdownHours' + index);
+                    const minutesEl = document.getElementById('countdownMinutes' + index);
+                    const secondsEl = document.getElementById('countdownSeconds' + index);
+
+                    if (daysEl) daysEl.textContent = String(days).padStart(2, '0');
+                    if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
+                    if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
+                    if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
+                    remainingSeconds--;
+                }
+
+                updateCountdown();
+                const interval = setInterval(updateCountdown, 1000);
+                intervals.push(interval);
+            });
+
+            // Store intervals for cleanup
+            countdownInterval = {
+                clear: function() {
+                    intervals.forEach(function(interval) {
+                        clearInterval(interval);
+                    });
+                }
+            };
+        };
 
         window.startCountdownTimer = function() {
             if (!waktuTungguDetik || waktuTungguDetik <= 0) return;

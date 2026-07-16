@@ -137,13 +137,13 @@ class LandingPageController extends Controller
 
         if ($tampilSemuaHari && $tampilSemuaKelas) {
             // All days, all classes
-            $query->orderByRaw("FIELD(hari, 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT')")
+            $query->orderByRaw("FIELD(hari, 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT')", [])
                 ->orderBy('kelas')
                 ->orderBy('jam_ke');
         } elseif ($tampilSemuaHari) {
             // All days, specific class
             $query->byKelas($kelasSelected)
-                ->orderByRaw("FIELD(hari, 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT')")
+                ->orderByRaw("FIELD(hari, 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT')", [])
                 ->orderBy('jam_ke');
         } elseif ($tampilSemuaKelas) {
             // Specific day, all classes
@@ -174,6 +174,7 @@ class LandingPageController extends Controller
         $waktuTungguDetik = 0;
         $selisihHari = 0;
         $targetHari = '';
+        $jadwalMendatang = []; // Array untuk menyimpan jadwal yang akan datang
 
         if ($hariSekarangTeks) {
             // Find ongoing schedule
@@ -184,11 +185,13 @@ class LandingPageController extends Controller
                 ->orderBy('jam_ke')
                 ->first();
 
-            // Find next schedule - search from today through following days
+            // Find next schedules - search from today through following days
             $hariOrder = ['SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT'];
             $currentIndex = array_search($hariSekarangTeks, $hariOrder);
+            $schedulesFound = 0;
+            $maxSchedules = 5; // Get up to 5 upcoming schedules
 
-            for ($i = 0; $i < 5; $i++) {
+            for ($i = 0; $i < 10 && $schedulesFound < $maxSchedules; $i++) {
                 $nextIndex = ($currentIndex + $i) % 5;
                 $nextDay = $hariOrder[$nextIndex];
 
@@ -202,34 +205,49 @@ class LandingPageController extends Controller
                 if ($i == 0) {
                     // Same day - find schedules that start after current time
                     $nextQuery->whereRaw("SUBSTRING_INDEX(waktu, ' - ', 1) > ?", [$jamSekarang])
-                        ->orderByRaw("SUBSTRING_INDEX(waktu, ' - ', 1)");
+                        ->orderByRaw("SUBSTRING_INDEX(waktu, ' - ', 1)", []);
                 } else {
-                    // Different day - get first schedule
-                    $nextQuery->orderByRaw("SUBSTRING_INDEX(waktu, ' - ', 1)");
+                    // Different day - get all schedules
+                    $nextQuery->orderByRaw("SUBSTRING_INDEX(waktu, ' - ', 1)", []);
                 }
 
-                $jadwalNextDay = $nextQuery->first();
+                $jadwalNextDay = $nextQuery->get();
 
-                if ($jadwalNextDay) {
-                    $jadwalBerikutnya = $jadwalNextDay;
-                    $targetHari = $nextDay;
-                    $selisihHari = $i;
+                foreach ($jadwalNextDay as $schedule) {
+                    if ($schedulesFound >= $maxSchedules) break;
 
                     // Calculate waiting time
-                    if (str_contains($jadwalNextDay->waktu, ' - ')) {
-                        $waktuParts = explode(' - ', $jadwalNextDay->waktu);
+                    $waktuDetik = 0;
+                    if (str_contains($schedule->waktu, ' - ')) {
+                        $waktuParts = explode(' - ', $schedule->waktu);
                         if (count($waktuParts) >= 2) {
                             $waktuMulai = $waktuParts[0];
                             $waktuMulaiParts = explode(':', $waktuMulai);
                             $jamMulai = (int) ($waktuMulaiParts[0] ?? 0);
                             $menitMulai = (int) ($waktuMulaiParts[1] ?? 0);
 
-                            $waktuTarget = now()->setTime($jamMulai, $menitMulai, 0)->addDays($selisihHari);
+                            $waktuTarget = now()->setTime($jamMulai, $menitMulai, 0)->addDays($i);
                             $waktuSekarang = now();
-                            $waktuTungguDetik = max(0, $waktuTarget->diffInSeconds($waktuSekarang));
+                            $waktuDetik = max(0, $waktuTarget->diffInSeconds($waktuSekarang));
                         }
                     }
-                    break;
+
+                    $jadwalMendatang[] = [
+                        'schedule' => $schedule,
+                        'waktu_tunggu_detik' => $waktuDetik,
+                        'selisih_hari' => $i,
+                        'target_hari' => $nextDay,
+                    ];
+
+                    $schedulesFound++;
+
+                    // Set the first one as jadwalBerikutnya
+                    if ($schedulesFound == 1) {
+                        $jadwalBerikutnya = $schedule;
+                        $targetHari = $nextDay;
+                        $selisihHari = $i;
+                        $waktuTungguDetik = $waktuDetik;
+                    }
                 }
             }
         }
@@ -274,7 +292,8 @@ class LandingPageController extends Controller
             'hariSekarangTeks',
             'headerLogotype',
             'headerTitle1',
-            'headerTitle2'
+            'headerTitle2',
+            'jadwalMendatang'
         ));
     }
 }
