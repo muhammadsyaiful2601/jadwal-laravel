@@ -3,6 +3,24 @@
         <h3><i class="fas fa-calendar-alt"></i> Admin Panel</h3>
     </div>
 
+    <div class="sidebar-profile">
+        <div class="sidebar-avatar" id="sidebarAvatar">
+            @php
+                $sidebarUserFoto = session('user_foto');
+            @endphp
+            @if ($sidebarUserFoto)
+                <img src="{{ $sidebarUserFoto }}" alt="Foto"
+                    style="width:100%;height:100%;object-fit:cover;border-radius:6px;">
+            @else
+                {{ strtoupper(substr(session('username'), 0, 1)) }}
+            @endif
+        </div>
+        <div class="sidebar-profile-info">
+            <h6>{{ session('username') }}</h6>
+            <small>{{ ucfirst(session('role')) }}</small>
+        </div>
+    </div>
+
     @if (!$superadminVerified)
         <div class="sidebar-verification-warning">
             <i class="fas fa-exclamation-triangle"></i>
@@ -159,6 +177,7 @@
         color: var(--nb-black);
         flex-shrink: 0;
         box-shadow: var(--nb-shadow-sm);
+        overflow: hidden;
     }
 
     .sidebar-profile-info h6 {

@@ -123,6 +123,7 @@ class LoginController extends Controller
                     'user_id' => $user->id,
                     'username' => $user->username,
                     'role' => $user->role,
+                    'user_foto' => $user->foto ?? null,
                 ]);
 
                 // Log activity
@@ -233,6 +234,7 @@ class LoginController extends Controller
                 'user_id' => $user->id,
                 'username' => $user->username,
                 'role' => $user->role,
+                'user_foto' => $user->foto ?? null,
             ]);
 
             DB::table('activity_logs')->insert([

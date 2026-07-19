@@ -605,8 +605,13 @@
                 </div>
                 <div class="card-body">
                     <div class="profile-header">
-                        <div class="profile-avatar">
-                            {{ strtoupper(substr(session('username'), 0, 1)) }}
+                        <div class="profile-avatar" id="profileAvatar">
+                            @if ($user->foto)
+                                <img src="{{ $user->foto }}" alt="Foto Profile"
+                                    style="width:100%;height:100%;object-fit:cover;border-radius:6px;">
+                            @else
+                                {{ strtoupper(substr(session('username'), 0, 1)) }}
+                            @endif
                         </div>
                         <div class="profile-info">
                             <h4>{{ session('username') }}</h4>
@@ -629,25 +634,80 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ url('/admin/profile/update') }}">
+                    <form method="POST" action="{{ url('/admin/profile/update') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Username</label>
                                 <input type="text" name="username" class="form-control"
                                     value="{{ old('username', $user->username) }}" required>
+                                <small
+                                    style="color:var(--nb-dark);font-size:0.72rem;margin-top:4px;display:block;font-weight:600;">
+                                    <i class="fas fa-info-circle me-1"></i>Berubah tanpa perlu password
+                                </small>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Email</label>
+                                <label class="form-label">Email <span style="color:var(--nb-red);">*</span></label>
                                 <div class="input-group">
                                     <input type="email" name="email" class="form-control"
-                                        value="{{ old('email', $user->email) }}">
+                                        value="{{ old('email', $user->email) }}" id="emailInput">
                                     @if (session('role') == 'superadmin' && !$user->email_verified_at)
                                         <button type="button" class="btn btn-outline-primary"
                                             onclick="showVerificationModal()">
                                             <i class="fas fa-envelope"></i> Verifikasi
                                         </button>
                                     @endif
+                                </div>
+                                <small
+                                    style="color:var(--nb-dark);font-size:0.72rem;margin-top:4px;display:block;font-weight:600;">
+                                    <i class="fas fa-info-circle me-1"></i>Perlu password saat ini untuk mengubah email
+                                </small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nomor Telepon</label>
+                                <input type="tel" name="phone" class="form-control"
+                                    value="{{ old('phone', $user->phone ?? '') }}" placeholder="Contoh: 08123456789">
+                                <small
+                                    style="color:var(--nb-dark);font-size:0.72rem;margin-top:4px;display:block;font-weight:600;">
+                                    <i class="fas fa-info-circle me-1"></i>Berubah tanpa perlu password
+                                </small>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem; text-transform: uppercase;">
+                            <i class="fas fa-image me-2"></i>Foto Profile
+                        </h5>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div style="display:flex;align-items:center;gap:16px;">
+                                    <div
+                                        style="width:80px;height:80px;border-radius:var(--nb-radius-sm);border:var(--nb-border);overflow:hidden;flex-shrink:0;box-shadow:var(--nb-shadow-sm);background:var(--nb-gray);">
+                                        @if ($user->foto)
+                                            <img id="photoPreview" src="{{ $user->foto }}" alt="Preview"
+                                                style="width:100%;height:100%;object-fit:cover;">
+                                        @else
+                                            <div id="photoPreviewPlaceholder"
+                                                style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--nb-dark);font-size:1.5rem;font-weight:700;">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <img id="photoPreview" src="#" alt="Preview"
+                                                style="width:100%;height:100%;object-fit:cover;display:none;">
+                                        @endif
+                                    </div>
+                                    <div style="flex:1;">
+                                        <label class="form-label" style="font-size:0.78rem;margin-bottom:4px;">Upload
+                                            Foto Baru</label>
+                                        <input type="file" name="foto" class="form-control" id="fotoInput"
+                                            accept="image/jpeg,image/png,image/gif,image/webp"
+                                            style="padding:8px 12px;font-size:0.82rem;">
+                                        <small
+                                            style="color:var(--nb-dark);font-size:0.72rem;display:block;margin-top:4px;font-weight:600;">
+                                            <i class="fas fa-info-circle me-1"></i>Format: JPG, PNG, GIF, WEBP. Maks:
+                                            2MB. Berubah tanpa perlu password
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -669,6 +729,23 @@
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Konfirmasi Password</label>
                                 <input type="password" name="confirm_password" class="form-control" minlength="6">
+                            </div>
+                        </div>
+
+                        <!-- Password saat ini - hanya muncul jika email diubah atau password diisi -->
+                        <div id="passwordSection" style="display:none;">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Password Saat Ini <span
+                                            style="color:var(--nb-red);">*</span></label>
+                                    <input type="password" name="current_password" class="form-control"
+                                        id="currentPasswordInput">
+                                    <small
+                                        style="color:var(--nb-dark);font-size:0.72rem;margin-top:4px;display:block;font-weight:600;">
+                                        <i class="fas fa-info-circle me-1"></i>Diperlukan untuk mengubah email atau
+                                        password
+                                    </small>
+                                </div>
                             </div>
                         </div>
 
@@ -761,6 +838,53 @@
                 }
             }
         });
+
+        // Photo preview
+        document.getElementById('fotoInput')?.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('photoPreview');
+                    const placeholder = document.getElementById('photoPreviewPlaceholder');
+                    const avatar = document.getElementById('profileAvatar');
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                    if (placeholder) placeholder.style.display = 'none';
+                    if (avatar) {
+                        avatar.innerHTML = '<img src="' + event.target.result +
+                            '" alt="Foto Profile" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Show/hide password section when email or password fields change
+        const emailInput = document.getElementById('emailInput');
+        const newPasswordInput = document.querySelector('input[name="new_password"]');
+        const confirmPasswordInput = document.querySelector('input[name="confirm_password"]');
+        const passwordSection = document.getElementById('passwordSection');
+        const currentPasswordInput = document.getElementById('currentPasswordInput');
+
+        function checkPasswordRequired() {
+            const emailChanged = emailInput && emailInput.value !== '{{ $user->email ?? '' }}';
+            const passwordFilled = newPasswordInput && newPasswordInput.value.length > 0;
+            const confirmFilled = confirmPasswordInput && confirmPasswordInput.value.length > 0;
+
+            if (emailChanged || passwordFilled || confirmFilled) {
+                passwordSection.style.display = 'block';
+                currentPasswordInput.setAttribute('required', 'required');
+            } else {
+                passwordSection.style.display = 'none';
+                currentPasswordInput.removeAttribute('required');
+                currentPasswordInput.value = '';
+            }
+        }
+
+        if (emailInput) emailInput.addEventListener('input', checkPasswordRequired);
+        if (newPasswordInput) newPasswordInput.addEventListener('input', checkPasswordRequired);
+        if (confirmPasswordInput) confirmPasswordInput.addEventListener('input', checkPasswordRequired);
     </script>
 </body>
 

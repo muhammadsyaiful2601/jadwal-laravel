@@ -696,6 +696,40 @@
             font-weight: 600;
         }
 
+        .message-blur {
+            filter: blur(4px);
+            user-select: none;
+            cursor: pointer;
+            transition: filter 0.3s ease;
+        }
+
+        .message-blur:hover {
+            filter: blur(3px);
+        }
+
+        .blur-overlay-wrapper {
+            position: relative;
+        }
+
+        .blur-overlay-wrapper .blur-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--nb-orange);
+            color: var(--nb-black);
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: var(--nb-radius-sm);
+            border: 2px solid var(--nb-black);
+            box-shadow: var(--nb-shadow-sm);
+            z-index: 2;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
         .date-cell {
             white-space: nowrap;
             color: var(--nb-dark);
@@ -1201,8 +1235,16 @@
                                                     class="sender-email">{{ $suggestion->email ?: 'Tidak ada email' }}</span>
                                             </td>
                                             <td>
-                                                <div class="message-cell" title="{{ $message }}">
-                                                    {{ $messagePreview }}</div>
+                                                <div class="blur-overlay-wrapper">
+                                                    <div class="message-cell{{ $isUnread ? ' message-blur' : '' }}"
+                                                        title="{{ $message }}">
+                                                        {{ $messagePreview }}
+                                                    </div>
+                                                    @if ($isUnread)
+                                                        <span class="blur-badge"><i
+                                                                class="fas fa-lock me-1"></i>TERKUNCI</span>
+                                                    @endif
+                                                </div>
                                             </td>
                                             <td>
                                                 @php
@@ -1379,13 +1421,68 @@
                                         @endif
                                     </div>
                                 </form>
+                                @if ($suggestion->read_by)
+                                    @php
+                                        $currentUserRead = $currentUserId == $suggestion->read_by;
+                                    @endphp
+                                    <div
+                                        style="margin-top:16px;padding:14px;background:var(--nb-offwhite);border:2px solid var(--nb-black);border-radius:var(--nb-radius-sm);box-shadow:var(--nb-shadow-sm);">
+                                        <div style="display:flex;align-items:center;gap:10px;">
+                                            <div
+                                                style="width:34px;height:34px;background:var(--nb-green);border:2px solid var(--nb-black);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:var(--nb-black);flex-shrink:0;box-shadow:var(--nb-shadow-sm);">
+                                                <i class="fas fa-eye"></i>
+                                            </div>
+                                            <div>
+                                                <small
+                                                    style="color:var(--nb-dark);display:block;font-weight:700;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.3px;">Dibaca
+                                                    oleh</small>
+                                                <span
+                                                    style="font-weight:800;color:var(--nb-black);font-size:0.85rem;font-family:var(--font-display);">
+                                                    {{ $suggestion->reader_name }}
+                                                    @if ($currentUserRead)
+                                                        <span
+                                                            style="display:inline-block;margin-left:6px;padding:1px 8px;background:var(--nb-yellow);border:2px solid var(--nb-black);border-radius:4px;font-size:0.6rem;font-weight:700;text-transform:uppercase;">Anda</span>
+                                                    @endif
+                                                </span>
+                                                <small
+                                                    style="color:var(--nb-dark);display:block;font-weight:600;font-size:0.75rem;margin-top:2px;">
+                                                    <i
+                                                        class="far fa-clock me-1"></i>{{ date('d F Y H:i', strtotime($suggestion->read_at)) }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                                 @if ($suggestion->responded_by)
-                                    <div style="margin-top:16px;padding-top:16px;border-top:var(--nb-border);">
-                                        <small style="color:var(--nb-dark);display:block;font-weight:600;"><strong>Ditanggapi
-                                                oleh:</strong> {{ $suggestion->responder_name }}</small>
-                                        <small
-                                            style="color:var(--nb-dark);display:block;font-weight:600;"><strong>Tanggal:</strong>
-                                            {{ date('d F Y H:i', strtotime($suggestion->responded_at)) }}</small>
+                                    @php
+                                        $currentUserResponded = $currentUserId == $suggestion->responded_by;
+                                    @endphp
+                                    <div
+                                        style="margin-top:10px;padding:14px;background:var(--nb-offwhite);border:2px solid var(--nb-black);border-radius:var(--nb-radius-sm);box-shadow:var(--nb-shadow-sm);">
+                                        <div style="display:flex;align-items:center;gap:10px;">
+                                            <div
+                                                style="width:34px;height:34px;background:var(--nb-purple);border:2px solid var(--nb-black);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:var(--nb-white);flex-shrink:0;box-shadow:var(--nb-shadow-sm);">
+                                                <i class="fas fa-reply"></i>
+                                            </div>
+                                            <div>
+                                                <small
+                                                    style="color:var(--nb-dark);display:block;font-weight:700;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.3px;">Ditanggapi
+                                                    oleh</small>
+                                                <span
+                                                    style="font-weight:800;color:var(--nb-black);font-size:0.85rem;font-family:var(--font-display);">
+                                                    {{ $suggestion->responder_name }}
+                                                    @if ($currentUserResponded)
+                                                        <span
+                                                            style="display:inline-block;margin-left:6px;padding:1px 8px;background:var(--nb-yellow);border:2px solid var(--nb-black);border-radius:4px;font-size:0.6rem;font-weight:700;text-transform:uppercase;">Anda</span>
+                                                    @endif
+                                                </span>
+                                                <small
+                                                    style="color:var(--nb-dark);display:block;font-weight:600;font-size:0.75rem;margin-top:2px;">
+                                                    <i
+                                                        class="far fa-clock me-1"></i>{{ date('d F Y H:i', strtotime($suggestion->responded_at)) }}
+                                                </small>
+                                            </div>
+                                        </div>
                                     </div>
                                 @endif
                             </div>
@@ -1528,6 +1625,43 @@
         function openDetail(id) {
             const modal = new bootstrap.Modal(document.getElementById('detailModal' + id));
             modal.show();
+
+            // Mark as read via AJAX
+            $.ajax({
+                url: '{{ url('/admin/saran/mark-read') }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    suggestion_id: id
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Remove blur and badge from the table row for this suggestion
+                        const row = document.querySelector('tr[data-id="' + id + '"]');
+                        if (row) {
+                            const msgCell = row.querySelector('.message-cell');
+                            if (msgCell) {
+                                msgCell.classList.remove('message-blur');
+                            }
+                            const blurBadge = row.querySelector('.blur-badge');
+                            if (blurBadge) {
+                                blurBadge.remove();
+                            }
+                            const badgeNew = row.querySelector('.badge-new');
+                            if (badgeNew) {
+                                badgeNew.remove();
+                            }
+                            // Update status badge
+                            const statusBadge = row.querySelector('.status-badge');
+                            if (statusBadge) {
+                                statusBadge.className = 'status-badge read';
+                                statusBadge.innerHTML =
+                                    '<i class="fas fa-check" style="font-size:0.65rem;"></i> Sudah Dibaca';
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         function confirmDelete(id) {

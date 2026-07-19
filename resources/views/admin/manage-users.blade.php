@@ -1231,7 +1231,13 @@
                                         <td style="color:var(--nb-dark); font-weight:600;">{{ $no++ }}</td>
                                         <td>
                                             <div class="user-cell">
-                                                <div class="avatar">{{ strtoupper(substr($user->username, 0, 1)) }}
+                                                <div class="avatar" style="overflow:hidden;">
+                                                    @if (!empty($user->foto))
+                                                        <img src="{{ $user->foto }}" alt="Foto"
+                                                            style="width:100%;height:100%;object-fit:cover;border-radius:6px;">
+                                                    @else
+                                                        {{ strtoupper(substr($user->username, 0, 1)) }}
+                                                    @endif
                                                 </div>
                                                 <span class="username">{{ $user->username }}</span>
                                                 @if ($user->id == $currentUserId)

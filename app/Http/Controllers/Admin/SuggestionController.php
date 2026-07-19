@@ -35,7 +35,8 @@ class SuggestionController extends Controller
         // Query dasar
         $query = DB::table('suggestions as s')
             ->leftJoin('users as u', 's.responded_by', '=', 'u.id')
-            ->select('s.*', 'u.username as responder_name');
+            ->leftJoin('users as ru', 's.read_by', '=', 'ru.id')
+            ->select('s.*', 'u.username as responder_name', 'ru.username as reader_name');
 
         $countQuery = DB::table('suggestions');
 
@@ -93,6 +94,36 @@ class SuggestionController extends Controller
         ));
     }
 
+    public function markAsRead(Request $request)
+    {
+        if (!$request->session()->has('user_id')) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized']);
+        }
+
+        $suggestionId = (int) $request->input('suggestion_id', 0);
+        $userId = $request->session()->get('user_id');
+
+        if ($suggestionId <= 0) {
+            return response()->json(['success' => false, 'message' => 'ID tidak valid']);
+        }
+
+        $suggestion = DB::table('suggestions')->where('id', $suggestionId)->first();
+        if (!$suggestion) {
+            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan']);
+        }
+
+        // Only mark as read if currently pending
+        if ($suggestion->status === 'pending') {
+            DB::table('suggestions')->where('id', $suggestionId)->update([
+                'status' => 'read',
+                'read_by' => $userId,
+                'read_at' => now(),
+            ]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
     public function updateStatus(Request $request)
     {
         if (!$request->session()->has('user_id')) {
@@ -121,12 +152,23 @@ class SuggestionController extends Controller
             }
 
             if (in_array($newStatus, ['pending', 'read', 'responded'])) {
-                DB::table('suggestions')->where('id', $suggestionId)->update([
+                $updateData = [
                     'status' => $newStatus,
                     'response' => $responseText,
                     'responded_by' => $userId,
                     'responded_at' => now(),
-                ]);
+                ];
+
+                // If status changes to 'read', also set read info if not already set
+                if ($newStatus === 'read') {
+                    $currentSuggestion = DB::table('suggestions')->where('id', $suggestionId)->first();
+                    if (!$currentSuggestion->read_by) {
+                        $updateData['read_by'] = $userId;
+                        $updateData['read_at'] = now();
+                    }
+                }
+
+                DB::table('suggestions')->where('id', $suggestionId)->update($updateData);
 
                 return redirect('/admin/saran')->with('success', 'Status saran berhasil diperbarui');
             }

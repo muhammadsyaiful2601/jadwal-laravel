@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -53,29 +54,79 @@ class ProfileController extends Controller
             return redirect('/login')->with('error', 'User tidak ditemukan');
         }
 
-        $current_password = $request->input('current_password');
-        $new_password = $request->input('new_password');
-        $confirm_password = $request->input('confirm_password');
-
-        // Validasi password saat ini
-        if (empty($current_password)) {
-            return redirect('/admin/profile')->with('error', 'Password saat ini harus diisi!');
-        } else if (!Hash::check($current_password, $user->password)) {
-            return redirect('/admin/profile')->with('error', 'Password saat ini salah!');
-        }
-
-        // Update data dasar
-        $username = trim($request->input('username'));
-        $email = $request->input('email');
-
         $updateData = [
-            'username' => $username,
-            'email' => $email,
             'updated_at' => now(),
         ];
 
-        // Update password jika diisi
+        // Update username (tidak perlu password)
+        $username = trim($request->input('username'));
+        if (!empty($username) && $username !== $user->username) {
+            $updateData['username'] = $username;
+        }
+
+        // Update phone (tidak perlu password)
+        $phone = trim($request->input('phone', ''));
+        if ($phone !== ($user->phone ?? '')) {
+            $updateData['phone'] = $phone ?: null;
+        }
+
+        // Handle foto upload (tidak perlu password)
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            $extension = strtolower($file->getClientOriginalExtension());
+
+            if (!in_array($extension, $allowedTypes)) {
+                return redirect('/admin/profile')->with('error', 'Format foto harus JPG, JPEG, PNG, GIF, atau WEBP!');
+            }
+
+            if ($file->getSize() > 2048 * 1024) {
+                return redirect('/admin/profile')->with('error', 'Ukuran foto maksimal 2MB!');
+            }
+
+            // Delete old foto if exists
+            if ($user->foto) {
+                $oldPath = public_path(str_replace(url('/'), '', $user->foto));
+                if (file_exists($oldPath)) {
+                    @unlink($oldPath);
+                }
+            }
+
+            // Store new foto to public/uploads/profile
+            $uploadDir = public_path('uploads/profile');
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            $filename = 'user_' . $userId . '_' . time() . '.' . $extension;
+            $file->move($uploadDir, $filename);
+            $updateData['foto'] = '/uploads/profile/' . $filename;
+        }
+
+        // Update email (perlu password)
+        $email = $request->input('email');
+        if (!empty($email) && $email !== $user->email) {
+            $current_password = $request->input('current_password');
+            if (empty($current_password)) {
+                return redirect('/admin/profile')->with('error', 'Password saat ini harus diisi untuk mengubah email!');
+            } else if (!Hash::check($current_password, $user->password)) {
+                return redirect('/admin/profile')->with('error', 'Password saat ini salah!');
+            }
+            $updateData['email'] = $email;
+        }
+
+        // Update password (perlu password lama)
+        $new_password = $request->input('new_password');
+        $confirm_password = $request->input('confirm_password');
+
         if (!empty($new_password)) {
+            $current_password = $request->input('current_password');
+            if (empty($current_password)) {
+                return redirect('/admin/profile')->with('error', 'Password saat ini harus diisi untuk mengubah password!');
+            } else if (!Hash::check($current_password, $user->password)) {
+                return redirect('/admin/profile')->with('error', 'Password saat ini salah!');
+            }
+
             if (strlen($new_password) < 6) {
                 return redirect('/admin/profile')->with('error', 'Password baru minimal 6 karakter!');
             } else if ($new_password !== $confirm_password) {
@@ -85,10 +136,20 @@ class ProfileController extends Controller
             }
         }
 
-        DB::table('users')->where('id', $userId)->update($updateData);
+        // Only update if there are changes
+        if (count($updateData) > 1) {
+            DB::table('users')->where('id', $userId)->update($updateData);
+        }
 
-        // Update session username
-        $request->session()->put('username', $username);
+        // Update session
+        if (isset($updateData['username'])) {
+            $request->session()->put('username', $updateData['username']);
+        } else {
+            $request->session()->put('username', $user->username);
+        }
+        if (isset($updateData['foto'])) {
+            $request->session()->put('user_foto', $updateData['foto']);
+        }
 
         // Log activity
         DB::table('activity_logs')->insert([

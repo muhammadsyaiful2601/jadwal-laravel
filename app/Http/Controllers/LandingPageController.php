@@ -255,6 +255,13 @@ class LandingPageController extends Controller
         // Get room data for popup
         $ruanganMap = Room::pluck('foto_path', 'nama_ruang')->toArray();
 
+        // Get admin data for contact modal
+        $adminList = DB::table('users')
+            ->where('is_active', true)
+            ->orderBy('role', 'desc')
+            ->orderBy('username', 'asc')
+            ->get(['id', 'username', 'role', 'foto', 'phone', 'email']);
+
         // Add hariSekarangTeks for view
         $hariSekarangTeks = $hariMap[$hariSekarang] ?? null;
 
@@ -293,7 +300,8 @@ class LandingPageController extends Controller
             'headerLogotype',
             'headerTitle1',
             'headerTitle2',
-            'jadwalMendatang'
+            'jadwalMendatang',
+            'adminList'
         ));
     }
 }

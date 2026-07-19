@@ -95,3 +95,4 @@ Route::get('/verify-email/{token}', [\App\Http\Controllers\Auth\VerificationCont
 // Suggestion (Kritik & Saran) routes
 Route::get('/admin/saran', [SuggestionController::class, 'index']);
 Route::post('/admin/saran/update-status', [SuggestionController::class, 'updateStatus']);
+Route::post('/admin/saran/mark-read', [SuggestionController::class, 'markAsRead']);

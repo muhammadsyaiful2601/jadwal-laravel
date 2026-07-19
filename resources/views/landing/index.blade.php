@@ -135,54 +135,64 @@
             }
         }
 
-        /* Header - Neobrutalism App Header */
+        /* Header - Compact Neobrutalism */
         .app-header {
             background: var(--nb-white);
             border-bottom: var(--nb-border-thick);
-            padding: 24px 0;
+            padding: 10px 0;
             position: sticky;
             top: 0;
             z-index: 100;
             box-shadow: var(--nb-shadow);
             background-image:
                 radial-gradient(circle at 20% 50%, rgba(166, 108, 255, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 50%, rgba(78, 205, 196, 0.08) 0%, transparent 50%),
-                repeating-linear-gradient(90deg, transparent, transparent 100px, rgba(0, 0, 0, 0.01) 100px, rgba(0, 0, 0, 0.01) 101px);
+                radial-gradient(circle at 80% 50%, rgba(78, 205, 196, 0.08) 0%, transparent 50%);
         }
 
         .header-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0 20px;
         }
 
-        .header-content {
+        .header-flex {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 24px;
-            flex-wrap: wrap;
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
+            justify-content: space-between;
             gap: 16px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             flex-shrink: 0;
         }
 
-        .institution-info {
-            text-align: center;
+        .header-center {
             flex: 1;
+            text-align: center;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .header-right {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
         }
 
         .logo-img {
-            height: 64px;
+            height: 48px;
             width: auto;
             object-fit: contain;
             border: var(--nb-border);
             border-radius: var(--nb-radius-sm);
-            padding: 6px;
+            padding: 4px;
             background: var(--nb-white);
             box-shadow: var(--nb-shadow-sm);
             transition: all 0.2s ease;
@@ -193,89 +203,94 @@
             box-shadow: var(--nb-shadow);
         }
 
-        .institution-info h1 {
+        .header-title-row {
             font-family: var(--font-display);
-            font-size: 1.75rem;
+            font-size: 1.15rem;
             font-weight: 900;
             color: var(--nb-black);
-            margin: 0;
-            line-height: 1.1;
+            line-height: 1.2;
             text-transform: uppercase;
-            letter-spacing: -0.03em;
-            text-shadow: 2px 2px 0 var(--nb-yellow);
+            letter-spacing: -0.02em;
+            text-shadow: 1.5px 1.5px 0 var(--nb-yellow);
+            margin-bottom: 2px;
         }
 
-        .institution-info h2 {
-            font-size: 0.875rem;
+        .header-title-row .title-divider {
+            display: inline-block;
+            margin: 0 8px;
+            color: var(--nb-purple);
+            font-weight: 400;
+        }
+
+        .header-sub-row {
+            font-size: 0.78rem;
             font-weight: 600;
             color: var(--nb-dark);
-            margin: 4px 0 0 0;
+            line-height: 1.3;
         }
 
-        .institution-info .institution-sub {
-            font-size: 0.875rem;
+        .header-sub-row strong {
+            background: var(--nb-yellow);
+            padding: 1px 8px;
+            border-radius: 3px;
+            border: 2px solid var(--nb-black);
             font-weight: 700;
-            color: var(--nb-black);
-            margin: 8px 0 0 0;
+        }
+
+        /* Combined Info Bar - Greeting + Clock */
+        .header-info-bar {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 10px;
-            flex-wrap: wrap;
+            background: var(--nb-black);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            padding: 6px 14px;
+            box-shadow: var(--nb-shadow-sm);
+            white-space: nowrap;
         }
 
-        .institution-info .institution-sub span {
-            background: var(--nb-yellow);
-            padding: 4px 12px;
-            border: 2px solid var(--nb-black);
-            border-radius: var(--nb-radius-sm);
-            box-shadow: var(--nb-shadow-sm);
-            display: inline-flex;
+        .header-info-bar .info-segment {
+            display: flex;
             align-items: center;
             gap: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--nb-white);
         }
 
-        .institution-info .institution-sub span::before {
-            content: '●';
-            color: var(--nb-purple);
-            font-size: 0.625rem;
+        .header-info-bar .info-segment i {
+            font-size: 0.75rem;
+            color: var(--nb-yellow);
         }
 
-        .institution-info .institution-divider {
-            color: var(--nb-black);
-            font-weight: 400;
+        .header-info-bar .info-sep {
+            width: 1px;
+            height: 18px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .header-info-bar .greeting-emoji-header {
+            font-size: 0.85rem;
+        }
+
+        .header-info-bar .clock-time-header {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: var(--nb-yellow);
+            min-width: 56px;
+            text-align: center;
+        }
+
+        .header-info-bar .clock-date-header {
+            font-size: 0.7rem;
+            color: var(--nb-gray);
         }
 
         .header-actions {
             display: flex;
-            gap: 12px;
-        }
-
-        /* Decorative corner accent */
-        .header-container::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            right: -20px;
-            width: 120px;
-            height: 120px;
-            background: var(--nb-yellow);
-            border-radius: 50%;
-            opacity: 0.15;
-            z-index: -1;
-        }
-
-        .header-container::after {
-            content: '';
-            position: absolute;
-            bottom: -30px;
-            left: -30px;
-            width: 100px;
-            height: 100px;
-            background: var(--nb-teal);
-            border-radius: 50%;
-            opacity: 0.15;
-            z-index: -1;
+            gap: 8px;
         }
 
         .btn-reset {
@@ -2995,43 +3010,57 @@
         </div>
     @endif
 
-    <!-- Header - Neobrutalism App Header -->
+    <!-- Header - Compact Neobrutalism -->
     <header class="app-header">
         <div class="header-container">
-            <div class="header-content">
-                <div class="logo-section">
+            <div class="header-flex">
+                <!-- Left: Logo Kampus -->
+                <div class="header-left">
                     <img src="{{ asset('jadwal-kampus/assets/images/logo_kampus.png') }}" alt="Logo Kampus"
                         class="logo-img"
-                        onerror="this.onerror=null; this.src='https://via.placeholder.com/56x56/1e293b/ffffff?text=LOGO'">
+                        onerror="this.onerror=null; this.src='https://via.placeholder.com/48x48/1e293b/ffffff?text=LOGO'">
                 </div>
-                <div class="institution-info">
-                    <h1>{{ $headerTitle1 ?? $institusiNama }}</h1>
-                    <h2>{{ $headerTitle2 ?? $institusiLokasi }}</h2>
-                    <p class="institution-sub">
-                        {{ $programStudi }}<span class="institution-divider"> | </span>Tahun
-                        Akademik {{ $tahunAkademik }}
-                    </p>
-                    <!-- Greeting Badge -->
-                    <div class="greeting-badge" style="margin-top: 8px;" id="greetingBadge">
-                        <span class="greeting-emoji" id="greetingEmoji">👋</span>
-                        <span id="greetingText">Selamat datang</span>
+
+                <!-- Center: Institution Text -->
+                <div class="header-center">
+                    <div class="header-title-row">
+                        <span>{{ $headerTitle1 ?? $institusiNama }}</span>
+                        <span class="title-divider">|</span>
+                        <span>{{ $headerTitle2 ?? $institusiLokasi }}</span>
+                    </div>
+                    <div class="header-sub-row">
+                        {{ $programStudi }} &nbsp;·&nbsp; <strong>Tahun Akademik {{ $tahunAkademik }}</strong>
+                        &nbsp;·&nbsp; Semester <strong>{{ $semesterAktif }}</strong>
                     </div>
                 </div>
-                <div class="logo-section">
+
+                <!-- Right: Logo Jurusan (corner) -->
+                <div class="header-right">
                     <img src="{{ asset('jadwal-kampus/assets/images/logo_jurusan.png') }}" alt="Logo Jurusan"
                         class="logo-img"
-                        onerror="this.onerror=null; this.src='https://via.placeholder.com/56x56/1e293b/ffffff?text=LOGO'">
+                        onerror="this.onerror=null; this.src='https://via.placeholder.com/48x48/1e293b/ffffff?text=LOGO'"
+                        style="display:none;" onload="this.style.display=''">
                 </div>
             </div>
-            <!-- Live Clock Widget di Header -->
-            <div class="header-content" style="margin-top: 12px; justify-content: center;">
-                <div class="live-clock-wrapper">
-                    <span class="clock-icon"><i class="fas fa-clock"></i></span>
-                    <div class="clock-display">
-                        <span class="clock-time" id="headerClockTime">{{ now()->format('H:i:s') }}</span>
-                        <span class="clock-date"
+
+            <!-- Bottom Centered Info Bar (Greeting + Clock) -->
+            <div style="display: flex; justify-content: center; margin-top: 6px;">
+                <div class="header-info-bar" id="headerInfoBar">
+                    <span class="info-segment">
+                        <span class="greeting-emoji-header" id="headerGreetingEmoji">☀️</span>
+                        <span id="headerGreetingText">Selamat pagi</span>
+                    </span>
+                    <span class="info-sep"></span>
+                    <span class="info-segment">
+                        <i class="fas fa-clock"></i>
+                        <span class="clock-time-header" id="headerClockTime">{{ now()->format('H:i:s') }}</span>
+                    </span>
+                    <span class="info-sep"></span>
+                    <span class="info-segment">
+                        <i class="far fa-calendar-alt"></i>
+                        <span class="clock-date-header"
                             id="headerClockDate">{{ now()->locale('id')->translatedFormat('l, d F Y') }}</span>
-                    </div>
+                    </span>
                 </div>
             </div>
         </div>
@@ -3763,10 +3792,17 @@
             </div>
 
             <div class="footer-bottom">
-                <button class="btn-suggestion" data-bs-toggle="modal" data-bs-target="#suggestionModal">
-                    <i class="fas fa-comment-dots"></i>
-                    Beri Kritik & Saran
-                </button>
+                <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">
+                    <button class="btn-suggestion" data-bs-toggle="modal" data-bs-target="#suggestionModal">
+                        <i class="fas fa-comment-dots"></i>
+                        Beri Kritik & Saran
+                    </button>
+                    <button class="btn-suggestion" style="background:var(--nb-teal);color:var(--nb-black);"
+                        data-bs-toggle="modal" data-bs-target="#contactAdminModal">
+                        <i class="fas fa-phone-alt"></i>
+                        Hubungi Admin
+                    </button>
+                </div>
                 <p class="footer-copyright">
                     <span class="fw-semibold">© {{ date('Y') }} Sistem Informasi Jadwal Kuliah v2.0</span>
                 </p>
@@ -3910,6 +3946,97 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Hubungi Admin -->
+    <div class="modal fade" id="contactAdminModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content"
+                style="border: var(--nb-border-thick); border-radius: var(--nb-radius); overflow: hidden; box-shadow: var(--nb-shadow-lg);">
+                <div class="modal-header"
+                    style="background: var(--nb-black); color: var(--nb-white); border-bottom: var(--nb-border);">
+                    <h5 class="modal-title" style="font-family: 'Space Grotesk', sans-serif; font-weight: 700;">
+                        <i class="fas fa-phone-alt me-2"></i> Hubungi Admin
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="mb-4" style="font-weight: 500;">
+                        Hubungi admin jika ada pertanyaan atau masalah terkait sistem jadwal kuliah.
+                    </p>
+
+                    @if (!empty($adminList) && count($adminList) > 0)
+                        <div style="display:flex;flex-direction:column;gap:12px;">
+                            @foreach ($adminList as $admin)
+                                @php
+                                    $hasPhone = !empty($admin->phone);
+                                    $waNumber = $hasPhone ? preg_replace('/[^0-9]/', '', $admin->phone) : '';
+                                    if (substr($waNumber, 0, 1) === '0') {
+                                        $waNumber = '62' . substr($waNumber, 1);
+                                    }
+                                @endphp
+                                <div
+                                    style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--nb-offwhite);border:var(--nb-border);border-radius:var(--nb-radius-sm);box-shadow:var(--nb-shadow-sm);">
+                                    <div
+                                        style="width:48px;height:48px;border-radius:var(--nb-radius-sm);border:var(--nb-border);overflow:hidden;flex-shrink:0;background:var(--nb-purple);display:flex;align-items:center;justify-content:center;color:var(--nb-white);font-weight:700;font-size:1.1rem;box-shadow:var(--nb-shadow-sm);">
+                                        @if (!empty($admin->foto))
+                                            <img src="{{ $admin->foto }}" alt="Foto"
+                                                style="width:100%;height:100%;object-fit:cover;">
+                                        @else
+                                            {{ strtoupper(substr($admin->username, 0, 1)) }}
+                                        @endif
+                                    </div>
+                                    <div style="flex:1;min-width:0;">
+                                        <div
+                                            style="font-weight:700;font-size:0.9rem;color:var(--nb-black);font-family:var(--font-display);">
+                                            {{ $admin->username }}
+                                            @if ($admin->role === 'superadmin')
+                                                <span
+                                                    style="display:inline-block;margin-left:6px;padding:1px 8px;background:var(--nb-orange);border:2px solid var(--nb-black);border-radius:4px;font-size:0.6rem;font-weight:700;text-transform:uppercase;color:var(--nb-black);">Superadmin</span>
+                                            @endif
+                                        </div>
+                                        @if ($hasPhone)
+                                            <div
+                                                style="font-size:0.82rem;color:var(--nb-dark);font-weight:600;margin-top:2px;">
+                                                <i class="fas fa-phone me-1"></i>{{ $admin->phone }}
+                                            </div>
+                                        @else
+                                            <div
+                                                style="font-size:0.78rem;color:var(--nb-dark);font-weight:500;margin-top:2px;">
+                                                <i
+                                                    class="fas fa-envelope me-1"></i>{{ $admin->email ?: 'Tidak ada kontak' }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                    @if ($hasPhone)
+                                        <a href="https://wa.me/{{ $waNumber }}?text=Halo%20{{ urlencode($admin->username) }},%20saya%20ingin%20bertanya%20tentang%20jadwal%20kuliah."
+                                            target="_blank" rel="noopener noreferrer"
+                                            style="padding:10px 16px;background:var(--nb-green);color:var(--nb-black);border:var(--nb-border);border-radius:var(--nb-radius-sm);font-weight:700;font-size:0.82rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px;box-shadow:var(--nb-shadow-sm);transition:all 0.15s ease;white-space:nowrap;flex-shrink:0;"
+                                            onmouseover="this.style.transform='translate(-2px,-2px)';this.style.boxShadow='var(--nb-shadow)'"
+                                            onmouseout="this.style.transform='';this.style.boxShadow='var(--nb-shadow-sm)'">
+                                            <i class="fab fa-whatsapp" style="font-size:1.1rem;"></i>
+                                            <span style="font-family:var(--font-display);">WA</span>
+                                        </a>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div style="text-align:center;padding:40px 20px;">
+                            <i class="fas fa-users"
+                                style="font-size:3rem;color:var(--nb-dark);margin-bottom:16px;display:block;"></i>
+                            <h5 style="font-weight:700;color:var(--nb-black);">Tidak ada admin tersedia</h5>
+                            <p style="color:var(--nb-dark);font-weight:500;">Belum ada admin yang aktif saat ini</p>
+                        </div>
+                    @endif
+                </div>
+                <div class="modal-footer" style="border-top: var(--nb-border); background: var(--nb-offwhite);">
+                    <button type="button" class="btn btn-outline-action" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i> Tutup
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -4252,7 +4379,8 @@
         function initGreeting() {
             const emojiEl = document.getElementById('greetingEmoji');
             const textEl = document.getElementById('greetingText');
-            if (!emojiEl || !textEl) return;
+            const headerEmojiEl = document.getElementById('headerGreetingEmoji');
+            const headerTextEl = document.getElementById('headerGreetingText');
 
             function updateGreeting() {
                 const hour = new Date().getHours();
@@ -4281,8 +4409,10 @@
                     text = 'Selamat malam';
                 }
 
-                emojiEl.textContent = emoji;
-                textEl.textContent = text;
+                if (emojiEl) emojiEl.textContent = emoji;
+                if (textEl) textEl.textContent = text;
+                if (headerEmojiEl) headerEmojiEl.textContent = emoji;
+                if (headerTextEl) headerTextEl.textContent = text;
             }
 
             updateGreeting();
