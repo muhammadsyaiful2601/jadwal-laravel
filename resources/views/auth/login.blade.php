@@ -635,6 +635,7 @@
             }
         }
     </style>
+    <link rel="icon" type="image/png" href="{{ asset('jadwal-kampus/assets/images/si.png') }}">
 </head>
 
 <body>
@@ -657,7 +658,7 @@
             <div class="geo-line-2"></div>
 
             <div class="left-content">
-                <img src="{{ asset('jadwal-kampus/assets/images/SI.png') }}" alt="Logo Sistem Informasi"
+                <img src="{{ asset('jadwal-kampus/assets/images/si.png') }}" alt="Logo Sistem Informasi"
                     class="left-logo"
                     onerror="this.onerror=null; this.src='https://via.placeholder.com/100x100/A66CFF/ffffff?text=SI'">
 

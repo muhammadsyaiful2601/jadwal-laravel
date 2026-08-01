@@ -434,6 +434,7 @@
             }
         }
     </style>
+    <link rel="icon" type="image/png" href="{{ asset('jadwal-kampus/assets/images/si.png') }}">
 </head>
 
 <body>
