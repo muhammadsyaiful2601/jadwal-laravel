@@ -618,6 +618,14 @@
                         <span id="btnText">Kirim Link Reset</span>
                     </button>
 
+                    <div style="text-align:center; margin-top: 14px;">
+                        <small style="color: var(--nb-dark); font-weight: 600;">
+                            Sudah menerima kode OTP?
+                            <a href="{{ url('/reset-password/otp') }}" style="color: var(--nb-red); font-weight: 700;">
+                                Reset dengan OTP</a>
+                        </small>
+                    </div>
+
                     <div class="back-link">
                         <small>
                             <a href="{{ url('/login') }}">

@@ -816,8 +816,8 @@
                         </div>
                         <div class="form-group-custom">
                             <label>Jurusan</label>
-                            <input type="text" name="fakultas" class="form-control-modern"
-                                value="{{ $settings['fakultas'] ?? '' }}">
+                            <input type="text" name="jurusan" class="form-control-modern"
+                                value="{{ $settings['jurusan'] ?? '' }}">
                         </div>
                         <div class="form-group-custom">
                             <label>Email Admin</label>

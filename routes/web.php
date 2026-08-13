@@ -84,11 +84,14 @@ Route::post('/admin/change-password', [ProfileController::class, 'updatePassword
 // Forgot Password routes
 Route::get('/forgot-password', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'showForgotForm']);
 Route::post('/forgot-password', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'sendResetLink']);
+Route::get('/reset-password/otp', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'showResetOtpForm']);
+Route::post('/reset-password/otp', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'resetPasswordWithOtp']);
 Route::get('/reset-password/{token}', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'showResetForm']);
 Route::post('/reset-password', [\App\Http\Controllers\Auth\ForgotPasswordController::class, 'resetPassword']);
 
 // Email Verification routes
 Route::post('/admin/profile/send-verification', [\App\Http\Controllers\Auth\VerificationController::class, 'sendVerificationEmail']);
+Route::post('/admin/profile/verify-otp', [\App\Http\Controllers\Auth\VerificationController::class, 'verifyEmailWithOtp']);
 Route::post('/admin/profile/update-email', [\App\Http\Controllers\Auth\VerificationController::class, 'updateEmail']);
 Route::get('/verify-email/{token}', [\App\Http\Controllers\Auth\VerificationController::class, 'verifyEmail']);
 

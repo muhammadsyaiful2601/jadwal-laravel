@@ -151,8 +151,22 @@
                 <span class="link-text">{{ $resetUrl }}</span>
             </p>
 
+            <div style="text-align: center; margin: 28px 0; padding: 20px; border: 3px solid #000; border-radius: 12px; background: #F8F7F4;">
+                <p style="font-size: 13px; color: #1A1A2E; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">
+                    Gunakan Kode OTP (Alternatif)
+                </p>
+                <div style="display: inline-block; padding: 16px 28px; background: #FF6B6B; color: #FFFFFF; border: 3px solid #000; border-radius: 10px; font-size: 34px; font-weight: 900; letter-spacing: 10px;">
+                    {{ $otp }}
+                </div>
+                <p style="font-size: 13px; color: #1A1A2E; font-weight: 600; margin-top: 14px;">
+                    Buka halaman <a href="{{ url('/reset-password/otp') }}" style="color:#FF6B6B; font-weight:700;">Reset Password dengan OTP</a>
+                    lalu masukkan kode di atas.<br>
+                    Kode OTP ini berlaku selama <strong>15 menit</strong>.
+                </p>
+            </div>
+
             <div class="info-box">
-                <strong>⚠️ Perhatian:</strong> Link reset password ini berlaku selama 1 jam. Jika Anda tidak meminta
+                <strong>⚠️ Perhatian:</strong> Link reset password ini berlaku selama 1 jam dan kode OTP ini berlaku selama 15 menit. Jika Anda tidak meminta
                 reset password, abaikan email ini.
             </div>
 

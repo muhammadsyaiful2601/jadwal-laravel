@@ -151,8 +151,21 @@
                 <span class="link-text">{{ $verificationUrl }}</span>
             </p>
 
+            <div style="text-align: center; margin: 28px 0; padding: 20px; border: 3px solid #000; border-radius: 12px; background: #F8F7F4;">
+                <p style="font-size: 13px; color: #1A1A2E; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">
+                    Gunakan Kode OTP (Alternatif)
+                </p>
+                <div style="display: inline-block; padding: 16px 28px; background: #A66CFF; color: #FFFFFF; border: 3px solid #000; border-radius: 10px; font-size: 34px; font-weight: 900; letter-spacing: 10px;">
+                    {{ $otp }}
+                </div>
+                <p style="font-size: 13px; color: #1A1A2E; font-weight: 600; margin-top: 14px;">
+                    Buka halaman <strong>Profil</strong> di menu Admin, lalu pilih <strong>"Verifikasi dengan OTP"</strong> dan masukkan kode di atas.<br>
+                    Kode OTP ini berlaku selama <strong>15 menit</strong>.
+                </p>
+            </div>
+
             <div class="info-box">
-                <strong>⚠️ Perhatian:</strong> Link verifikasi ini hanya berlaku sekali. Jika Anda tidak meminta
+                <strong>⚠️ Perhatian:</strong> Link verifikasi ini hanya berlaku sekali dan kode OTP ini hanya berlaku 15 menit. Jika Anda tidak meminta
                 verifikasi email, abaikan email ini.
             </div>
 

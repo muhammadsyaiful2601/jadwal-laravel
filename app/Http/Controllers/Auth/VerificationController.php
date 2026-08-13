@@ -35,12 +35,17 @@ class VerificationController extends Controller
             return redirect('/admin/profile')->with('error', 'Silakan isi email terlebih dahulu.');
         }
 
-        // Generate token verifikasi
+        // Generate token verifikasi (untuk link)
         $token = Str::random(60);
 
-        // Simpan token
+        // Generate kode OTP 6 digit
+        $otp = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        // Simpan token & OTP
         DB::table('users')->where('id', $userId)->update([
             'email_verified_token' => $token,
+            'email_otp' => Hash::make($otp),
+            'email_otp_expires_at' => now()->addMinutes(15),
             'updated_at' => now(),
         ]);
 
@@ -48,23 +53,82 @@ class VerificationController extends Controller
         $verificationUrl = url('/verify-email/' . $token);
 
         try {
-            // Kirim email verifikasi
-            Mail::to($user->email)->send(new VerificationEmail($verificationUrl, $user->username));
+            // Kirim email verifikasi (berisi link dan kode OTP)
+            Mail::to($user->email)->send(new VerificationEmail($verificationUrl, $otp, $user->username));
 
             // Log aktivitas
             DB::table('activity_logs')->insert([
                 'user_id' => $userId,
                 'action' => 'Kirim Verifikasi Email',
-                'description' => 'Email verifikasi telah dikirim ke ' . $user->email,
+                'description' => 'Email verifikasi (link & OTP) telah dikirim ke ' . $user->email,
                 'ip_address' => $request->ip(),
                 'user_agent' => $request->userAgent(),
                 'created_at' => now(),
             ]);
 
-            return redirect('/admin/profile')->with('success', 'Link verifikasi telah dikirim ke email ' . $user->email . '. Silakan cek inbox email Anda.');
+            return redirect('/admin/profile')->with('success', 'Link verifikasi dan kode OTP telah dikirim ke email ' . $user->email . '. Silakan cek inbox email Anda.');
         } catch (\Exception $e) {
             return redirect('/admin/profile')->with('error', 'Gagal mengirim email verifikasi: ' . $e->getMessage());
         }
+    }
+
+    public function verifyEmailWithOtp(Request $request)
+    {
+        if (!$request->session()->has('user_id')) {
+            return redirect('/login');
+        }
+
+        $request->validate([
+            'otp' => 'required|string',
+        ]);
+
+        $userId = $request->session()->get('user_id');
+        $user = DB::table('users')->where('id', $userId)->first();
+
+        if (!$user) {
+            return redirect('/login')->with('error', 'User tidak ditemukan');
+        }
+
+        if ($user->email_verified_at) {
+            return redirect('/admin/profile')->with('info', 'Email sudah terverifikasi.');
+        }
+
+        $otp = trim($request->input('otp'));
+
+        // Cek apakah OTP tersedia dan belum kadaluarsa
+        if (empty($user->email_otp) || is_null($user->email_otp_expires_at)) {
+            return redirect('/admin/profile')->with('error', 'Kode OTP belum tersedia. Silakan kirim ulang verifikasi terlebih dahulu.');
+        }
+
+        if (now()->greaterThan($user->email_otp_expires_at)) {
+            return redirect('/admin/profile')->with('error', 'Kode OTP sudah kadaluarsa. Silakan kirim ulang verifikasi.');
+        }
+
+        // Verifikasi OTP
+        if (!Hash::check($otp, $user->email_otp)) {
+            return redirect('/admin/profile')->with('error', 'Kode OTP yang Anda masukkan salah.');
+        }
+
+        // Update status verifikasi & bersihkan OTP
+        DB::table('users')->where('id', $user->id)->update([
+            'email_verified_at' => now(),
+            'email_verified_token' => null,
+            'email_otp' => null,
+            'email_otp_expires_at' => null,
+            'updated_at' => now(),
+        ]);
+
+        // Log aktivitas
+        DB::table('activity_logs')->insert([
+            'user_id' => $user->id,
+            'action' => 'Verifikasi Email (OTP)',
+            'description' => 'Email ' . $user->email . ' berhasil diverifikasi menggunakan OTP',
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'created_at' => now(),
+        ]);
+
+        return redirect('/admin/profile')->with('success', 'Email berhasil diverifikasi menggunakan OTP!');
     }
 
     public function verifyEmail(Request $request, $token)

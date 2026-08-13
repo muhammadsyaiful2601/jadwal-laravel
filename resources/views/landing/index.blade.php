@@ -3865,10 +3865,12 @@
                         <i class="fas fa-graduation-cap"></i>
                         <span>{{ $programStudi }}</span>
                     </div>
-                    <div class="footer-info-item">
-                        <i class="fas fa-building"></i>
-                        <span>{{ $fakultas }}</span>
-                    </div>
+                    @if (!empty($jurusan))
+                        <div class="footer-info-item">
+                            <i class="fas fa-building"></i>
+                            <span>{{ $jurusan }}</span>
+                        </div>
+                    @endif
                 </div>
                 <div class="footer-section">
                     <h5>

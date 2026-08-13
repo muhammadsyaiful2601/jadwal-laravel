@@ -13,11 +13,13 @@ class VerificationEmail extends Mailable
     use Queueable, SerializesModels;
 
     public $verificationUrl;
+    public $otp;
     public $username;
 
-    public function __construct($verificationUrl, $username)
+    public function __construct($verificationUrl, $otp, $username)
     {
         $this->verificationUrl = $verificationUrl;
+        $this->otp = $otp;
         $this->username = $username;
     }
 

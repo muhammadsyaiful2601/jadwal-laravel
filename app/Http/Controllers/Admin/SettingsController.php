@@ -60,7 +60,7 @@ class SettingsController extends Controller
             'institusi_nama',
             'institusi_lokasi',
             'program_studi',
-            'fakultas',
+            'jurusan',
             'admin_email',
             'running_text_enabled',
             'running_text_content',

@@ -791,6 +791,24 @@
 
                     <hr style="border-color: var(--nb-gray);">
 
+                    @if (!empty($user->email) && !$user->email_verified_at)
+                        <h6
+                            style="font-weight: 700; color: var(--nb-black); margin-bottom: 12px; text-transform: uppercase;">
+                            <i class="fas fa-key me-1"></i> Verifikasi dengan OTP
+                        </h6>
+                        <form method="POST" action="{{ url('/admin/profile/verify-otp') }}">
+                            @csrf
+                            <div class="mb-2">
+                                <label class="form-label">Kode OTP</label>
+                                <input type="text" name="otp" class="form-control" placeholder="Masukkan kode OTP 6 digit dari email"
+                                    maxlength="6" required />
+                            </div>
+                            <button type="submit" class="btn btn-primary-custom w-100" style="padding: 12px;">
+                                <i class="fas fa-check me-2"></i> Verifikasi dengan OTP
+                            </button>
+                        </form>
+                    @endif
+
                     <h6
                         style="font-weight: 700; color: var(--nb-black); margin-bottom: 12px; text-transform: uppercase;">
                         <i class="fas fa-plus-circle me-1"></i> Buat Email Baru

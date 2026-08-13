@@ -69,7 +69,7 @@ class LandingPageController extends Controller
         $institusiNama = Setting::getValue('institusi_nama', 'Politeknik Negeri Padang');
         $institusiLokasi = Setting::getValue('institusi_lokasi', 'PSDKU Tanah Datar');
         $programStudi = Setting::getValue('program_studi', 'D3 Sistem Informasi');
-        $fakultas = Setting::getValue('fakultas', 'Fakultas Teknik');
+        $jurusan = Setting::getValue('jurusan', '');
 
         // Get header settings
         $headerLogotype = Setting::getValue('header_logo_type', 'kampus');
@@ -269,7 +269,7 @@ class LandingPageController extends Controller
             'institusiNama',
             'institusiLokasi',
             'programStudi',
-            'fakultas',
+            'jurusan',
             'tahunAkademik',
             'semesterAktif',
             'maintenanceMode',

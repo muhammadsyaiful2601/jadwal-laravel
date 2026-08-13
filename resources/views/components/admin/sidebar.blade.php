@@ -115,7 +115,11 @@
     .sidebar {
         background: var(--nb-dark);
         color: var(--nb-white);
-        min-height: 100vh;
+        height: 100vh;
+        height: 100dvh; /* menyesuaikan tinggi viewport (termasuk bar browser mobile) */
+        max-height: 100vh;
+        max-height: 100dvh;
+        overflow: hidden;
         position: fixed;
         width: 260px;
         top: 0;
@@ -198,6 +202,7 @@
     .sidebar-nav {
         padding: 12px 12px;
         flex: 1;
+        min-height: 0; /* wajib: izinkan nav mengecil & scroll agar footer tetap menempel di bawah */
         overflow-y: auto;
         scrollbar-width: thin;
         scrollbar-color: var(--nb-yellow) transparent;
@@ -393,6 +398,44 @@
         box-shadow: var(--nb-shadow-sm);
         border-color: transparent;
     }
+    /* Pastikan Profile & Logout selalu terlihat menempel di bawah (perangkat kecil / saat zoom tinggi) */
+    .sidebar-footer {
+        padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    }
+
+    /* Layar pendek: ringkaskan header & profile agar footer (Profile & Logout) selalu muat */
+    @media (max-height: 640px) {
+        .sidebar-brand {
+            padding: 14px 24px;
+        }
+        .sidebar-profile {
+            padding: 12px 24px;
+        }
+        .sidebar-avatar {
+            width: 34px;
+            height: 34px;
+        }
+        .sidebar-footer .nav-link {
+            padding: 10px 14px;
+        }
+    }
+        /* Sidebar Overlay (mobile) - tutup sidebar saat area kosong diklik */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            /* Di bawah top-bar (z-index 500) agar tombol hamburger selalu bisa diklik (buka/tutup) */
+            z-index: 490;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
 </style>
 
 <script>
@@ -454,4 +497,26 @@
             resetSessionTimer();
         }
     })();
+    // Sinkronkan overlay & tutup sidebar saat klik area kosong di luar sidebar
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        if (!sidebar || !overlay) return;
+
+        // Pastikan overlay selalu mengikuti status sidebar (mencegah overlay macet menutupi layar)
+        if (sidebar.classList.contains('show')) {
+            if (!overlay.classList.contains('show')) overlay.classList.add('show');
+        } else if (overlay.classList.contains('show')) {
+            overlay.classList.remove('show');
+        }
+
+        // Klik area kosong (di luar sidebar & bukan tombol toggle) -> tutup sidebar
+        if (sidebar.classList.contains('show') &&
+            !sidebar.contains(e.target) &&
+            !e.target.closest('.top-bar-toggle')) {
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+        }
+    });
+
 </script>
