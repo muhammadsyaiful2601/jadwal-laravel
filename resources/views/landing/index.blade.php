@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jadwal Kuliah - {{ $institusiNama }}</title>
     <link rel="icon" type="image/png" href="{{ asset('jadwal-kampus/assets/images/si.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -2978,6 +2978,109 @@
 
         .schedule-list-card:not(.entrance):nth-child(8) {
             animation-delay: 0.4s;
+        }
+        /* =============================================
+               RESPONSIVE MOBILE FIXES - Neobrutalism
+               Agar jadwal tidak tertutup / mudah dibaca
+               ============================================= */
+        @media (max-width: 767.98px) {
+            .main-container {
+                padding: 20px 14px;
+            }
+
+            /* Current & Next schedule: satu kolom agar kartu tidak menyempit */
+            .current-next-grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+            .current-next-grid::before {
+                display: none;
+            }
+
+            /* Daftar jadwal: satu kolom penuh agar tidak overflow / terpotong */
+            .schedule-list-grid {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 18px;
+            }
+
+            /* Kurangi efek 3D / bayangan besar agar kartu tidak bertumpuk */
+            .schedule-card,
+            .schedule-list-card {
+                box-shadow: var(--nb-shadow-sm);
+                transform: none !important;
+            }
+            .schedule-card::before,
+            .schedule-list-card::after {
+                right: -2px;
+                bottom: -2px;
+                top: 2px;
+                left: 2px;
+            }
+
+            /* Konten kartu agar rapi dan terbaca */
+            .schedule-card-header {
+                padding: 16px 18px;
+            }
+            .schedule-card-body {
+                padding: 16px 18px;
+            }
+            .current-schedule-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+            .schedule-time-badge {
+                min-width: auto;
+            }
+            .schedule-time-badge .time-number {
+                font-size: 2.5rem;
+            }
+            .schedule-card-title,
+            .schedule-course,
+            .schedule-course-name,
+            .schedule-info-row span,
+            .schedule-meta-item span {
+                overflow-wrap: break-word;
+                word-break: break-word;
+            }
+            .schedule-info-row {
+                flex-wrap: wrap;
+            }
+            .schedule-details {
+                min-width: 0;
+            }
+
+            /* Kartu list: blok waktu di atas, konten di bawah agar tidak sempit */
+            .schedule-list-card {
+                flex-wrap: wrap;
+            }
+            .schedule-list-card .schedule-time-box {
+                width: 100%;
+                min-width: 100%;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+            .schedule-content {
+                min-width: 0;
+                width: 100%;
+            }
+        }
+
+        /* Layar sangat kecil */
+        @media (max-width: 480px) {
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .schedule-card-title {
+                font-size: 1rem;
+            }
+            .schedule-course-name {
+                font-size: 1.05rem;
+            }
         }
     </style>
 </head>
