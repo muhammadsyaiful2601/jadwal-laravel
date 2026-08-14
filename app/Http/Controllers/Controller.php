@@ -8,8 +8,9 @@ abstract class Controller
 {
     /**
      * Check if the current superadmin user has verified their email.
-     * If not verified and the request is a POST/action request, redirect back with error.
-     * For GET requests, just return the verification status.
+     * If not verified, block all write/action requests by redirecting to profile.
+     * AJAX requests receive a 403 response.
+     * Returns true if verified or if user is not a superadmin.
      */
     protected function checkSuperadminVerified(Request $request)
     {
@@ -33,14 +34,12 @@ abstract class Controller
         $isVerified = !is_null($user->email_verified_at);
 
         if (!$isVerified) {
-            // For POST/PUT/DELETE requests, block the action
-            if ($request->isMethod('post') || $request->isMethod('put') || $request->isMethod('delete') || $request->isMethod('patch')) {
-                if ($request->ajax()) {
-                    abort(403, 'Akun superadmin belum terverifikasi. Silakan verifikasi email terlebih dahulu.');
-                }
-                return redirect('/admin/profile')
-                    ->with('error', 'Akun superadmin belum terverifikasi. Silakan verifikasi email terlebih dahulu untuk mengakses fitur ini.');
+            // Block all write/action requests regardless of HTTP method
+            if ($request->ajax()) {
+                abort(403, 'Akun superadmin belum terverifikasi. Silakan verifikasi email terlebih dahulu.');
             }
+            return redirect('/admin/profile')
+                ->with('error', 'Akun superadmin belum terverifikasi. Silakan verifikasi email terlebih dahulu untuk mengakses fitur ini.');
         }
 
         return $isVerified;

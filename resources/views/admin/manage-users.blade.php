@@ -1320,14 +1320,14 @@
 
                                                 @if ($isSuperAdmin)
                                                     @if ($is_locked)
-                                                        <a href="{{ url('/admin/manage-users?cancel_lockout=' . $user->id) }}"
+                                                        <a href="{{ url('/admin/manage-users/cancel-lockout?cancel_lockout=' . $user->id) }}"
                                                             class="action-btn"
                                                             onclick="return confirm('Batalkan lockout untuk akun ini?')"
                                                             title="Batalkan Lockout">
                                                             <i class="fas fa-unlock-alt"></i>
                                                         </a>
                                                     @elseif($user->failed_attempts > 0)
-                                                        <a href="{{ url('/admin/manage-users?reset_lockout=' . $user->id) }}"
+                                                        <a href="{{ url('/admin/manage-users/reset-lockout?reset_lockout=' . $user->id) }}"
                                                             class="action-btn"
                                                             onclick="return confirm('Reset lockout untuk akun ini?')"
                                                             title="Reset Lockout">
@@ -1345,7 +1345,7 @@
                                                 @endif
 
                                                 @if ($can_delete && $isSuperAdmin)
-                                                    <a href="{{ url('/admin/manage-users?delete=' . $user->id) }}"
+                                                    <a href="{{ url('/admin/manage-users/delete?delete=' . $user->id) }}"
                                                         class="action-btn danger"
                                                         onclick="return confirm('Yakin hapus admin ini?')"
                                                         title="Hapus Admin">

@@ -142,9 +142,14 @@ class UserController extends Controller
         // Generate token
         $token = Str::random(60);
 
-        // Simpan token
+        // Generate kode OTP 6 digit
+        $otp = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        // Simpan token & OTP
         DB::table('users')->where('id', $targetId)->update([
             'email_verified_token' => $token,
+            'email_otp' => Hash::make($otp),
+            'email_otp_expires_at' => now()->addMinutes(15),
             'updated_at' => now(),
         ]);
 
@@ -152,12 +157,12 @@ class UserController extends Controller
         $verificationUrl = url('/verify-email/' . $token);
 
         try {
-            // Kirim email verifikasi
-            Mail::to($targetUser->email)->send(new VerificationEmail($verificationUrl, $targetUser->username));
+            // Kirim email verifikasi (berisi link dan kode OTP)
+            Mail::to($targetUser->email)->send(new VerificationEmail($verificationUrl, $otp, $targetUser->username));
 
-            $this->logActivity($request->session()->get('user_id'), 'Kirim Verifikasi', 'Mengirim verifikasi email ke ' . $targetUser->username);
+            $this->logActivity($request->session()->get('user_id'), 'Kirim Verifikasi', 'Link verifikasi dan kode OTP dikirim ke ' . $targetUser->email);
 
-            return redirect('/admin/manage-users')->with('success', 'Link verifikasi berhasil dikirim ke email ' . $targetUser->email);
+            return redirect('/admin/manage-users')->with('success', 'Link verifikasi dan kode OTP berhasil dikirim ke email ' . $targetUser->email);
         } catch (\Exception $e) {
             return redirect('/admin/manage-users')->with('error', 'Gagal mengirim email: ' . $e->getMessage());
         }
