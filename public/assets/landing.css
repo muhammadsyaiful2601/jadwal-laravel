@@ -2336,42 +2336,6 @@
         /* =============================================
                MOUSE GLOW TRAIL
                ============================================= */
-        .mouse-glow {
-            position: fixed;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(166, 108, 255, 0.12) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 9998;
-            transform: translate(-50%, -50%);
-            transition: opacity 0.3s ease;
-            opacity: 0;
-            will-change: transform;
-        }
-
-        .mouse-glow.visible {
-            opacity: 1;
-        }
-
-        .mouse-glow-trail {
-            position: fixed;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--nb-purple);
-            border: 2px solid var(--nb-black);
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: all 0.1s ease;
-            opacity: 0;
-            box-shadow: var(--nb-shadow-sm);
-        }
-
-        .mouse-glow-trail.visible {
-            opacity: 1;
-        }
 
         /* =============================================
                TIME-BASED GREETING

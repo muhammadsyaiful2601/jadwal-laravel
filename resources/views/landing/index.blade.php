@@ -2269,42 +2269,6 @@
         /* =============================================
                MOUSE GLOW TRAIL
                ============================================= */
-        .mouse-glow {
-            position: fixed;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(166, 108, 255, 0.12) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 9998;
-            transform: translate(-50%, -50%);
-            transition: opacity 0.3s ease;
-            opacity: 0;
-            will-change: transform;
-        }
-
-        .mouse-glow.visible {
-            opacity: 1;
-        }
-
-        .mouse-glow-trail {
-            position: fixed;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--nb-purple);
-            border: 2px solid var(--nb-black);
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: all 0.1s ease;
-            opacity: 0;
-            box-shadow: var(--nb-shadow-sm);
-        }
-
-        .mouse-glow-trail.visible {
-            opacity: 1;
-        }
 
         /* =============================================
                TIME-BASED GREETING
@@ -3089,10 +3053,6 @@
 
     <!-- Animated Gradient Background -->
     <div class="gradient-bg"></div>
-
-    <!-- Mouse Glow Trail -->
-    <div class="mouse-glow" id="mouseGlow"></div>
-    <div class="mouse-glow-trail" id="mouseGlowTrail"></div>
 
     <!-- Interactive Background Particles Canvas -->
     <div id="particles-canvas"></div>
@@ -4428,57 +4388,6 @@
         }
 
         // =============================================
-        // MOUSE GLOW EFFECT
-        // =============================================
-        function initMouseGlow() {
-            const glow = document.getElementById('mouseGlow');
-            const trail = document.getElementById('mouseGlowTrail');
-            if (!glow || !trail) return;
-
-            let mouseX = -200,
-                mouseY = -200;
-            let trailX = -200,
-                trailY = -200;
-            let isVisible = false;
-            let timeoutId = null;
-
-            document.addEventListener('mousemove', function(e) {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-
-                if (!isVisible) {
-                    isVisible = true;
-                    glow.classList.add('visible');
-                    trail.classList.add('visible');
-                }
-
-                glow.style.left = mouseX + 'px';
-                glow.style.top = mouseY + 'px';
-
-                // Clear timeout
-                if (timeoutId) clearTimeout(timeoutId);
-                timeoutId = setTimeout(function() {
-                    isVisible = false;
-                    glow.classList.remove('visible');
-                    trail.classList.remove('visible');
-                }, 3000);
-            });
-
-            // Smooth trail following
-            function animateTrail() {
-                trailX += (mouseX - trailX) * 0.15;
-                trailY += (mouseY - trailY) * 0.15;
-
-                if (trail.style.opacity !== '0') {
-                    trail.style.left = trailX + 'px';
-                    trail.style.top = trailY + 'px';
-                }
-                requestAnimationFrame(animateTrail);
-            }
-            animateTrail();
-        }
-
-        // =============================================
         // TIME-BASED GREETING
         // =============================================
         function initGreeting() {
@@ -4929,7 +4838,6 @@
             startRealtimeClock();
 
             // Initialize interactive features
-            initMouseGlow();
             initGreeting();
             initParticles();
             initScrollReveal();

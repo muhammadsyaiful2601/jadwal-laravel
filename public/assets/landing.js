@@ -264,56 +264,6 @@
         }
 
         // =============================================
-        // MOUSE GLOW EFFECT
-        // =============================================
-        function initMouseGlow() {
-            const glow = document.getElementById('mouseGlow');
-            const trail = document.getElementById('mouseGlowTrail');
-            if (!glow || !trail) return;
-
-            let mouseX = -200,
-                mouseY = -200;
-            let trailX = -200,
-                trailY = -200;
-            let isVisible = false;
-            let timeoutId = null;
-
-            document.addEventListener('mousemove', function(e) {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-
-                if (!isVisible) {
-                    isVisible = true;
-                    glow.classList.add('visible');
-                    trail.classList.add('visible');
-                }
-
-                glow.style.left = mouseX + 'px';
-                glow.style.top = mouseY + 'px';
-
-                // Clear timeout
-                if (timeoutId) clearTimeout(timeoutId);
-                timeoutId = setTimeout(function() {
-                    isVisible = false;
-                    glow.classList.remove('visible');
-                    trail.classList.remove('visible');
-                }, 3000);
-            });
-
-            // Smooth trail following
-            function animateTrail() {
-                trailX += (mouseX - trailX) * 0.15;
-                trailY += (mouseY - trailY) * 0.15;
-
-                if (trail.style.opacity !== '0') {
-                    trail.style.left = trailX + 'px';
-                    trail.style.top = trailY + 'px';
-                }
-                requestAnimationFrame(animateTrail);
-            }
-            animateTrail();
-        }
-
         // =============================================
         // TIME-BASED GREETING
         // =============================================
@@ -762,7 +712,6 @@
             startRealtimeClock();
 
             // Initialize interactive features
-            initMouseGlow();
             initGreeting();
             initParticles();
             initScrollReveal();
