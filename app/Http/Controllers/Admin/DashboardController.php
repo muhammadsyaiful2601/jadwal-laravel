@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Setting;
+use App\Models\Visitor;
 
 class DashboardController extends Controller
 {
@@ -23,6 +24,8 @@ class DashboardController extends Controller
         $stats['total_kelas'] = DB::table('schedules')->distinct('kelas')->count('kelas');
         $stats['total_saran'] = DB::table('suggestions')->count();
         $stats['pending_saran'] = DB::table('suggestions')->where('status', 'pending')->count();
+        $stats['total_pengunjung'] = Visitor::totalVisitors();
+        $stats['pengunjung_hari_ini'] = Visitor::todayVisitors();
 
         // Get maintenance status
         $isMaintenance = Setting::getValue('maintenance_mode', '0') == '1';

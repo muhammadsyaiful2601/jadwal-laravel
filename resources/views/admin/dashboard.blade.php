@@ -242,7 +242,7 @@
         /* Stats Cards */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 20px;
             margin-bottom: 28px;
         }
@@ -282,6 +282,10 @@
 
         .stat-card:nth-child(4)::before {
             background: var(--nb-red);
+        }
+
+        .stat-card:nth-child(5)::before {
+            background: var(--nb-purple);
         }
 
         .stat-card:hover {
@@ -335,6 +339,11 @@
 
         .stat-card-icon.rose {
             background: var(--nb-red);
+            color: var(--nb-white);
+        }
+
+        .stat-card-icon.purple {
+            background: var(--nb-purple);
             color: var(--nb-white);
         }
 
@@ -1047,6 +1056,16 @@
                         </div>
                     </div>
                 </a>
+                <div class="stat-card-link" style="cursor:default; pointer-events:none;">
+                    <div class="stat-card">
+                        <div class="stat-card-top">
+                            <span class="stat-card-label">Pengunjung</span>
+                            <div class="stat-card-icon purple"><i class="fas fa-eye"></i></div>
+                        </div>
+                        <div class="stat-card-value">{{ $stats['total_pengunjung'] }}</div>
+                        <div class="stat-card-footer"><small>Hari ini: {{ $stats['pengunjung_hari_ini'] }} | 1 IP / jam</small></div>
+                    </div>
+                </div>
             </div>
 
             <div class="system-status-card">

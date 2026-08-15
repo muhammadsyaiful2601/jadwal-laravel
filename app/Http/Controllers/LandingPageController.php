@@ -6,6 +6,7 @@ use App\Models\Schedule;
 use App\Models\Setting;
 use App\Models\Room;
 use App\Models\SemesterSetting;
+use App\Models\Visitor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -60,6 +61,9 @@ class LandingPageController extends Controller
 
     public function index(Request $request)
     {
+        // Catat kunjungan pengunjung (unique per IP per jam)
+        Visitor::recordVisit($request->ip(), $request->userAgent());
+
         // Get active semester
         $activeSemester = SemesterSetting::getActive();
         $tahunAkademik = $activeSemester?->tahun_akademik ?? '2025/2026';
