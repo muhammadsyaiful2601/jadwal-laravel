@@ -169,9 +169,8 @@ class LandingPageController extends Controller
             $jadwalPerHari = $jadwal->groupBy('hari');
         }
 
-        // Find current and next schedule
-        $jamSekarang = now()->format('H:i');
-        $hariSekarangTeks = $hariMap[$hariSekarang] ?? null;
+        // Find current and next schedule (real-time, handles weekend & midnight-crossing)
+        $hariSekarangTeks = $hariMap[$hariSekarang] ?? null; // null saat Sabtu/Minggu
 
         $jadwalBerlangsung = null;
         $jadwalBerikutnya = null;
@@ -180,80 +179,115 @@ class LandingPageController extends Controller
         $targetHari = '';
         $jadwalMendatang = []; // Array untuk menyimpan jadwal yang akan datang
 
+        $hariOrder = ['SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT'];
+        $today = now();
+        $todayIso = (int) $today->dayOfWeekIso; // 1=Senin .. 5=Jumat, 6=Sabtu, 7=Minggu
+
+        // Hari efektif untuk pencarian. Saat weekend (Sabtu/Minggu) tidak ada kuliah
+        // berlangsung, dan jadwal berikutnya dihitung mulai dari Senin.
+        $currentScheduleDay = $hariSekarangTeks ?: 'SENIN';
+        $currentIndex = array_search($currentScheduleDay, $hariOrder);
+        if ($currentIndex === false) {
+            $currentIndex = 0;
+        }
+
+        // Helper: selisih hari kalender dari hari ini sampai target weekday (1=Senin..5=Jumat)
+        $daysUntil = function (int $target) use ($todayIso): int {
+            if ($todayIso <= 5) {
+                return $target >= $todayIso
+                    ? $target - $todayIso
+                    : (7 - $todayIso) + $target; // pekan depan
+            }
+            // Weekend (6=Sabtu, 7=Minggu): mundur ke hari Senin dst.
+            return (7 - $todayIso) + $target;
+        };
+
+        // --- 1. Cari jadwal yang sedang berlangsung (hanya hari kerja) ---
         if ($hariSekarangTeks) {
-            // Find ongoing schedule
-            $jadwalBerlangsung = Schedule::activeSemester($tahunAkademik, $semesterAktif)
+            $schedulesToday = Schedule::activeSemester($tahunAkademik, $semesterAktif)
                 ->byHari($hariSekarangTeks)
                 ->when(!$tampilSemuaKelas, fn($q) => $q->byKelas($kelasSelected))
-                ->whereRaw("? BETWEEN SUBSTRING_INDEX(waktu, ' - ', 1) AND SUBSTRING_INDEX(waktu, ' - ', -1)", [$jamSekarang])
                 ->orderBy('jam_ke')
-                ->first();
+                ->get();
 
-            // Find next schedules - search from today through following days
-            $hariOrder = ['SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT'];
-            $currentIndex = array_search($hariSekarangTeks, $hariOrder);
-            $schedulesFound = 0;
-            $maxSchedules = 5; // Get up to 5 upcoming schedules
+            foreach ($schedulesToday as $sch) {
+                [$mulai, $selesai] = array_pad(explode(' - ', (string) $sch->waktu), 2, '');
+                if ($mulai === '' || $selesai === '') continue;
 
-            for ($i = 0; $i < 10 && $schedulesFound < $maxSchedules; $i++) {
-                $nextIndex = ($currentIndex + $i) % 5;
-                $nextDay = $hariOrder[$nextIndex];
+                $startTime = \Illuminate\Support\Carbon::createFromTimeString($mulai);
+                $endTime = \Illuminate\Support\Carbon::createFromTimeString($selesai);
 
-                $nextQuery = Schedule::activeSemester($tahunAkademik, $semesterAktif)
-                    ->byHari($nextDay);
-
-                if (!$tampilSemuaKelas) {
-                    $nextQuery->byKelas($kelasSelected);
-                }
-
-                if ($i == 0) {
-                    // Same day - find schedules that start after current time
-                    $nextQuery->whereRaw("SUBSTRING_INDEX(waktu, ' - ', 1) > ?", [$jamSekarang])
-                        ->orderByRaw("SUBSTRING_INDEX(waktu, ' - ', 1)", []);
+                if ($startTime->gt($endTime)) {
+                    // Jadwal melewati tengah malam (mis. 23:11 - 00:31)
+                    $isOngoing = $today->gte($startTime) || $today->lte($endTime);
                 } else {
-                    // Different day - get all schedules
-                    $nextQuery->orderByRaw("SUBSTRING_INDEX(waktu, ' - ', 1)", []);
+                    $isOngoing = $today->between($startTime, $endTime);
                 }
 
-                $jadwalNextDay = $nextQuery->get();
-
-                foreach ($jadwalNextDay as $schedule) {
-                    if ($schedulesFound >= $maxSchedules) break;
-
-                    // Calculate waiting time
-                    $waktuDetik = 0;
-                    if (str_contains($schedule->waktu, ' - ')) {
-                        $waktuParts = explode(' - ', $schedule->waktu);
-                        if (count($waktuParts) >= 2) {
-                            $waktuMulai = $waktuParts[0];
-                            $waktuMulaiParts = explode(':', $waktuMulai);
-                            $jamMulai = (int) ($waktuMulaiParts[0] ?? 0);
-                            $menitMulai = (int) ($waktuMulaiParts[1] ?? 0);
-
-                            $waktuTarget = now()->setTime($jamMulai, $menitMulai, 0)->addDays($i);
-                            $waktuSekarang = now();
-                            $waktuDetik = max(0, $waktuTarget->diffInSeconds($waktuSekarang));
-                        }
-                    }
-
-                    $jadwalMendatang[] = [
-                        'schedule' => $schedule,
-                        'waktu_tunggu_detik' => $waktuDetik,
-                        'selisih_hari' => $i,
-                        'target_hari' => $nextDay,
-                    ];
-
-                    $schedulesFound++;
-
-                    // Set the first one as jadwalBerikutnya
-                    if ($schedulesFound == 1) {
-                        $jadwalBerikutnya = $schedule;
-                        $targetHari = $nextDay;
-                        $selisihHari = $i;
-                        $waktuTungguDetik = $waktuDetik;
-                    }
+                if ($isOngoing) {
+                    $jadwalBerlangsung = $sch;
+                    break;
                 }
             }
+        }
+
+        // --- 2. Cari jadwal berikutnya (real-time, dengan hitungan countdown yang benar) ---
+        $schedulesFound = 0;
+        $maxSchedules = 5; // Ambil hingga 5 jadwal mendatang
+
+        for ($i = 0; $i < 10 && $schedulesFound < $maxSchedules; $i++) {
+            $nextIndex = ($currentIndex + $i) % 5;
+            $nextDay = $hariOrder[$nextIndex];
+            $targetWeekday = $nextIndex + 1; // 1=Senin .. 5=Jumat
+
+            $nextQuery = Schedule::activeSemester($tahunAkademik, $semesterAktif)
+                ->byHari($nextDay);
+
+            if (!$tampilSemuaKelas) {
+                $nextQuery->byKelas($kelasSelected);
+            }
+
+            $scheduleList = $nextQuery->orderBy('jam_ke')->get();
+
+            foreach ($scheduleList as $schedule) {
+                if ($schedulesFound >= $maxSchedules) break;
+
+                $waktuDetik = 0;
+                $selisihHariSchedule = $i;
+                [$mulai] = array_pad(explode(' - ', (string) $schedule->waktu), 2, '');
+                if ($mulai !== '') {
+                    [$jamMulai, $menitMulai] = array_pad(array_map('intval', explode(':', $mulai)), 2, 0);
+
+                    // Hitung selisih hari kalender dari hari ini ke hari jadwal
+                    $offsetDays = $daysUntil($targetWeekday);
+                    $targetWaktu = $today->copy()->addDays($offsetDays)->setTime($jamMulai, $menitMulai, 0);
+                    $selisihHariSchedule = $offsetDays;
+                    // diff = targetWaktu - today (positif jika jadwal masih akan datang)
+                    // Cast ke int (diffInSeconds Carbon mengembalikan float / mikrodetik).
+                    $waktuDetik = max(0, (int) $today->diffInSeconds($targetWaktu, false));
+                }
+
+                // Lewati jadwal yang waktunya sudah lewat (tidak akan datang lagi)
+                if ($waktuDetik <= 0) continue;
+
+                $jadwalMendatang[] = [
+                    'schedule' => $schedule,
+                    'waktu_tunggu_detik' => (int) $waktuDetik,
+                    'selisih_hari' => $selisihHariSchedule,
+                    'target_hari' => $nextDay,
+                ];
+
+                $schedulesFound++;
+            }
+        }
+
+        // Jadwal berikutnya = jadwal dengan waktu tunggu paling cepat (bukan urutan tersimpan)
+        if (!empty($jadwalMendatang)) {
+            usort($jadwalMendatang, fn($a, $b) => $a['waktu_tunggu_detik'] <=> $b['waktu_tunggu_detik']);
+            $jadwalBerikutnya = $jadwalMendatang[0]['schedule'];
+            $targetHari = $jadwalMendatang[0]['target_hari'];
+            $selisihHari = $jadwalMendatang[0]['selisih_hari'];
+            $waktuTungguDetik = $jadwalMendatang[0]['waktu_tunggu_detik'];
         }
 
         // Get room data for popup

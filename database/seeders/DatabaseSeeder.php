@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             SuperadminSeeder::class,
             RoomSeeder::class,
             SemesterSettingSeeder::class,
+            ScheduleDummySeeder::class,
         ]);
     }
 }

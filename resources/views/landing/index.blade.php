@@ -2466,49 +2466,6 @@
         }
 
         /* =============================================
-               INTERACTIVE BACKGROUND PARTICLES
-               ============================================= */
-        #particles-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-
-        .particle {
-            position: absolute;
-            border-radius: 4px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
-
-        .particle.visible {
-            opacity: 1;
-        }
-
-        .particle.shape-circle {
-            border-radius: 50%;
-        }
-
-        .particle.shape-square {
-            border-radius: 2px;
-        }
-
-        .particle.shape-triangle {
-            width: 0 !important;
-            height: 0 !important;
-            background: transparent !important;
-            border-left: solid transparent;
-            border-right: solid transparent;
-            border-bottom: solid;
-        }
-
-        /* =============================================
                LIVE PULSE INDICATOR
                ============================================= */
         .live-indicator {
@@ -3054,9 +3011,6 @@
     <!-- Animated Gradient Background -->
     <div class="gradient-bg"></div>
 
-    <!-- Interactive Background Particles Canvas -->
-    <div id="particles-canvas"></div>
-
     @if ($maintenanceMode == '1')
         <div class="maintenance-modal" id="maintenanceModal">
             <div class="maintenance-content">
@@ -3540,110 +3494,6 @@
             </div>
         </div>
 
-        <!-- Countdown Jadwal Mendatang Section -->
-        @if (!empty($jadwalMendatang) && count($jadwalMendatang) > 0)
-            <div class="current-next-section reveal" id="upcomingCountdownSection">
-                <div class="section-header">
-                    <div>
-                        <h3 class="section-title">
-                            <i class="fas fa-hourglass-half"></i>
-                            Countdown Jadwal Mendatang
-                        </h3>
-                        <p class="section-subtitle">Menghitung waktu menuju perkuliahan selanjutnya</p>
-                    </div>
-                </div>
-
-                <div class="schedule-list-grid">
-                    @foreach ($jadwalMendatang as $index => $item)
-                        @php
-                            $schedule = $item['schedule'];
-                            $waktuTunggu = $item['waktu_tunggu_detik'];
-                            $selisihHariItem = $item['selisih_hari'];
-                            $targetHariItem = $item['target_hari'];
-                            $isFirst = $index === 0;
-                        @endphp
-
-                        <div class="schedule-card {{ $isFirst ? 'accent-left' : '' }} reveal-scale"
-                            data-waktu-tunggu="{{ $waktuTunggu }}" data-index="{{ $index }}">
-                            <div class="schedule-card-header {{ $isFirst ? 'primary-bg' : '' }}">
-                                <h5 class="schedule-card-title"
-                                    style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
-                                    <i class="fas fa-clock"></i>
-                                    {{ $schedule->mata_kuliah }}
-                                    @if ($isFirst)
-                                        <span class="live-indicator">
-                                            <span class="live-dot"></span>
-                                            NEXT
-                                        </span>
-                                    @endif
-                                </h5>
-                            </div>
-                            <div class="schedule-card-body">
-                                <div class="schedule-details">
-                                    <div class="schedule-info-row">
-                                        <i class="fas fa-user-tie"></i>
-                                        <span>{{ $schedule->dosen }}</span>
-                                    </div>
-                                    <div class="schedule-info-row">
-                                        <i class="fas fa-door-open"></i>
-                                        <span>Ruang {{ $schedule->ruang }}</span>
-                                    </div>
-                                    <div class="schedule-info-row">
-                                        <i class="fas fa-users"></i>
-                                        <span>Kelas {{ $schedule->kelas }}</span>
-                                    </div>
-                                    <div class="schedule-info-row">
-                                        <i class="fas fa-calendar-day"></i>
-                                        <span>
-                                            @if ($selisihHariItem == 0)
-                                                Hari Ini
-                                            @else
-                                                {{ $targetHariItem }} ({{ $selisihHariItem }} hari lagi)
-                                            @endif
-                                        </span>
-                                    </div>
-                                    <div class="schedule-info-row">
-                                        <i class="fas fa-clock"></i>
-                                        <span>{{ $schedule->waktu }}</span>
-                                    </div>
-
-                                    @if ($waktuTunggu > 0)
-                                        <div class="countdown-box">
-                                            <div class="countdown-label">
-                                                <i class="fas fa-hourglass-half me-1"></i>
-                                                Mulai dalam:
-                                            </div>
-                                            <div class="countdown-timer">
-                                                <div class="countdown-unit">
-                                                    <div class="countdown-value"
-                                                        id="countdownDays{{ $index }}">0</div>
-                                                    <div class="countdown-text">Hari</div>
-                                                </div>
-                                                <div class="countdown-unit">
-                                                    <div class="countdown-value"
-                                                        id="countdownHours{{ $index }}">00</div>
-                                                    <div class="countdown-text">Jam</div>
-                                                </div>
-                                                <div class="countdown-unit">
-                                                    <div class="countdown-value"
-                                                        id="countdownMinutes{{ $index }}">00</div>
-                                                    <div class="countdown-text">Menit</div>
-                                                </div>
-                                                <div class="countdown-unit">
-                                                    <div class="countdown-value"
-                                                        id="countdownSeconds{{ $index }}">00</div>
-                                                    <div class="countdown-text">Detik</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @endif
 
         <!-- Daftar Jadwal Section -->
         <section class="schedule-list-section">
@@ -4116,7 +3966,6 @@
         const currentDay = {{ now()->dayOfWeekIso }};
         const firstClass = @json(!empty($kelasList) ? $kelasList[0] : 'A1');
         let waktuTungguDetik = {{ $waktuTungguDetik }};
-        let countdownInterval = null;
         let realtimeClockInterval = null;
 
         // Pass jadwalMendatang data to JavaScript
@@ -4530,109 +4379,6 @@
         }
 
         // =============================================
-        // INTERACTIVE PARTICLES BACKGROUND
-        // =============================================
-        function initParticles() {
-            const canvas = document.getElementById('particles-canvas');
-            if (!canvas) return;
-
-            const shapes = ['circle', 'square', 'triangle'];
-            const colors = ['#A66CFF', '#4ECDC4', '#FFE66D', '#FF6B6B', '#F38181', '#95E1D3', '#FFB347', '#6BB5FF'];
-            const particles = [];
-            const particleCount = 35;
-
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                const shape = shapes[Math.floor(Math.random() * shapes.length)];
-                const size = Math.floor(Math.random() * 16) + 6;
-                const color = colors[Math.floor(Math.random() * colors.length)];
-
-                particle.classList.add('particle', 'shape-' + shape);
-                particle.style.width = size + 'px';
-                particle.style.height = size + 'px';
-
-                if (shape === 'triangle') {
-                    particle.style.borderLeftWidth = (size / 2) + 'px';
-                    particle.style.borderRightWidth = (size / 2) + 'px';
-                    particle.style.borderBottomWidth = size + 'px';
-                    particle.style.borderBottomColor = color;
-                } else {
-                    particle.style.background = color;
-                    if (shape === 'square') {
-                        particle.style.borderRadius = '2px';
-                        particle.style.transform = 'rotate(' + Math.floor(Math.random() * 90) + 'deg)';
-                    }
-                }
-
-                const startX = Math.random() * window.innerWidth;
-                const startY = Math.random() * window.innerHeight;
-
-                particle.style.left = startX + 'px';
-                particle.style.top = startY + 'px';
-
-                canvas.appendChild(particle);
-
-                particles.push({
-                    el: particle,
-                    x: startX,
-                    y: startY,
-                    size: size,
-                    speedX: (Math.random() - 0.5) * 0.5,
-                    speedY: (Math.random() - 0.5) * 0.5,
-                    rotation: Math.random() * 360,
-                    rotSpeed: (Math.random() - 0.5) * 1,
-                    visible: false,
-                    delay: Math.random() * 3000
-                });
-            }
-
-            // Animate
-            function animateParticles() {
-                const now = Date.now();
-
-                particles.forEach(function(p) {
-                    // Show with delay
-                    if (!p.visible && now > p.delay) {
-                        p.visible = true;
-                        p.el.classList.add('visible');
-                    }
-
-                    if (!p.visible) return;
-
-                    // Move
-                    p.x += p.speedX;
-                    p.y += p.speedY;
-                    p.rotation += p.rotSpeed;
-
-                    // Wrap around
-                    if (p.x < -50) p.x = window.innerWidth + 50;
-                    if (p.x > window.innerWidth + 50) p.x = -50;
-                    if (p.y < -50) p.y = window.innerHeight + 50;
-                    if (p.y > window.innerHeight + 50) p.y = -50;
-
-                    p.el.style.left = p.x + 'px';
-                    p.el.style.top = p.y + 'px';
-
-                    if (p.el.style.transform) {
-                        p.el.style.transform = 'rotate(' + p.rotation + 'deg)';
-                    }
-                });
-
-                requestAnimationFrame(animateParticles);
-            }
-
-            animateParticles();
-
-            // Resize handler
-            window.addEventListener('resize', function() {
-                particles.forEach(function(p) {
-                    if (p.x > window.innerWidth) p.x = window.innerWidth * 0.8;
-                    if (p.y > window.innerHeight) p.y = window.innerHeight * 0.8;
-                });
-            });
-        }
-
-        // =============================================
         // SCROLL REVEAL ANIMATIONS
         // =============================================
         function initScrollReveal() {
@@ -4839,7 +4585,6 @@
 
             // Initialize interactive features
             initGreeting();
-            initParticles();
             initScrollReveal();
             initClassProgress();
             initColorAccents();
@@ -4848,9 +4593,9 @@
             initCardEntrance();
             initStampBadges();
 
-            // Countdown timers for upcoming courses
-            if (typeof jadwalMendatang !== 'undefined' && jadwalMendatang.length > 0) {
-                startMultipleCountdownTimers();
+            // Countdown untuk kartu "Jadwal Berikutnya"
+            if (typeof waktuTungguDetik !== 'undefined' && waktuTungguDetik > 0) {
+                startCountdownTimer();
             }
 
             // Suggestion form handler
@@ -4928,86 +4673,81 @@
             });
         });
 
-        // Multiple countdown timers for upcoming courses
-        window.startMultipleCountdownTimers = function() {
-            if (!jadwalMendatang || jadwalMendatang.length === 0) return;
+        // =============================================
+        // COUNTDOWN ENGINE (akurat & tanpa konflik)
+        // =============================================
+        const countdownIntervals = []; // kumpulan interval aktif
 
-            const intervals = [];
+        // Render sisa detik ke elemen dengan prefix id tertentu ('' untuk kartu utama)
+        // Unit yang bernilai 0 pada posisi depan otomatis disembunyikan agar tidak
+        // tampil angka nol yang tidak perlu.
+        function renderCountdown(prefix, remainingSeconds) {
+            const total = Math.max(0, Math.floor(Number(remainingSeconds)));
+            const days = Math.floor(total / 86400);
+            const hours = Math.floor((total % 86400) / 3600);
+            const minutes = Math.floor((total % 3600) / 60);
+            const seconds = Math.floor(total % 60);
 
-            jadwalMendatang.forEach(function(item, index) {
-                if (!item.waktu_tunggu_detik || item.waktu_tunggu_detik <= 0) return;
+            const ids = {
+                days: prefix + 'countdownDays',
+                hours: prefix + 'countdownHours',
+                minutes: prefix + 'countdownMinutes',
+                seconds: prefix + 'countdownSeconds'
+            };
 
-                let remainingSeconds = item.waktu_tunggu_detik;
-
-                function updateCountdown() {
-                    if (remainingSeconds <= 0) {
-                        window.location.reload();
-                        return;
-                    }
-                    const days = Math.floor(remainingSeconds / (24 * 3600));
-                    const hours = Math.floor((remainingSeconds % (24 * 3600)) / 3600);
-                    const minutes = Math.floor((remainingSeconds % 3600) / 60);
-                    const seconds = remainingSeconds % 60;
-
-                    const daysEl = document.getElementById('countdownDays' + index);
-                    const hoursEl = document.getElementById('countdownHours' + index);
-                    const minutesEl = document.getElementById('countdownMinutes' + index);
-                    const secondsEl = document.getElementById('countdownSeconds' + index);
-
-                    if (daysEl) daysEl.textContent = String(days).padStart(2, '0');
-                    if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
-                    if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
-                    if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
-                    remainingSeconds--;
-                }
-
-                updateCountdown();
-                const interval = setInterval(updateCountdown, 1000);
-                intervals.push(interval);
-            });
-
-            // Store intervals for cleanup
-            countdownInterval = {
-                clear: function() {
-                    intervals.forEach(function(interval) {
-                        clearInterval(interval);
-                    });
+            const setVal = (id, val, pad) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = pad ? String(val).padStart(2, '0') : String(val);
+            };
+            const setVisible = (id, show) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    const unit = el.closest('.countdown-unit');
+                    if (unit) unit.style.display = show ? '' : 'none';
                 }
             };
-        };
 
-        window.startCountdownTimer = function() {
-            if (!waktuTungguDetik || waktuTungguDetik <= 0) return;
-            let remainingSeconds = waktuTungguDetik;
+            setVal(ids.days, days, false);
+            setVal(ids.hours, hours, true);
+            setVal(ids.minutes, minutes, true);
+            setVal(ids.seconds, seconds, true);
 
-            function updateCountdown() {
-                if (remainingSeconds <= 0) {
-                    window.location.reload();
-                    return;
+            setVisible(ids.days, days > 0);
+            setVisible(ids.hours, days > 0 || hours > 0);
+            setVisible(ids.minutes, days > 0 || hours > 0 || minutes > 0);
+            setVisible(ids.seconds, true);
+        }
+
+        // Mulai countdown dari waktu target (timestampp). Hitungan dihitung ulang
+        // dari selisih target - sekarang (Date.now()) tiap detik, sehingga akurat.
+        function startCountdownTicker(prefix, endTime) {
+            let tickId = null;
+
+            function tick() {
+                // endTime dibulatkan ke integer ms untuk menghindari sisa desimal.
+                const remaining = Math.max(0, Math.floor((Math.round(endTime) - Date.now()) / 1000));
+                renderCountdown(prefix, remaining);
+
+                if (remaining <= 0) {
+                    clearInterval(tickId);
                 }
-                const days = Math.floor(remainingSeconds / (24 * 3600));
-                const hours = Math.floor((remainingSeconds % (24 * 3600)) / 3600);
-                const minutes = Math.floor((remainingSeconds % 3600) / 60);
-                const seconds = remainingSeconds % 60;
-
-                const daysEl = document.getElementById('countdownDays');
-                const hoursEl = document.getElementById('countdownHours');
-                const minutesEl = document.getElementById('countdownMinutes');
-                const secondsEl = document.getElementById('countdownSeconds');
-
-                if (daysEl) daysEl.textContent = String(days).padStart(2, '0');
-                if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
-                if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
-                if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
-                remainingSeconds--;
             }
 
-            updateCountdown();
-            countdownInterval = setInterval(updateCountdown, 1000);
+            tick();
+            tickId = setInterval(tick, 1000);
+            countdownIntervals.push(tickId);
+        }
+
+        // Countdown kartu utama "Jadwal Berikutnya"
+        window.startCountdownTimer = function() {
+            if (!waktuTungguDetik || waktuTungguDetik <= 0) return;
+            startCountdownTicker('', Date.now() + waktuTungguDetik * 1000);
         };
 
         window.addEventListener('beforeunload', function() {
-            if (countdownInterval) clearInterval(countdownInterval);
+            countdownIntervals.forEach(function(interval) {
+                clearInterval(interval);
+            });
             if (realtimeClockInterval) clearInterval(realtimeClockInterval);
         });
     </script>
