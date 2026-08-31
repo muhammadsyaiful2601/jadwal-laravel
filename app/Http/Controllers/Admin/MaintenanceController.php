@@ -89,7 +89,17 @@ class MaintenanceController extends Controller
             'maintenance_message' => 'required|string|min:10',
         ]);
 
-        $message = $request->input('maintenance_message');
+        $message = trim($request->input('maintenance_message'));
+
+        if (mb_strlen($message) < 10) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => ['maintenance_message' => ['Pesan maintenance minimal 10 karakter.']]
+                ], 422);
+            }
+            return back()->with('error', 'Pesan maintenance minimal 10 karakter.')->withInput();
+        }
 
         // Update setting
         DB::table('settings')->updateOrInsert(
@@ -109,6 +119,13 @@ class MaintenanceController extends Controller
             'user_agent' => $request->userAgent(),
             'created_at' => now(),
         ]);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pesan maintenance berhasil diperbarui!'
+            ]);
+        }
 
         return redirect('/admin/maintenance')->with('success', 'Pesan maintenance berhasil diperbarui!');
     }

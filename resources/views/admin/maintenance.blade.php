@@ -695,6 +695,50 @@
                             @endif
                         </div>
                     </form>
+
+                    <hr class="my-4">
+
+                    <h5 class="mb-3" style="font-weight: 700; font-size: 1.125rem; text-transform: uppercase;">
+                        <i class="fas fa-comment-dots me-2"></i>Pesan Maintenance
+                    </h5>
+                    <p style="font-size: 0.875rem; color: var(--nb-dark); margin-bottom: 16px; font-weight: 500;">
+                        Pesan ini akan <strong>tampil di halaman landing page</strong> ketika mode maintenance
+                        diaktifkan (minimal 10 karakter).</p>
+
+                    <form method="POST" action="{{ url('/admin/maintenance/update-message') }}" id="messageForm">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label">Isi Pesan</label>
+                            <textarea name="maintenance_message" id="maintenanceMessageInput" class="form-control"
+                                rows="4" minlength="10" required
+                                placeholder="Contoh: Sistem sedang dalam perbaikan untuk peningkatan layanan. Mohon maaf atas ketidaknyamanannya."
+                                @if (!$superadminVerified) disabled @endif>{{ $currentMessage }}</textarea>
+                            <div class="d-flex justify-content-between mt-1">
+                                <small style="color: var(--nb-dark); opacity: 0.7;">
+                                    <i class="fas fa-eye me-1"></i> Preview di landing page:
+                                </small>
+                                <small style="color: var(--nb-dark); opacity: 0.7;">
+                                    <span id="messageCharCount">0</span> karakter
+                                </small>
+                            </div>
+                            <div id="messagePreview"
+                                style="margin-top: 10px; padding: 12px 16px; background: var(--nb-yellow, #FFE66D); border: 2px solid var(--nb-black, #000); border-radius: 8px; font-weight: 600; font-size: 0.875rem; color: var(--nb-black, #000);">
+                                {{ $currentMessage }}
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            @if ($superadminVerified)
+                                <button type="submit" class="btn btn-primary-custom" id="saveMessage">
+                                    <i class="fas fa-save me-1"></i> Simpan Pesan
+                                </button>
+                            @else
+                                <button type="button" class="btn btn-primary-custom" disabled>
+                                    <i class="fas fa-save me-1"></i> Simpan Pesan
+                                </button>
+                            @endif
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -736,6 +780,42 @@
                     location.reload();
                 }).fail(function() {
                     alert('Gagal menyimpan pengaturan');
+                }).always(function() {
+                    btn.prop('disabled', false).html(originalText);
+                });
+            });
+
+            // === Form Pesan Maintenance ===
+            var msgInput = $('#maintenanceMessageInput');
+            var msgPreview = $('#messagePreview');
+            var msgCount = $('#messageCharCount');
+
+            function updateMessagePreview() {
+                var text = msgInput.val().trim();
+                msgCount.text(msgInput.val().length);
+                msgPreview.text(text.length > 0 ? text : 'Pesan maintenance akan tampil di sini...');
+            }
+            updateMessagePreview();
+            msgInput.on('input', updateMessagePreview);
+
+            $('#messageForm').on('submit', function(e) {
+                e.preventDefault();
+                var msg = msgInput.val().trim();
+                if (msg.length < 10) {
+                    alert('Pesan maintenance minimal 10 karakter.');
+                    return;
+                }
+                var btn = $('#saveMessage');
+                var originalText = btn.html();
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i> Menyimpan...');
+
+                $.post($(this).attr('action'), $(this).serialize(), function(resp) {
+                    alert('Pesan maintenance berhasil disimpan dan akan tampil di landing page.');
+                }).fail(function(xhr) {
+                    var msg = xhr.responseJSON && xhr.responseJSON.errors ?
+                        Object.values(xhr.responseJSON.errors).flat().join('\n') :
+                        'Gagal menyimpan pesan maintenance.';
+                    alert(msg);
                 }).always(function() {
                     btn.prop('disabled', false).html(originalText);
                 });

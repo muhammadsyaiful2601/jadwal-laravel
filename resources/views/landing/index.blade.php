@@ -2964,7 +2964,7 @@
                     <i class="fas fa-tools"></i>
                 </div>
                 <h2>Sistem Sedang Dalam Perawatan</h2>
-                <p class="maintenance-message">{{ $maintenanceMessage }}</p>
+                <p class="maintenance-message">{{ $maintenanceMessage && trim($maintenanceMessage) !== '' ? $maintenanceMessage : 'Sistem sedang dalam perbaikan untuk peningkatan layanan. Mohon maaf atas ketidaknyamanannya.' }}</p>
                 <div class="maintenance-info">
                     <i class="fas fa-clock me-2"></i>
                     <span>{{ now()->format('d F Y, H:i') }}</span>
