@@ -2765,60 +2765,6 @@
             background: var(--nb-blue) !important;
         }
 
-        /* =============================================
-               SMOOTH SCROLL INDICATOR
-               ============================================= */
-        .scroll-indicator {
-            text-align: center;
-            padding: 20px 0 10px;
-            animation: bounceIndicator 2s ease-in-out infinite;
-        }
-
-        .scroll-indicator span {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--nb-dark);
-            opacity: 0.6;
-            transition: opacity 0.3s ease;
-        }
-
-        .scroll-indicator span i {
-            font-size: 1rem;
-            animation: bounceArrow 2s ease-in-out infinite;
-        }
-
-        @keyframes bounceIndicator {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(6px);
-            }
-        }
-
-        @keyframes bounceArrow {
-
-            0%,
-            100% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-
-            50% {
-                transform: translateY(4px);
-                opacity: 0.5;
-            }
-        }
-
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -3136,6 +3082,30 @@
                     </div>
                 @endif
             </div>
+            <div class="mb-4">
+                <h6 class="mb-3"><i class="fas fa-door-open me-2"></i> Pilih Ruangan</h6>
+                @if (!empty($ruangList))
+                    <div class="filter-pills" id="filter-ruang-mobile">
+                        @foreach ($ruangList as $ruang)
+                            <button
+                                class="filter-pill {{ !$tampilSemuaRuang && $ruangSelected == $ruang ? 'active' : '' }}"
+                                data-type="ruang" data-value="{{ $ruang }}" onclick="applyFilter(this)">
+                                <i class="fas fa-door-open"></i> {{ $ruang }}
+                            </button>
+                        @endforeach
+                        <button class="filter-pill {{ $tampilSemuaRuang ? 'active' : '' }}" data-type="semua_ruang"
+                            data-value="1" onclick="applyFilter(this)">
+                            <i class="fas fa-layer-group"></i> Semua Ruangan
+                        </button>
+                    </div>
+                @else
+                    <div class="alert alert-warning"
+                        style="background: var(--nb-orange); border: var(--nb-border); border-radius: var(--nb-radius-sm); color: var(--nb-black); font-weight: 600;">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Tidak ada ruangan tersedia
+                    </div>
+                @endif
+            </div>
         </div>
         <div class="sidebar-footer">
             <button class="btn btn-primary-action btn-filter-action w-100 mb-2" onclick="handleShowAllSchedule()">
@@ -3219,6 +3189,34 @@
                     </div>
                 @endif
             </div>
+
+            <div class="filter-group">
+                <div class="filter-label">
+                    <i class="fas fa-door-open"></i>
+                    Pilih Ruangan
+                </div>
+                @if (!empty($ruangList))
+                    <div class="filter-pills" id="filter-ruang-desktop">
+                        @foreach ($ruangList as $ruang)
+                            <button
+                                class="filter-pill {{ !$tampilSemuaRuang && $ruangSelected == $ruang ? 'active' : '' }}"
+                                data-type="ruang" data-value="{{ $ruang }}" onclick="applyFilter(this)">
+                                <i class="fas fa-door-open"></i> {{ $ruang }}
+                            </button>
+                        @endforeach
+                        <button class="filter-pill {{ $tampilSemuaRuang ? 'active' : '' }}" data-type="semua_ruang"
+                            data-value="1" onclick="applyFilter(this)">
+                            <i class="fas fa-layer-group"></i> Semua Ruangan
+                        </button>
+                    </div>
+                @else
+                    <div class="alert alert-warning"
+                        style="background: var(--nb-orange); border: var(--nb-border); border-radius: var(--nb-radius-sm); color: var(--nb-black); font-weight: 600;">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Tidak ada ruangan tersedia untuk semester {{ $semesterAktif }}
+                    </div>
+                @endif
+            </div>
         </section>
 
         <!-- Running Text / Marquee -->
@@ -3234,15 +3232,6 @@
                 </marquee>
             </div>
         @endif
-
-        <!-- Scroll Indicator -->
-        <div class="scroll-indicator reveal">
-            <span>
-                <i class="fas fa-chevron-down"></i>
-                Scroll untuk jadwal lengkap
-                <i class="fas fa-chevron-down"></i>
-            </span>
-        </div>
 
         <!-- Jadwal Terdekat Section -->
         <div class="current-next-section" id="currentNextSection">
@@ -4066,6 +4055,14 @@
                 if (!params.has('hari')) {
                     params.set('hari', currentDay);
                 }
+            } else if (type === 'ruang') {
+                // Specific room selected
+                params.delete('semua_ruang');
+                params.set('ruang', value);
+            } else if (type === 'semua_ruang') {
+                // All rooms selected
+                params.set('semua_ruang', '1');
+                params.delete('ruang');
             }
 
             window.location.href = '?' + params.toString();

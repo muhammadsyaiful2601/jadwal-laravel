@@ -131,11 +131,35 @@ class LandingPageController extends Controller
         }
         sort($kelasList);
 
+        // Get unique room list from schedules in the active semester
+        $ruangList = Schedule::activeSemester($tahunAkademik, $semesterAktif)
+            ->select('ruang')
+            ->distinct()
+            ->orderBy('ruang')
+            ->pluck('ruang')
+            ->filter(function ($r) {
+                return (string) $r !== '';
+            })
+            ->toArray();
+        if (empty($ruangList)) {
+            $ruangList = Schedule::select('ruang')
+                ->distinct()
+                ->orderBy('ruang')
+                ->pluck('ruang')
+                ->filter(function ($r) {
+                    return (string) $r !== '';
+                })
+                ->toArray();
+        }
+        sort($ruangList);
+
         // Determine selected day and class from request
         $hariSelected = $request->input('hari', now()->dayOfWeekIso);
         $kelasSelected = $request->input('kelas', $kelasList[0] ?? 'A1');
         $tampilSemuaHari = $request->boolean('semua_hari');
         $tampilSemuaKelas = $request->boolean('semua_kelas');
+        $ruangSelected = $request->input('ruang');
+        $tampilSemuaRuang = $request->boolean('semua_ruang');
 
         // If today is weekend, default to Monday
         $hariSekarang = now()->dayOfWeekIso; // 1=Monday, 7=Sunday
@@ -181,6 +205,13 @@ class LandingPageController extends Controller
 
         $jadwal = $query->get();
 
+        // Room filter (applies on top of day/class filter)
+        if (!$tampilSemuaRuang && !empty($ruangSelected)) {
+            $jadwal = $jadwal->filter(function ($s) use ($ruangSelected) {
+                return strcasecmp((string) $s->ruang, (string) $ruangSelected) === 0;
+            })->values();
+        }
+
         // Merge parallel schedules into the displayed list (shared schedule among several classes).
         // A parallel schedule is derived from an existing base schedule (schedule_id -> schedules).
         // It applies to an additional class when that class is included in its comma-separated `kelas`.
@@ -206,6 +237,12 @@ class LandingPageController extends Controller
                 if (!in_array(strtoupper($kelasSelected), $pClasses)) {
                     continue;
                 }
+            }
+
+            // Room filter
+            if (!$tampilSemuaRuang && !empty($ruangSelected) &&
+                strcasecmp((string) $p->ruang, (string) $ruangSelected) !== 0) {
+                continue;
             }
 
             $sched = new Schedule();
@@ -379,6 +416,9 @@ class LandingPageController extends Controller
             'runningTextBgColor',
             'allSemesters',
             'kelasList',
+            'ruangList',
+            'ruangSelected',
+            'tampilSemuaRuang',
             'hariSelected',
             'kelasSelected',
             'tampilSemuaHari',
