@@ -597,15 +597,26 @@
 </div>
 
 <script>
+    let notificationTimer = null;
     function showNotification(type, message) {
         const container = document.getElementById('notification-container');
+        if (!container) return;
         const alertClass = type === 'success' ? 'alert-flash success' : 'alert-flash error';
         const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+        // Pastikan container terlihat kembali (bisa saja sebelumnya disembunyikan
+        // oleh notifikasi sebelumnya, sehingga pesan berikutnya tidak muncul)
+        container.style.display = 'block';
+        container.style.opacity = '1';
+        container.style.transition = '';
         container.innerHTML = '<div class="' + alertClass + '"><i class="fas ' + icon + '"></i> ' + message + '</div>';
-        setTimeout(function() {
+        if (notificationTimer) {
+            clearTimeout(notificationTimer);
+            clearTimeout(notificationTimer._inner);
+        }
+        notificationTimer = setTimeout(function() {
             container.style.transition = 'opacity 0.5s ease';
             container.style.opacity = '0';
-            setTimeout(() => {
+            notificationTimer._inner = setTimeout(() => {
                 container.style.display = 'none';
             }, 500);
         }, 5000);

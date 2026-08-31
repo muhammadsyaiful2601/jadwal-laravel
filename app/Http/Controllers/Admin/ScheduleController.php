@@ -110,6 +110,14 @@ class ScheduleController extends Controller
 
                 $waktu = $request->input('waktu_mulai') . " - " . $request->input('waktu_selesai');
 
+                // Validasi urutan waktu: jam selesai harus lebih besar dari jam mulai
+                if (strtotime($request->input('waktu_selesai')) <= strtotime($request->input('waktu_mulai'))) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Waktu selesai (' . $request->input('waktu_selesai') . ') harus lebih besar dari waktu mulai (' . $request->input('waktu_mulai') . ').'
+                    ]);
+                }
+
                 // Check conflicts
                 $conflicts = $this->checkScheduleConflict(
                     $request->input('kelas'),
@@ -188,6 +196,11 @@ class ScheduleController extends Controller
 
         $waktu = $request->input('waktu_mulai') . " - " . $request->input('waktu_selesai');
 
+        // Validasi urutan waktu: jam selesai harus lebih besar dari jam mulai
+        if (strtotime($request->input('waktu_selesai')) <= strtotime($request->input('waktu_mulai'))) {
+            return back()->with('error', 'Waktu selesai harus lebih besar dari waktu mulai.')->withInput();
+        }
+
         $conflicts = $this->checkScheduleConflict(
             $request->input('kelas'),
             $request->input('hari'),
@@ -253,6 +266,14 @@ class ScheduleController extends Controller
                 ]);
 
                 $waktu = $request->input('waktu_mulai') . " - " . $request->input('waktu_selesai');
+
+                // Validasi urutan waktu: jam selesai harus lebih besar dari jam mulai
+                if (strtotime($request->input('waktu_selesai')) <= strtotime($request->input('waktu_mulai'))) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Waktu selesai (' . $request->input('waktu_selesai') . ') harus lebih besar dari waktu mulai (' . $request->input('waktu_mulai') . ').'
+                    ]);
+                }
 
                 // Check conflicts (excluding current schedule)
                 $conflicts = $this->checkScheduleConflict(
@@ -322,6 +343,11 @@ class ScheduleController extends Controller
         ]);
 
         $waktu = $request->input('waktu_mulai') . " - " . $request->input('waktu_selesai');
+
+        // Validasi urutan waktu: jam selesai harus lebih besar dari jam mulai
+        if (strtotime($request->input('waktu_selesai')) <= strtotime($request->input('waktu_mulai'))) {
+            return back()->with('error', 'Waktu selesai harus lebih besar dari waktu mulai.')->withInput();
+        }
 
         $conflicts = $this->checkScheduleConflict(
             $request->input('kelas'),
@@ -491,6 +517,12 @@ class ScheduleController extends Controller
                         continue;
                     }
 
+                    // Validasi urutan waktu: jam selesai harus lebih besar dari jam mulai
+                    if (strtotime($waktuSelesai) <= strtotime($waktuMulai)) {
+                        $conflictMessages[] = "Data jadwal ke-" . ($index + 1) . " ($mataKuliah): Waktu selesai ($waktuSelesai) harus lebih besar dari waktu mulai ($waktuMulai)";
+                        continue;
+                    }
+
                     // Check conflicts
                     $conflicts = $this->checkScheduleConflict(
                         $kelas,
@@ -599,6 +631,12 @@ class ScheduleController extends Controller
             // Validate jam_ke range
             if ($jamKe < 1 || $jamKe > 10) {
                 $conflictMessages[] = "Data jadwal ke-" . ($index + 1) . ": Jam ke-$jamKe tidak valid (harus 1-10)";
+                continue;
+            }
+
+            // Validasi urutan waktu: jam selesai harus lebih besar dari jam mulai
+            if (strtotime($waktuSelesai) <= strtotime($waktuMulai)) {
+                $conflictMessages[] = "Data jadwal ke-" . ($index + 1) . " ($mataKuliah): Waktu selesai ($waktuSelesai) harus lebih besar dari waktu mulai ($waktuMulai)";
                 continue;
             }
 
