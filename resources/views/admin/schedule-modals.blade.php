@@ -691,6 +691,74 @@
                 scrollTop: template.offset().top - 100
             }, 300);
         });
+        // Helper: tambah menit ke waktu format "HH:MM" (menangani lewat tengah hari)
+        function addMinutes(timeStr, minutes) {
+            var match = /^(\d{1,2}):(\d{2})$/.exec(timeStr);
+            if (!match) return null;
+            var total = parseInt(match[1], 10) * 60 + parseInt(match[2], 10) + minutes;
+            total = total % (24 * 60);
+            var h = Math.floor(total / 60), m = total % 60;
+            return (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m);
+        }
+
+        // Salin form terakhir, semua nilai dipertahankan (termasuk hari & ruang) kecuali jam_ke yang bertambah 1
+
+        // Salin form terakhir, semua nilai dipertahankan (termasuk hari & ruang) kecuali jam_ke yang bertambah 1
+        $('#btnCopyLastSchedule').click(function(e) {
+            e.preventDefault();
+            var container = $('#bulkSchedulesContainer');
+            var items = $('.bulk-schedule-item');
+            var last = items.last();
+            var lastJamKe = parseInt(last.find('input[name$="[jam_ke]"]').val(), 10) || 0;
+
+            if (lastJamKe >= 10) {
+                showNotification('error',
+                    'Jam ke sudah mencapai batas maksimal (10). Tidak bisa menyalin form lagi.');
+                return;
+            }
+
+            var template = last.clone();
+            template.attr('data-index', bulkIndex);
+            template.find('.item-number').text(bulkIndex + 1);
+            // Reindex nama field pada salinan
+            template.find('input, select').each(function() {
+                var name = $(this).attr('name');
+                if (name && name.indexOf('schedules[') >= 0) {
+                    $(this).attr('name', name.replace(/schedules\[\d+\]/, 'schedules[' +
+                        bulkIndex + ']'));
+                }
+            });
+            // Salin nilai setiap field secara eksplisit (termasuk select: hari, ruang)
+            last.find('input, select').each(function() {
+                var name = $(this).attr('name');
+                if (!name) return;
+                var suffix = name.replace(/^schedules\[\d+\]/, '');
+                var copied = template.find('[name="schedules[' + bulkIndex + ']' + suffix + '"]');
+                if (copied.length) {
+                    copied.val($(this).val());
+                }
+            });
+            // Naikkan jam_ke sebanyak 1 dari form sebelumnya
+            template.find('input[name$="[jam_ke]"]').val(lastJamKe + 1);
+            // Geser waktu: jam mulai = jam selesai sebelumnya, jam selesai = mulai + 50 menit
+            var lastMulai = last.find('input[name$="[waktu_mulai]"]').val();
+            var lastSelesai = last.find('input[name$="[waktu_selesai]"]').val();
+            if (lastMulai && lastSelesai) {
+                var newSelesai = addMinutes(lastSelesai, 50);
+                if (newSelesai) {
+                    template.find('input[name$="[waktu_mulai]"]').val(lastSelesai);
+                    template.find('input[name$="[waktu_selesai]"]').val(newSelesai);
+                }
+            }
+            var removeBtn =
+                '<button type="button" class="btn-remove-item" onclick="removeBulkItem(this)"><i class="fas fa-trash-alt"></i> Hapus</button>';
+            template.append(removeBtn);
+            container.append(template);
+            bulkIndex++;
+            $('html, body').animate({
+                scrollTop: template.offset().top - 100
+            }, 300);
+        });
 
         window.removeBulkItem = function(btn) {
             if (confirm('Hapus jadwal ini?')) {
@@ -912,10 +980,16 @@
                         </div>
                     </div>
 
-                    <button type="button" class="btn-outline-secondary-custom" id="btnAddMoreSchedule"
-                        style="width:100%;justify-content:center;margin-top:10px;">
-                        <i class="fas fa-plus"></i> Tambah Form
-                    </button>
+                    <div class="d-flex flex-wrap gap-2" style="margin-top:10px;">
+                        <button type="button" class="btn-outline-secondary-custom" id="btnAddMoreSchedule"
+                            style="flex:1;justify-content:center;">
+                            <i class="fas fa-plus"></i> Tambah Form (Kosong)
+                        </button>
+                        <button type="button" class="btn-outline-secondary-custom" id="btnCopyLastSchedule"
+                            style="flex:1;justify-content:center;">
+                            <i class="fas fa-copy"></i> Salin Form Sebelumnya
+                        </button>
+                    </div>
                 </div>
                 <div class="modal-footer-modern">
                     <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">
