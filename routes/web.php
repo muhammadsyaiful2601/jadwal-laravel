@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MaintenanceController;
+use App\Http\Controllers\Admin\ParallelScheduleController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\RoomController;
 use App\Http\Controllers\Admin\ScheduleController;
@@ -39,6 +40,13 @@ Route::post('/admin/manage-schedule/update/{id}', [ScheduleController::class, 'u
 Route::get('/admin/manage-schedule/delete/{id}', [ScheduleController::class, 'destroy']);
 Route::post('/admin/manage-schedule/delete-all', [ScheduleController::class, 'destroyAll']);
 Route::post('/admin/manage-schedule/store-bulk', [ScheduleController::class, 'storeBulk']);
+
+// Parallel schedule routes
+Route::get('/admin/manage-parallel', [ParallelScheduleController::class, 'index']);
+Route::post('/admin/manage-parallel/store', [ParallelScheduleController::class, 'store']);
+Route::get('/admin/manage-parallel/delete/{id}', [ParallelScheduleController::class, 'destroy']);
+Route::post('/admin/manage-parallel/delete-all', [ParallelScheduleController::class, 'destroyAll']);
+Route::post('/admin/manage-parallel/remove-class', [ParallelScheduleController::class, 'removeClass']);
 
 // Room routes
 Route::get('/admin/manage-rooms', [RoomController::class, 'index']);

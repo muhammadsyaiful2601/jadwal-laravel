@@ -1368,10 +1368,22 @@
                                 <tbody>
                                     @php $no = 1; @endphp
                                     @foreach ($schedules as $schedule)
+                                        @php
+                                            $parallelKelas = $parallelMap[$schedule->id] ?? [];
+                                        @endphp
                                         <tr>
                                             <td style="color:var(--nb-dark); font-weight:600;">{{ $no++ }}
                                             </td>
-                                            <td><span class="class-badge">{{ $schedule->kelas }}</span></td>
+                                            <td>
+                                                <span class="class-badge">{{ $schedule->kelas }}</span>
+                                                @if (count($parallelKelas) > 0)
+                                                    <span class="class-badge"
+                                                        style="background:var(--nb-orange);" title="Kelas paralel">
+                                                        <i class="fas fa-layer-group"></i>
+                                                        {{ count($parallelKelas) }} kelas
+                                                    </span>
+                                                @endif
+                                            </td>
                                             <td style="font-weight:600;">{{ $schedule->hari }}</td>
                                             <td style="font-weight:600;">{{ $schedule->jam_ke }}</td>
                                             <td><span class="time-slot-badge">{{ $schedule->waktu }}</span></td>
@@ -1386,6 +1398,12 @@
                                             <td style="font-weight:600;">{{ $schedule->tahun_akademik }}</td>
                                             <td>
                                                 <div class="action-group">
+                                                    <button type="button" class="action-btn btn-parallel"
+                                                        data-schedule='<?php echo json_encode((array) $schedule, JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT); ?>'
+                                                        data-kelas="{{ implode(', ', $parallelKelas) }}"
+                                                        title="Tambah Kelas Paralel" style="color:var(--nb-orange);">
+                                                        <i class="fas fa-layer-group"></i>
+                                                    </button>
                                                     <button class="action-btn"
                                                         onclick='editSchedule(@json($schedule))'
                                                         title="Edit">

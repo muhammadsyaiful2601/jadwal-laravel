@@ -113,6 +113,24 @@ class LandingPageController extends Controller
                 ->toArray();
         }
 
+        // Also include classes from parallel schedules (shared schedule among several classes)
+        $kelasListUpper = array_map('strtoupper', $kelasList);
+        $parallelKelasRows = DB::table('parallel_schedules')
+            ->join('schedules', 'parallel_schedules.schedule_id', '=', 'schedules.id')
+            ->where('schedules.semester', $semesterAktif)
+            ->where('schedules.tahun_akademik', $tahunAkademik)
+            ->pluck('parallel_schedules.kelas');
+        foreach ($parallelKelasRows as $pRow) {
+            foreach (explode(',', (string) $pRow) as $pKelas) {
+                $pKelas = strtoupper(trim($pKelas));
+                if ($pKelas !== '' && !in_array($pKelas, $kelasListUpper)) {
+                    $kelasList[] = $pKelas;
+                    $kelasListUpper[] = $pKelas;
+                }
+            }
+        }
+        sort($kelasList);
+
         // Determine selected day and class from request
         $hariSelected = $request->input('hari', now()->dayOfWeekIso);
         $kelasSelected = $request->input('kelas', $kelasList[0] ?? 'A1');
@@ -162,6 +180,48 @@ class LandingPageController extends Controller
         }
 
         $jadwal = $query->get();
+
+        // Merge parallel schedules into the displayed list (shared schedule among several classes).
+        // A parallel schedule is derived from an existing base schedule (schedule_id -> schedules).
+        // It applies to an additional class when that class is included in its comma-separated `kelas`.
+        $parallelQuery = DB::table('parallel_schedules')
+            ->join('schedules', 'parallel_schedules.schedule_id', '=', 'schedules.id')
+            ->select('parallel_schedules.id', 'parallel_schedules.schedule_id', 'parallel_schedules.kelas as parallel_kelas', 'schedules.*')
+            ->where('schedules.semester', $semesterAktif)
+            ->where('schedules.tahun_akademik', $tahunAkademik)
+            ->orderByRaw("FIELD(schedules.hari, 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT')", [])
+            ->orderBy('schedules.jam_ke');
+
+        if (!$tampilSemuaHari) {
+            $parallelQuery->where('schedules.hari', $hariTeks);
+        }
+
+        $parallelSchedules = $parallelQuery->get();
+
+        foreach ($parallelSchedules as $p) {
+            // When filtering by a specific class, only show the parallel schedule
+            // if that class is among its parallel classes.
+            if (!$tampilSemuaKelas) {
+                $pClasses = array_map('strtoupper', array_map('trim', explode(',', (string) $p->parallel_kelas)));
+                if (!in_array(strtoupper($kelasSelected), $pClasses)) {
+                    continue;
+                }
+            }
+
+            $sched = new Schedule();
+            $sched->id = 'P' . $p->id;
+            $sched->kelas = $p->parallel_kelas; // menunjukkan bahwa jadwal ini dipakai bersama
+            $sched->hari = $p->hari;
+            $sched->jam_ke = (int) $p->jam_ke;
+            $sched->waktu = $p->waktu;
+            $sched->mata_kuliah = $p->mata_kuliah;
+            $sched->dosen = $p->dosen;
+            $sched->ruang = $p->ruang;
+            $sched->foto = $p->foto;
+            $sched->semester = $p->semester;
+            $sched->tahun_akademik = $p->tahun_akademik;
+            $jadwal->push($sched);
+        }
 
         // Group schedules by day (for "all days" view)
         $jadwalPerHari = [];

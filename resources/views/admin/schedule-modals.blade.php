@@ -1024,3 +1024,327 @@
         </div>
     </div>
 </div>
+
+<style>
+    .parallel-modal .info-box {
+        background: var(--nb-offwhite);
+        border: var(--nb-border);
+        border-radius: var(--nb-radius-sm);
+        padding: 14px 16px;
+        margin-bottom: 18px;
+        box-shadow: var(--nb-shadow-sm);
+    }
+
+    .parallel-modal .info-box .info-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .parallel-modal .info-box .info-row:last-child {
+        margin-bottom: 0;
+    }
+
+    .parallel-modal .info-box .info-label {
+        min-width: 110px;
+        color: var(--nb-dark);
+        font-weight: 700;
+    }
+
+    .parallel-modal .current-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--nb-orange);
+        color: var(--nb-black);
+        border: 2px solid var(--nb-black);
+        border-radius: 6px;
+        padding: 5px 12px;
+        font-family: var(--font-display);
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin: 4px;
+        box-shadow: var(--nb-shadow-sm);
+    }
+
+    .parallel-modal .current-badge .remove-badge {
+        background: var(--nb-red);
+        color: var(--nb-white);
+        border: 2px solid var(--nb-black);
+        border-radius: 4px;
+        width: 20px;
+        height: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.65rem;
+        cursor: pointer;
+        line-height: 1;
+    }
+
+    .parallel-modal .current-badge .remove-badge:hover {
+        background: var(--nb-black);
+        color: var(--nb-white);
+    }
+</style>
+
+<!-- Parallel Add Modal (tambahkan kelas pada jadwal yang sudah ada) -->
+<div class="modal fade" id="parallelAddModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content modal-content-modern parallel-modal">
+            <div class="modal-header-modern d-flex align-items-center justify-content-between">
+                <h5 class="modal-title">
+                    <i class="fas fa-layer-group me-2"></i> Kelas Paralel Jadwal
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body-modern">
+                <div class="modal-section-title">
+                    <i class="fas fa-info-circle"></i> Jadwal Dasar
+                </div>
+                <div class="info-box">
+                    <div class="info-row">
+                        <span class="info-label">Kelas Utama</span>
+                        <span id="parallel_base_kelas"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Mata Kuliah</span>
+                        <span id="parallel_mata_kuliah"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Hari / Jam</span>
+                        <span id="parallel_hari_jam"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Waktu</span>
+                        <span id="parallel_waktu"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Dosen / Ruang</span>
+                        <span id="parallel_dosen_ruang"></span>
+                    </div>
+                </div>
+
+                <div class="modal-section-title" style="margin-top:18px;">
+                    <i class="fas fa-users"></i> Kelas Paralel Saat Ini
+                </div>
+                <div id="parallelCurrentList" class="mb-3">
+                    <em style="color:var(--nb-dark);">Belum ada kelas paralel.</em>
+                </div>
+
+                <hr class="form-divider">
+
+                <div class="modal-section-title">
+                    <i class="fas fa-plus-circle"></i> Tambah Kelas Paralel
+                </div>
+                <form id="parallelAddForm" method="POST" action="{{ url('/admin/manage-parallel/store') }}">
+                    @csrf
+                    <input type="hidden" name="schedule_id" id="parallel_schedule_id">
+                    <input type="hidden" name="kelas" id="parallel_kelas_input">
+                    <div class="input-icon-wrapper">
+                        <label class="form-label-custom">Kelas Tambahan <small style="font-weight:400;">(dari database)</small></label>
+                        <div id="parallelKelasOptions" class="form-control-custom" style="max-height:180px;overflow-y:auto;padding:10px;">
+                            <em style="color:var(--nb-dark);">Memuat daftar kelas...</em>
+                        </div>
+                    </div>
+                    <div class="form-hint" style="margin-top:8px;">
+                        <i class="fas fa-shield-alt"></i> Sistem otomatis menolak jika kelas tambahan sudah memiliki
+                        jadwal yang bentrok.
+                    </div>
+                    <div class="modal-footer-modern" style="margin-top:20px;padding:0;">
+                        <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i> Tutup
+                        </button>
+                        <button type="submit" class="btn-modal-primary" id="btnSaveParallel">
+                            <i class="fas fa-plus me-1"></i> Tambah Kelas
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var kelasDbList = @json($kelasList ?? []);
+
+    function openParallelModal(schedule, currentKelas) {
+        document.getElementById('parallel_schedule_id').value = schedule.id;
+        document.getElementById('parallel_base_kelas').textContent = schedule.kelas || '-';
+        document.getElementById('parallel_mata_kuliah').textContent = schedule.mata_kuliah || '-';
+        document.getElementById('parallel_hari_jam').textContent = (schedule.hari || '-') + ' | Jam ke-' + (schedule
+            .jam_ke || '-');
+        document.getElementById('parallel_waktu').textContent = schedule.waktu || '-';
+        document.getElementById('parallel_dosen_ruang').textContent = (schedule.dosen || '-') + ' | ' + (schedule
+            .ruang || '-');
+        renderParallelKelasOptions(schedule, currentKelas || []);
+        renderParallelList(schedule.id, currentKelas || [], schedule);
+        var modal = new bootstrap.Modal(document.getElementById('parallelAddModal'));
+        modal.show();
+    }
+
+    function renderParallelKelasOptions(schedule, currentKelas) {
+        var container = document.getElementById('parallelKelasOptions');
+        var baseKelas = String(schedule.kelas || '').trim();
+        var excluded = [baseKelas.toLowerCase()].concat(
+            (currentKelas || []).map(function(k) { return String(k).trim().toLowerCase(); })
+        );
+        var available = (kelasDbList || []).filter(function(k) {
+            return excluded.indexOf(String(k).trim().toLowerCase()) === -1;
+        });
+        if (available.length === 0) {
+            container.innerHTML = '<em style="color:var(--nb-dark);">Tidak ada kelas lain yang tersedia di database.</em>';
+            return;
+        }
+        var html = '';
+        available.forEach(function(k, i) {
+            var safeK = String(k).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            html += '<label style="display:flex;align-items:center;gap:8px;padding:4px 2px;cursor:pointer;">' +
+                '<input type="checkbox" class="parallel-kelas-check form-check-input mt-0" value="' + safeK + '">' +
+                '<span style="font-weight:600;">' + safeK + '</span></label>';
+        });
+        container.innerHTML = html;
+    }
+
+    function syncParallelKelasInput() {
+        var selected = [];
+        document.querySelectorAll('#parallelKelasOptions .parallel-kelas-check:checked').forEach(function(cb) {
+            selected.push(cb.value);
+        });
+        document.getElementById('parallel_kelas_input').value = selected.join(', ');
+        return selected;
+    }
+
+    document.addEventListener('change', function(e) {
+        if (e.target && e.target.classList && e.target.classList.contains('parallel-kelas-check')) {
+            syncParallelKelasInput();
+        }
+    });
+
+    function renderParallelList(scheduleId, list, schedule) {
+        var container = document.getElementById('parallelCurrentList');
+        if (!list || list.length === 0) {
+            container.innerHTML = '<em style="color:var(--nb-dark);">Belum ada kelas paralel.</em>';
+            return;
+        }
+        var html = '';
+        list.forEach(function(k) {
+            var safeK = String(k).replace(/'/g, "");
+            html += '<span class="current-badge">' + k +
+                '<span class="remove-badge" title="Hapus kelas ini" onclick="removeParallelClass(' + scheduleId + ', \'' +
+                safeK + '\')">×</span></span>';
+        });
+        container.innerHTML = html;
+    }
+
+    function removeParallelClass(scheduleId, kelas) {
+        if (!confirm('Hapus kelas ' + kelas + ' dari jadwal paralel ini?')) return;
+        $.ajax({
+            url: '{{ url('/admin/manage-parallel/remove-class') }}',
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                schedule_id: scheduleId,
+                kelas: kelas
+            },
+            success: function(response) {
+                if (response.success) {
+                    if (typeof showNotification === 'function') {
+                        showNotification('success', response.message);
+                    }
+                    setTimeout(function() {
+                        if (window.location.pathname.indexOf('/admin/manage-parallel') !== -1) {
+                            location.reload();
+                        } else {
+                            window.location.href = '{{ url('/admin/manage-parallel') }}';
+                        }
+                    }, 800);
+                } else {
+                    if (typeof showNotification === 'function') {
+                        showNotification('error', response.message);
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            },
+            error: function() {
+                if (typeof showNotification === 'function') {
+                    showNotification('error', 'Terjadi kesalahan.');
+                } else {
+                    alert('Terjadi kesalahan.');
+                }
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        // Delegated handler untuk tombol Paralel (aman terhadap re-render tabel)
+        $(document).on('click', '.btn-parallel', function() {
+            var schedule;
+            try {
+                schedule = JSON.parse($(this).attr('data-schedule'));
+            } catch (err) {
+                console.error('Data jadwal tidak valid:', err);
+                return;
+            }
+            var kelasStr = $(this).attr('data-kelas') || '';
+            var currentKelas = kelasStr.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+            openParallelModal(schedule, currentKelas);
+        });
+
+        $('#parallelAddForm').on('submit', function(e) {
+            e.preventDefault();
+            var selected = syncParallelKelasInput();
+            if (selected.length === 0) {
+                if (typeof showNotification === 'function') {
+                    showNotification('error', 'Pilih minimal satu kelas.');
+                } else {
+                    alert('Pilih minimal satu kelas.');
+                }
+                return;
+            }
+            var btn = $('#btnSaveParallel');
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i> Menyimpan...');
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        if (typeof showNotification === 'function') {
+                            showNotification('success', response.message);
+                        }
+                        $('#parallelAddModal').modal('hide');
+                        setTimeout(function() {
+                            if (window.location.pathname.indexOf('/admin/manage-parallel') !== -1) {
+                                location.reload();
+                            } else {
+                                window.location.href = '{{ url('/admin/manage-parallel') }}';
+                            }
+                        }, 1000);
+                    } else {
+                        if (typeof showNotification === 'function') {
+                            showNotification('error', response.message);
+                        } else {
+                            alert(response.message);
+                        }
+                    }
+                },
+                error: function(xhr) {
+                    var msg = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message :
+                        'Terjadi kesalahan.';
+                    if (typeof showNotification === 'function') {
+                        showNotification('error', msg);
+                    } else {
+                        alert(msg);
+                    }
+                },
+                complete: function() {
+                    btn.prop('disabled', false).html('<i class="fas fa-plus me-1"></i> Tambah Kelas');
+                }
+            });
+        });
+    });
+</script>

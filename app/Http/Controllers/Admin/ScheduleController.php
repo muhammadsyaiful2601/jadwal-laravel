@@ -53,6 +53,14 @@ class ScheduleController extends Controller
         // Get all distinct classes
         $kelasList = DB::table('schedules')->distinct()->pluck('kelas')->toArray();
 
+        // Map schedule_id => parallel classes (for the "Paralel" button/badge)
+        $parallelMap = DB::table('parallel_schedules')
+            ->pluck('kelas', 'schedule_id')
+            ->map(function ($kelas) {
+                return array_filter(array_map('trim', explode(',', (string) $kelas)));
+            })
+            ->toArray();
+
         // Prepare time slots for JavaScript
         $timeSlots = [];
         for ($i = 1; $i <= 10; $i++) {
@@ -64,6 +72,7 @@ class ScheduleController extends Controller
             'schedules',
             'rooms',
             'kelasList',
+            'parallelMap',
             'tahunList',
             'timeSlots',
             'filterTahun',
@@ -740,6 +749,31 @@ class ScheduleController extends Controller
 
             if ($startTime < $existingEnd && $endTime > $existingStart) {
                 $conflicts[] = "Dosen $dosen sudah mengajar kelas {$schedule->kelas} pada hari {$schedule->hari} jam {$schedule->jam_ke} ({$schedule->waktu})";
+            }
+        }
+
+        // Check parallel assignment conflict (same class included in a parallel schedule on overlapping time)
+        $parallelRows = DB::table('parallel_schedules')
+            ->join('schedules', 'parallel_schedules.schedule_id', '=', 'schedules.id')
+            ->where('schedules.hari', $hari)
+            ->where('schedules.semester', $semester)
+            ->where('schedules.tahun_akademik', $tahunAkademik)
+            ->where(function ($q) use ($kelas) {
+                $q->where('parallel_schedules.kelas', 'LIKE', '%' . $kelas . '%');
+            })
+            ->get(['parallel_schedules.kelas as pk', 'schedules.waktu as pw', 'schedules.jam_ke as pj', 'schedules.mata_kuliah as pm']);
+
+        foreach ($parallelRows as $p) {
+            $pClasses = \App\Models\ParallelSchedule::normalizeKelasList($p->pk);
+            if (!in_array($kelas, $pClasses)) {
+                continue;
+            }
+            list($existingMulai, $existingSelesai) = explode(' - ', $p->pw);
+            $existingStart = strtotime($existingMulai);
+            $existingEnd = strtotime($existingSelesai);
+
+            if ($startTime < $existingEnd && $endTime > $existingStart) {
+                $conflicts[] = "Kelas $kelas sudah dipakai jadwal paralel {$p->pm} hari $hari jam {$p->pj} ({$p->pw})";
             }
         }
 

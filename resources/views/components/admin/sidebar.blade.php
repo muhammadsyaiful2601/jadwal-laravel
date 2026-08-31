@@ -44,6 +44,10 @@
             href="{{ !$superadminVerified ? '#' : url('/admin/manage-schedule') }}">
             <i class="fas fa-calendar"></i> Kelola Jadwal
         </a>
+        <a class="nav-link {{ request()->is('admin/manage-parallel') ? 'active' : '' }} {{ !$superadminVerified ? 'disabled-link' : '' }}"
+            href="{{ !$superadminVerified ? '#' : url('/admin/manage-parallel') }}">
+            <i class="fas fa-layer-group"></i> Jadwal Paralel
+        </a>
         <a class="nav-link {{ request()->is('admin/manage-rooms') ? 'active' : '' }} {{ !$superadminVerified ? 'disabled-link' : '' }}"
             href="{{ !$superadminVerified ? '#' : url('/admin/manage-rooms') }}">
             <i class="fas fa-door-open"></i> Kelola Ruangan
