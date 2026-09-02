@@ -41,6 +41,11 @@ Route::get('/admin/manage-schedule/delete/{id}', [ScheduleController::class, 'de
 Route::post('/admin/manage-schedule/delete-all', [ScheduleController::class, 'destroyAll']);
 Route::post('/admin/manage-schedule/store-bulk', [ScheduleController::class, 'storeBulk']);
 
+// Import Jadwal AI (Gemini)
+Route::post('/admin/manage-schedule/import-ai', [ScheduleController::class, 'importAi'])->name('schedule.import-ai');
+Route::post('/admin/manage-schedule/import-ai/validate', [ScheduleController::class, 'importAiValidate'])->name('schedule.import-ai.validate');
+Route::post('/admin/manage-schedule/import-ai/store', [ScheduleController::class, 'importAiStore'])->name('schedule.import-ai.store');
+
 // Parallel schedule routes
 Route::get('/admin/manage-parallel', [ParallelScheduleController::class, 'index']);
 Route::post('/admin/manage-parallel/store', [ParallelScheduleController::class, 'store']);

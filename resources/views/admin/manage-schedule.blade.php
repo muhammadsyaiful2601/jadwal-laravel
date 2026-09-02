@@ -1246,6 +1246,10 @@
                     <button class="btn-outline-secondary-custom" data-bs-toggle="modal" data-bs-target="#bulkAddModal">
                         <i class="fas fa-layer-group"></i> Tambah Massal
                     </button>
+                    <button class="btn-ai-import" data-bs-toggle="modal" data-bs-target="#aiImportModal"
+                        id="btnImportAi">
+                        ✨ Import Jadwal AI
+                    </button>
                     <button class="btn-primary-solid" data-bs-toggle="modal" data-bs-target="#addModal"
                         id="btnAddSchedule">
                         <i class="fas fa-plus"></i> Tambah Jadwal
@@ -1482,6 +1486,9 @@
 
     <!-- Include modals from original file -->
     @include('admin.schedule-modals')
+
+    <!-- Import Jadwal AI (Gemini) -->
+    @include('admin.schedule-ai-import')
 </body>
 
 </html>

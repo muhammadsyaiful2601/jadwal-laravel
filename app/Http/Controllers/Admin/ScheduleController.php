@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\GeminiScheduleImportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use App\Models\Setting;
 use App\Models\SemesterSetting;
 
@@ -692,6 +695,454 @@ class ScheduleController extends Controller
         );
 
         return redirect('/admin/manage-schedule')->with('success', "Berhasil menambahkan " . count($entries) . " jadwal sekaligus.");
+    }
+
+    /* ==========================================================
+     |  IMPORT JADWAL AI (Gemini 1.5 Flash)
+     |  - importAi         : scan file -> ekstraksi AI -> cek bentrok
+     |  - importAiValidate : validasi ulang satu baris hasil edit inline
+     |  - importAiStore    : simpan baris-baris yang valid ke database
+     |  - checkClash       : deteksi bentrok ruangan & dosen
+     |  - resolveJamKe     : mapping jam mulai -> jam_ke (1-10)
+     * ========================================================== */
+
+    public function importAi(Request $request)
+    {
+        if (!$request->session()->has('user_id')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sesi telah berakhir. Silakan login ulang.',
+            ], 401);
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
+        try {
+            $request->validate([
+                'file' => 'required|file|max:10240',
+            ]);
+
+            $file = $request->file('file');
+            $extension = strtolower($file->getClientOriginalExtension() ?: $file->extension());
+            $allowed = ['pdf', 'xlsx', 'csv', 'png', 'jpg', 'jpeg'];
+
+            if (!in_array($extension, $allowed)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Format file tidak didukung. Gunakan: ' . implode(', ', $allowed) . '.',
+                ]);
+            }
+
+            // 1) Kirim file ke Gemini 1.5 Flash untuk diekstrak menjadi JSON
+            $service = new GeminiScheduleImportService();
+            $items = $service->extractSchedules($file->getRealPath(), $extension);
+
+            if (empty($items)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'AI tidak menemukan data jadwal pada dokumen tersebut.',
+                ]);
+            }
+
+            // 2) Semester aktif sebagai konteks pengecekan bentrok
+            $activeSemester = SemesterSetting::getActiveSemester();
+            $tahunAkademik = $activeSemester['tahun_akademik'] ?? date('Y');
+            $semester = $activeSemester['semester'] ?? 'GANJIL';
+
+            // 3) Cek bentrok setiap baris hasil ekstraksi
+            $data = [];
+            foreach ($items as $item) {
+                $clash = $this->checkClash(
+                    $item['kelas'],
+                    $item['hari'],
+                    $item['jam_mulai'],
+                    $item['jam_selesai'],
+                    $semester,
+                    $tahunAkademik,
+                    $item['dosen'],
+                    $item['ruangan']
+                );
+
+                $data[] = [
+                    'kelas' => $item['kelas'],
+                    'hari' => $item['hari'],
+                    'jam_mulai' => $item['jam_mulai'],
+                    'jam_selesai' => $item['jam_selesai'],
+                    'matakuliah' => $item['matakuliah'],
+                    'ruangan' => $item['ruangan'],
+                    'dosen' => $item['dosen'],
+                    'jam_ke' => $this->resolveJamKe($item['jam_mulai']),
+                    'semester' => $semester,
+                    'tahun_akademik' => $tahunAkademik,
+                    'status' => empty($clash) ? 'valid' : 'bentrok',
+                    'pesan_error' => empty($clash) ? null : implode(' | ', $clash),
+                ];
+            }
+
+            $summary = [
+                'total' => count($data),
+                'valid' => count(array_filter($data, fn ($row) => $row['status'] === 'valid')),
+                'bentrok' => count(array_filter($data, fn ($row) => $row['status'] === 'bentrok')),
+            ];
+
+            $this->logActivity(
+                $request->session()->get('user_id'),
+                'Import Jadwal AI',
+                "Scan AI file {$file->getClientOriginalName()}: {$summary['total']} baris ({$summary['valid']} valid, {$summary['bentrok']} bentrok)"
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Scan AI selesai.',
+                'summary' => $summary,
+                'data' => $data,
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->validator->errors()->first(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Import Jadwal AI gagal: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memproses file: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Validasi ulang satu baris jadwal hasil edit inline pada modal preview.
+     */
+    public function importAiValidate(Request $request)
+    {
+        if (!$request->session()->has('user_id')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sesi telah berakhir. Silakan login ulang.',
+            ], 401);
+        }
+
+        try {
+            $item = $request->input('item', []);
+
+            if (!is_array($item) || empty($item)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data jadwal tidak valid.',
+                ]);
+            }
+
+            $hari = GeminiScheduleImportService::normalizeHari($item['hari'] ?? '');
+            $jamMulai = GeminiScheduleImportService::normalizeJam($item['jam_mulai'] ?? '');
+            $jamSelesai = GeminiScheduleImportService::normalizeJam($item['jam_selesai'] ?? '');
+
+            $clash = $this->checkClash(
+                trim((string) ($item['kelas'] ?? '')),
+                $hari,
+                $jamMulai,
+                $jamSelesai,
+                trim((string) ($item['semester'] ?? '')),
+                trim((string) ($item['tahun_akademik'] ?? '')),
+                trim((string) ($item['dosen'] ?? '')),
+                trim((string) ($item['ruangan'] ?? ''))
+            );
+
+            return response()->json([
+                'success' => true,
+                'hari' => $hari,
+                'jam_mulai' => $jamMulai,
+                'jam_selesai' => $jamSelesai,
+                'jam_ke' => $this->resolveJamKe($jamMulai),
+                'status' => empty($clash) ? 'valid' : 'bentrok',
+                'pesan_error' => empty($clash) ? null : implode(' | ', $clash),
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Validasi Import Jadwal AI gagal: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memvalidasi data: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Simpan baris-baris jadwal yang telah divalidasi user di modal preview.
+     */
+    public function importAiStore(Request $request)
+    {
+        if (!$request->session()->has('user_id')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sesi telah berakhir. Silakan login ulang.',
+            ], 401);
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
+        try {
+            $rows = $request->input('schedules', []);
+
+            if (empty($rows) || !is_array($rows)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ada data jadwal valid yang dikirim.',
+                ]);
+            }
+
+            $entries = [];
+            $errors = [];
+
+            foreach (array_values($rows) as $index => $row) {
+                $kelas = trim((string) ($row['kelas'] ?? ''));
+                $hari = GeminiScheduleImportService::normalizeHari($row['hari'] ?? '');
+                $jamMulai = GeminiScheduleImportService::normalizeJam($row['jam_mulai'] ?? '');
+                $jamSelesai = GeminiScheduleImportService::normalizeJam($row['jam_selesai'] ?? '');
+                $mataKuliah = trim((string) ($row['matakuliah'] ?? ''));
+                $dosen = trim((string) ($row['dosen'] ?? ''));
+                $ruangan = trim((string) ($row['ruangan'] ?? ''));
+                $semester = trim((string) ($row['semester'] ?? ''));
+                $tahunAkademik = trim((string) ($row['tahun_akademik'] ?? ''));
+
+                $jamKe = (int) ($row['jam_ke'] ?? 0);
+                if ($jamKe < 1 || $jamKe > 10) {
+                    $jamKe = $this->resolveJamKe($jamMulai);
+                }
+
+                // 1) Cek bentrok terhadap database
+                $clash = $this->checkClash($kelas, $hari, $jamMulai, $jamSelesai, $semester, $tahunAkademik, $dosen, $ruangan);
+
+                // 2) Cek bentrok antar baris dalam batch import yang sama
+                if (empty($clash)) {
+                    foreach ($entries as $entry) {
+                        if (strcasecmp($entry['hari'], $hari) !== 0) {
+                            continue;
+                        }
+
+                        $sameRoom = strcasecmp($entry['ruang'], $ruangan) === 0;
+                        $sameDosen = strcasecmp($entry['dosen'], $dosen) === 0;
+
+                        if (!$sameRoom && !$sameDosen) {
+                            continue;
+                        }
+
+                        list($existingMulai, $existingSelesai) = explode(' - ', $entry['waktu']);
+
+                        if (strtotime($jamMulai) < strtotime($existingSelesai) && strtotime($jamSelesai) > strtotime($existingMulai)) {
+                            $clash[] = $sameRoom
+                                ? "Ruangan {$ruangan} dipakai baris lain dalam import ini ({$entry['hari']} {$entry['waktu']})"
+                                : "Dosen {$dosen} dibentrokkan baris lain dalam import ini ({$entry['hari']} {$entry['waktu']})";
+                        }
+                    }
+                }
+
+                if (!empty($clash)) {
+                    $errors[] = 'Baris ke-' . ($index + 1) . " ({$mataKuliah}): " . implode(' | ', $clash);
+                    continue;
+                }
+
+                $entries[] = [
+                    'kelas' => $kelas,
+                    'hari' => $hari,
+                    'jam_ke' => $jamKe,
+                    'waktu' => "{$jamMulai} - {$jamSelesai}",
+                    'mata_kuliah' => $mataKuliah,
+                    'dosen' => $dosen,
+                    'ruang' => $ruangan,
+                    'semester' => $semester,
+                    'tahun_akademik' => $tahunAkademik,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+
+            if (!empty($errors)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terdapat bentrok/kesalahan pada data yang dikirim:<br>' . implode('<br>', $errors),
+                    'conflicts' => $errors,
+                ]);
+            }
+
+            if (empty($entries)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ada data valid untuk disimpan.',
+                ]);
+            }
+
+            DB::transaction(function () use ($entries) {
+                foreach ($entries as $entry) {
+                    DB::table('schedules')->insert($entry);
+                }
+            });
+
+            $this->logActivity(
+                $request->session()->get('user_id'),
+                'Import Jadwal AI',
+                'Berhasil menyimpan ' . count($entries) . ' jadwal hasil scan AI'
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil menyimpan ' . count($entries) . ' jadwal hasil Import AI!',
+                'count' => count($entries),
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Simpan Import Jadwal AI gagal: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Cek bentrok untuk hasil Import Jadwal AI:
+     * a. Ruangan yang sama pada hari & rentang jam yang tumpang tindih.
+     * b. Dosen yang sama mengajar di kelas lain pada hari & rentang jam yang tumpang tindih.
+     *
+     * @return array Daftar pesan error bentrok (array kosong = tidak bentrok)
+     */
+    private function checkClash($kelas, $hari, $jamMulai, $jamSelesai, $semester, $tahunAkademik, $dosen, $ruangan)
+    {
+        $kelas = trim((string) $kelas);
+        $hari = strtoupper(trim((string) $hari));
+        $jamMulai = trim((string) $jamMulai);
+        $jamSelesai = trim((string) $jamSelesai);
+        $dosen = trim((string) $dosen);
+        $ruangan = trim((string) $ruangan);
+
+        // Validasi kelengkapan data hasil ekstraksi AI
+        $errors = [];
+        if ($kelas === '') {
+            $errors[] = 'Kelas wajib diisi (silakan edit baris ini)';
+        }
+        if ($hari === '') {
+            $errors[] = 'Hari wajib diisi';
+        }
+        if ($jamMulai === '' || $jamSelesai === '') {
+            $errors[] = 'Jam mulai & jam selesai wajib diisi';
+        }
+        if ($dosen === '') {
+            $errors[] = 'Nama dosen wajib diisi';
+        }
+        if ($ruangan === '') {
+            $errors[] = 'Ruangan wajib diisi';
+        }
+        if (!empty($errors)) {
+            return $errors;
+        }
+
+        $startTime = strtotime($jamMulai);
+        $endTime = strtotime($jamSelesai);
+
+        if ($startTime === false || $endTime === false) {
+            return ['Format jam tidak valid'];
+        }
+
+        if ($endTime <= $startTime) {
+            return ["Jam selesai ({$jamSelesai}) harus lebih besar dari jam mulai ({$jamMulai})"];
+        }
+
+        // (a) Bentrok ruangan: ruangan sama, hari sama, waktu tumpang tindih
+        $roomSchedules = DB::table('schedules')
+            ->where('ruang', $ruangan)
+            ->where('hari', $hari)
+            ->where('semester', $semester)
+            ->where('tahun_akademik', $tahunAkademik)
+            ->get();
+
+        foreach ($roomSchedules as $schedule) {
+            list($existingMulai, $existingSelesai) = explode(' - ', $schedule->waktu);
+
+            if ($startTime < strtotime($existingSelesai) && $endTime > strtotime($existingMulai)) {
+                $errors[] = "Ruangan {$ruangan} sudah dipakai kelas {$schedule->kelas} pada hari {$schedule->hari} jam {$schedule->jam_ke} ({$schedule->waktu}) - {$schedule->mata_kuliah}";
+            }
+        }
+
+        // (b) Bentrok dosen: dosen sama mengajar di kelas lain, hari sama, waktu tumpang tindih
+        $lecturerQuery = DB::table('schedules')
+            ->where('dosen', $dosen)
+            ->where('hari', $hari)
+            ->where('semester', $semester)
+            ->where('tahun_akademik', $tahunAkademik);
+
+        if ($kelas !== '') {
+            $lecturerQuery->where('kelas', '!=', $kelas);
+        }
+
+        $lecturerSchedules = $lecturerQuery->get();
+
+        foreach ($lecturerSchedules as $schedule) {
+            list($existingMulai, $existingSelesai) = explode(' - ', $schedule->waktu);
+
+            if ($startTime < strtotime($existingSelesai) && $endTime > strtotime($existingMulai)) {
+                $errors[] = "Dosen {$dosen} sudah mengajar kelas {$schedule->kelas} pada hari {$schedule->hari} jam {$schedule->jam_ke} ({$schedule->waktu}) - {$schedule->mata_kuliah}";
+            }
+        }
+
+        return array_values(array_unique($errors));
+    }
+
+    /**
+     * Konversi jam mulai menjadi nomor slot jam_ke (1-10)
+     * berdasarkan pemetaan slot waktu yang dipakai sistem.
+     */
+    private function resolveJamKe($jamMulai)
+    {
+        $time = trim((string) $jamMulai);
+
+        if ($time === '') {
+            return 1;
+        }
+
+        // 1) Cocokkan persis dengan jam mulai slot
+        for ($i = 1; $i <= 10; $i++) {
+            $slot = $this->getTimeSlotByJamKe($i);
+            if ($slot && $slot[0] === $time) {
+                return $i;
+            }
+        }
+
+        $timestamp = strtotime($time);
+        if ($timestamp === false) {
+            return 1;
+        }
+
+        // 2) Cari slot yang memuat jam tersebut
+        for ($i = 1; $i <= 10; $i++) {
+            $slot = $this->getTimeSlotByJamKe($i);
+            if ($slot && $timestamp >= strtotime($slot[0]) && $timestamp <= strtotime($slot[1])) {
+                return $i;
+            }
+        }
+
+        // 3) Fallback: slot dengan jam mulai terdekat
+        $best = 1;
+        $bestDiff = PHP_INT_MAX;
+        for ($i = 1; $i <= 10; $i++) {
+            $slot = $this->getTimeSlotByJamKe($i);
+            if (!$slot) {
+                continue;
+            }
+            $diff = abs($timestamp - strtotime($slot[0]));
+            if ($diff < $bestDiff) {
+                $bestDiff = $diff;
+                $best = $i;
+            }
+        }
+
+        return $best;
     }
 
     private function getTimeSlotByJamKe($jamKe)
