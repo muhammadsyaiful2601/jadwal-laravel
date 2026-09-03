@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -67,15 +67,29 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 9999;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1050;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
         }
 
-        .maintenance-content {
+        /* Saat maintenance aktif: modal Bootstrap (mis. Hubungi Admin)
+           tetap tampil DI DEPAN overlay agar bisa dibuka & ditutup normal..
+
+           Konten landing di belakang overlay tetap ter-blur.. */
+        body.maintenance-active .modal {
+            z-index: 1060;
+        }
+
+        body.maintenance-active .modal-backdrop {
+            z-index: 1055;
+        }
+
+.maintenance-content {
             background: var(--nb-yellow);
             border: var(--nb-border-thick);
             border-radius: var(--nb-radius);
@@ -115,6 +129,38 @@
             display: inline-block;
             font-size: 0.875rem;
             border: 2px solid var(--nb-black);
+        }
+
+        /* Tombol Hubungi Admin di dalam modal maintenance */
+        .btn-maintenance-contact {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 12px 28px;
+            background: var(--nb-white);
+            color: var(--nb-black);
+            border: var(--nb-border);
+            border-radius: var(--nb-radius-sm);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: var(--nb-shadow-sm);
+            transition: all 0.15s ease;
+            text-decoration: none;
+        }
+
+        .btn-maintenance-contact:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: var(--nb-shadow);
+            background: var(--nb-purple);
+            color: var(--nb-white);
+        }
+
+        .btn-maintenance-contact:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
         }
 
         @keyframes slideUp {
@@ -2963,12 +3009,17 @@
                 <div class="maintenance-icon">
                     <i class="fas fa-tools"></i>
                 </div>
-                <h2>Sistem Sedang Dalam Perawatan</h2>
+                <h2>Sistem Sedang Maintenance</h2>
                 <p class="maintenance-message">{{ $maintenanceMessage && trim($maintenanceMessage) !== '' ? $maintenanceMessage : 'Sistem sedang dalam perbaikan untuk peningkatan layanan. Mohon maaf atas ketidaknyamanannya.' }}</p>
                 <div class="maintenance-info">
                     <i class="fas fa-clock me-2"></i>
                     <span>{{ now()->format('d F Y, H:i') }}</span>
                 </div>
+                <button type="button" class="btn-maintenance-contact"
+                    data-bs-toggle="modal" data-bs-target="#contactAdminModal">
+                    <i class="fas fa-phone-alt me-2"></i>
+                    Hubungi Admin
+                </button>
             </div>
         </div>
     @endif
@@ -2992,8 +3043,8 @@
                         <span>{{ $headerTitle2 ?? $institusiLokasi }}</span>
                     </div>
                     <div class="header-sub-row">
-                        {{ $programStudi }} &nbsp;·&nbsp; <strong>Tahun Akademik {{ $tahunAkademik }}</strong>
-                        &nbsp;·&nbsp; Semester <strong>{{ $semesterAktif }}</strong>
+                        {{ $programStudi }} &nbsp;Â·&nbsp; <strong>Tahun Akademik {{ $tahunAkademik }}</strong>
+                        &nbsp;Â·&nbsp; Semester <strong>{{ $semesterAktif }}</strong>
                     </div>
                 </div>
 
@@ -3010,7 +3061,7 @@
             <div style="display: flex; justify-content: center; margin-top: 6px;">
                 <div class="header-info-bar" id="headerInfoBar">
                     <span class="info-segment">
-                        <span class="greeting-emoji-header" id="headerGreetingEmoji">☀️</span>
+                        <span class="greeting-emoji-header" id="headerGreetingEmoji">â˜€ï¸</span>
                         <span id="headerGreetingText">Selamat pagi</span>
                     </span>
                     <span class="info-sep"></span>
@@ -3550,7 +3601,7 @@
                                         <div class="schedule-time-box">
                                             <div class="time-start">
                                                 {{ explode(' - ', $item['waktu'])[0] ?? $item['waktu'] }}</div>
-                                            <div class="time-separator">—</div>
+                                            <div class="time-separator">â€”</div>
                                             <div class="time-end">{{ explode(' - ', $item['waktu'])[1] ?? '' }}</div>
                                         </div>
                                         <div class="schedule-content">
@@ -3606,7 +3657,7 @@
                             <div class="schedule-time-box">
                                 <div class="time-start">{{ explode(' - ', $item['waktu'])[0] ?? $item['waktu'] }}
                                 </div>
-                                <div class="time-separator">—</div>
+                                <div class="time-separator">â€”</div>
                                 <div class="time-end">{{ explode(' - ', $item['waktu'])[1] ?? '' }}</div>
                             </div>
                             <div class="schedule-content">
@@ -3708,7 +3759,7 @@
                     </button>
                 </div>
                 <p class="footer-copyright">
-                    <span class="fw-semibold">© {{ date('Y') }} Sistem Informasi Jadwal Kuliah v2.0</span>
+                    <span class="fw-semibold">Â© {{ date('Y') }} Sistem Informasi Jadwal Kuliah v2.0</span>
                 </p>
                 <p class="footer-version">
                     Sistem menampilkan {{ count($jadwal) }} jadwal untuk semester {{ $semesterAktif }}
@@ -4247,25 +4298,25 @@
                 let emoji, text;
 
                 if (hour >= 3 && hour < 6) {
-                    emoji = '🌅';
+                    emoji = 'ðŸŒ…';
                     text = 'Selamat subuh';
                 } else if (hour >= 6 && hour < 10) {
-                    emoji = '☀️';
+                    emoji = 'â˜€ï¸';
                     text = 'Selamat pagi';
                 } else if (hour >= 10 && hour < 12) {
-                    emoji = '🌤️';
+                    emoji = 'ðŸŒ¤ï¸';
                     text = 'Selamat siang';
                 } else if (hour >= 12 && hour < 15) {
-                    emoji = '🌞';
+                    emoji = 'ðŸŒž';
                     text = 'Selamat siang';
                 } else if (hour >= 15 && hour < 18) {
-                    emoji = '🌅';
+                    emoji = 'ðŸŒ…';
                     text = 'Selamat sore';
                 } else if (hour >= 18 && hour < 21) {
-                    emoji = '🌆';
+                    emoji = 'ðŸŒ†';
                     text = 'Selamat petang';
                 } else {
-                    emoji = '🌙';
+                    emoji = 'ðŸŒ™';
                     text = 'Selamat malam';
                 }
 
