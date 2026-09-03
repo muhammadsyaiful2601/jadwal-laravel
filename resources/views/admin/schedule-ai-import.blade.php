@@ -543,7 +543,18 @@
     var AI_ALLOWED_EXT = ['pdf', 'xlsx', 'csv', 'png', 'jpg', 'jpeg'];
     var AI_MAX_SIZE = 10 * 1024 * 1024; // 10 MB
     // Info kuota dari server (dipakai banner & notifikasi limit)
-    var AI_USAGE = @json($aiUsage ?? ['used' => 0, 'limit' => 0, 'period_label' => 'bulan ini', 'remaining' => null, 'limit_reached' => false]);
+    @php
+        // Fallback dihitung di PHP — @json tidak boleh menerima array literal
+        // ber-koma (argumen directive dipisah per koma -> PHP hasil kompilasi rusak).
+        $aiUsagePayload = $aiUsage ?? [
+            'used' => 0,
+            'limit' => 0,
+            'period_label' => 'bulan ini',
+            'remaining' => null,
+            'limit_reached' => false,
+        ];
+    @endphp
+    var AI_USAGE = @json($aiUsagePayload);
 
     var aiImportState = {
         items: [],
