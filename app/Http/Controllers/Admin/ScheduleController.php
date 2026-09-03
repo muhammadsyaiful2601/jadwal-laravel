@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\Ai\AbstractAiProvider;
 use App\Services\Ai\AiScheduleImportService;
 use App\Services\Ai\AiUsageLimitExceededException;
 use Illuminate\Http\Request;
@@ -854,9 +855,9 @@ class ScheduleController extends Controller
                 ]);
             }
 
-            $hari = GeminiScheduleImportService::normalizeHari($item['hari'] ?? '');
-            $jamMulai = GeminiScheduleImportService::normalizeJam($item['jam_mulai'] ?? '');
-            $jamSelesai = GeminiScheduleImportService::normalizeJam($item['jam_selesai'] ?? '');
+            $hari = AbstractAiProvider::normalizeHari($item['hari'] ?? '');
+            $jamMulai = AbstractAiProvider::normalizeJam($item['jam_mulai'] ?? '');
+            $jamSelesai = AbstractAiProvider::normalizeJam($item['jam_selesai'] ?? '');
 
             $clash = $this->checkClash(
                 trim((string) ($item['kelas'] ?? '')),
@@ -920,9 +921,9 @@ class ScheduleController extends Controller
 
             foreach (array_values($rows) as $index => $row) {
                 $kelas = trim((string) ($row['kelas'] ?? ''));
-                $hari = GeminiScheduleImportService::normalizeHari($row['hari'] ?? '');
-                $jamMulai = GeminiScheduleImportService::normalizeJam($row['jam_mulai'] ?? '');
-                $jamSelesai = GeminiScheduleImportService::normalizeJam($row['jam_selesai'] ?? '');
+                $hari = AbstractAiProvider::normalizeHari($row['hari'] ?? '');
+                $jamMulai = AbstractAiProvider::normalizeJam($row['jam_mulai'] ?? '');
+                $jamSelesai = AbstractAiProvider::normalizeJam($row['jam_selesai'] ?? '');
                 $mataKuliah = trim((string) ($row['matakuliah'] ?? ''));
                 $dosen = trim((string) ($row['dosen'] ?? ''));
                 $ruangan = trim((string) ($row['ruangan'] ?? ''));

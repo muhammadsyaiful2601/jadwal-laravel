@@ -454,9 +454,9 @@ abstract class AbstractAiProvider implements AiProviderInterface
             return '';
         };
 
-        $hari = $this->normalizeHari($pick(['hari', 'day']));
-        $jamMulai = $this->normalizeJam($pick(['jam_mulai', 'jam', 'start', 'mulai']));
-        $jamSelesai = $this->normalizeJam($pick(['jam_selesai', 'selesai', 'end']));
+        $hari = self::normalizeHari($pick(['hari', 'day']));
+        $jamMulai = self::normalizeJam($pick(['jam_mulai', 'jam', 'start', 'mulai']));
+        $jamSelesai = self::normalizeJam($pick(['jam_selesai', 'selesai', 'end']));
         $matakuliah = $pick(['matakuliah', 'mata_kuliah', 'matkul', 'subject', 'course', 'nama_mk']);
         $ruangan = $pick(['ruangan', 'ruang', 'room']);
         $dosen = $pick(['dosen', 'pengajar', 'lecturer', 'teacher']);
@@ -480,8 +480,10 @@ abstract class AbstractAiProvider implements AiProviderInterface
     /**
      * Normalisasi nama hari ke HURUF BESAR (SENIN..MINGGU).
      * Menerima Inggris/Indonesia dengan kapitalisasi bebas.
+     * Public static: dipakai juga oleh ScheduleController untuk baris hasil
+     * edit manual (inline edit) dari frontend.
      */
-    private function normalizeHari(string $value): ?string
+    public static function normalizeHari(string $value): ?string
     {
         $map = [
             'senin' => 'SENIN', 'monday' => 'SENIN', 'mon' => 'SENIN',
@@ -501,8 +503,10 @@ abstract class AbstractAiProvider implements AiProviderInterface
     /**
      * Normalisasi jam ke HH:MM (24 jam).
      * Menangani: 8.30, 08:00:00, 7, 0800, 8:05 PM.
+     * Public static: dipakai juga oleh ScheduleController untuk baris hasil
+     * edit manual (inline edit) dari frontend.
      */
-    private function normalizeJam(string $value): ?string
+    public static function normalizeJam(string $value): ?string
     {
         $value = strtoupper(trim($value));
 
