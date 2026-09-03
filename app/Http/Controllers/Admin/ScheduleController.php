@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Services\GeminiScheduleImportService;
+use App\Services\Ai\AiScheduleImportService;
+use App\Services\Ai\AiUsageLimitExceededException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -71,6 +72,9 @@ class ScheduleController extends Controller
             $timeSlots[$i] = $slot ? implode(' - ', $slot) : 'Tidak tersedia';
         }
 
+        // Info penggunaan AI (untuk banner kuota di modal Import Jadwal AI)
+        $aiUsage = (new AiScheduleImportService())->getUsageInfo();
+
         return view('admin.manage-schedule', compact(
             'schedules',
             'rooms',
@@ -81,7 +85,8 @@ class ScheduleController extends Controller
             'filterTahun',
             'filterSemester',
             'tahunAkademikAktif',
-            'semesterAktif'
+            'semesterAktif',
+            'aiUsage'
         ));
     }
 
@@ -736,9 +741,10 @@ class ScheduleController extends Controller
                 ]);
             }
 
-            // 1) Kirim file ke Gemini 1.5 Flash untuk diekstrak menjadi JSON
-            $service = new GeminiScheduleImportService();
+            // 1) Kirim file ke provider AI aktif (Gemini / OpenAI / Anthropic)
+            $service = new AiScheduleImportService();
             $items = $service->extractSchedules($file->getRealPath(), $extension);
+            $usage = $service->getUsageInfo();
 
             if (empty($items)) {
                 return response()->json([
@@ -799,11 +805,22 @@ class ScheduleController extends Controller
                 'message' => 'Scan AI selesai.',
                 'summary' => $summary,
                 'data' => $data,
+                'usage' => $usage,
             ]);
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
                 'message' => $e->validator->errors()->first(),
+            ]);
+        } catch (AiUsageLimitExceededException $e) {
+            // Limit penggunaan AI tercapai -> beri notifikasi yang jelas
+            $usage = (new AiScheduleImportService())->getUsageInfo();
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'usage' => $usage,
+                'limit_reached' => true,
             ]);
         } catch (\Throwable $e) {
             Log::error('Import Jadwal AI gagal: ' . $e->getMessage());

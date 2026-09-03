@@ -69,6 +69,13 @@ Route::get('/admin/manage-semester/delete/{id}', [SemesterController::class, 'de
 // Settings routes
 Route::get('/admin/manage-settings', [SettingsController::class, 'index']);
 Route::post('/admin/manage-settings/update', [SettingsController::class, 'update']);
+// [SUPERADMIN ONLY] Pilihan provider & model AI untuk fitur Import Jadwal AI
+Route::post('/admin/manage-settings/ai-model', [SettingsController::class, 'updateAiModel'])->name('settings.ai-model');
+// [SUPERADMIN ONLY] Simpan/hapus API key AI langsung dari Pengaturan Sistem (tanpa edit .env)
+Route::post('/admin/manage-settings/ai-api-key', [SettingsController::class, 'updateAiApiKey'])->name('settings.ai-api-key');
+// [SUPERADMIN ONLY] Limit penggunaan AI + reset counter
+Route::post('/admin/manage-settings/ai-usage', [SettingsController::class, 'updateAiUsage'])->name('settings.ai-usage');
+Route::post('/admin/manage-settings/ai-usage-reset', [SettingsController::class, 'resetAiUsage'])->name('settings.ai-usage-reset');
 Route::get('/admin/manage-settings/reset-data', [SettingsController::class, 'resetData']);
 Route::get('/admin/manage-settings/clear-logs', [SettingsController::class, 'clearLogs']);
 Route::get('/admin/manage-settings/clear-cache', [SettingsController::class, 'clearCache']);

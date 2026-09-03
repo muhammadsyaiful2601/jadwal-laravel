@@ -1043,6 +1043,352 @@
                 </div>
             </form>
 
+            <!-- Card 5: Provider & Model AI - Import Jadwal AI (Hanya Superadmin) -->
+            @if ($isSuperAdmin)
+                <form method="POST" action="{{ url('/admin/manage-settings/ai-model') }}" class="settings-card">
+                    @csrf
+                    <div class="settings-card-title">
+                        <i class="fas fa-wand-magic-sparkles"></i> Provider &amp; Model AI — Import Jadwal AI
+                        <span
+                            style="margin-left:auto;background:var(--nb-purple);color:var(--nb-white);border:2px solid var(--nb-black);border-radius:999px;padding:3px 10px;font-size:0.65rem;letter-spacing:0.5px;box-shadow:2px 2px 0 #000;">
+                            SUPERADMIN ONLY
+                        </span>
+                    </div>
+
+                    {{-- ==== MODEL: input bebas + deteksi otomatis tipe API ==== --}}
+                    <div class="form-group-custom" style="margin-bottom:12px;">
+                        <label>Model AI yang Dipakai</label>
+                        <input type="text" name="ai_model" id="aiModelInput" class="form-control-modern"
+                            list="aiModelDatalist" autocomplete="off" oninput="updateAiModelDetect()"
+                            value="{{ $aiCatalog[$aiProvider]['model'] }}"
+                            placeholder="ketik atau pilih, contoh: gemini-3.6-flash / gpt-4o / claude-sonnet-4">
+                        <datalist id="aiModelDatalist">
+                            @foreach ($aiCatalog as $catKey => $cat)
+                                @foreach ($cat['models'] as $catModel)
+                                    <option value="{{ $catModel['id'] }}">
+                                        {{ $cat['label'] }} — {{ $catModel['note'] }} ({{ $catModel['free'] ? 'GRATIS' : 'Berbayar' }})
+                                    </option>
+                                @endforeach
+                            @endforeach
+                        </datalist>
+                        <span class="form-hint">Cukup masukkan nama model — sistem <strong>otomatis mengenali tipe
+                                API-nya</strong> (Gemini / OpenAI / Claude) dan langsung memakainya. Prefix "models/"
+                            otomatis dibuang.</span>
+                        <div id="aiModelDetectBox" style="margin-top:12px;"></div>
+                    </div>
+
+                    {{-- ==== PILIH CEPAT: chip model (GRATIS = hijau) ==== --}}
+                    <div style="margin-bottom:20px;">
+                        <small style="display:block;font-weight:700;color:var(--nb-black);margin-bottom:8px;">
+                            <i class="fas fa-bolt" style="color:#B8860B;"></i> Pilih Cepat Model:
+                        </small>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            @foreach ($aiCatalog as $catKey => $cat)
+                                @foreach ($cat['models'] as $catModel)
+                                    <button type="button" onclick="pickAiModel('{{ $catModel['id'] }}')"
+                                        style="background:{{ $catModel['free'] ? '#EAF7EC' : 'var(--nb-offwhite)' }};border:2px solid var(--nb-black);border-radius:999px;padding:4px 12px;font-size:0.72rem;font-weight:700;font-family:var(--font-display);box-shadow:2px 2px 0 #000;cursor:pointer;">
+                                        {{ $catModel['id'] }}
+                                        @if ($catModel['free'])
+                                            <span style="background:#2E7D32;color:#fff;border-radius:999px;padding:1px 7px;font-size:0.6rem;margin-left:4px;">GRATIS</span>
+                                        @endif
+                                    </button>
+                                @endforeach
+                            @endforeach
+                        </div>
+                        <small style="display:block;color:var(--nb-dark);font-size:0.72rem;margin-top:8px;line-height:1.6;">
+                            <i class="fas fa-circle-check" style="color:#2E7D32;"></i> Bertanda <strong>GRATIS</strong> =
+                            punya kuota gratis resmi dari provider (tanpa biaya) — cocok untuk testing &amp; operasional
+                            ringan. Model tanpa tanda = berbayar sesuai tagihan provider.
+                        </small>
+                    </div>
+
+                    <div
+                        style="background:var(--nb-offwhite);border:var(--nb-border);border-radius:var(--nb-radius-sm);padding:16px;margin-bottom:20px;">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                            <i class="fas fa-circle-info" style="color:var(--nb-purple);"></i>
+                            <small style="color:var(--nb-black);font-weight:700;">Provider &amp; Model yang Sedang Aktif:</small>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                            @foreach ($aiCatalog as $catKey => $cat)
+                                <span
+                                    style="background:{{ $aiProvider === $catKey ? 'var(--nb-purple)' : 'var(--nb-gray)' }};color:{{ $aiProvider === $catKey ? 'var(--nb-white)' : 'var(--nb-dark)' }};border:2px solid var(--nb-black);border-radius:999px;padding:5px 14px;font-weight:700;font-size:0.8rem;font-family:var(--font-display);box-shadow:2px 2px 0 #000;">
+                                    {{ $cat['label'] }}: {{ $cat['model'] !== '' ? $cat['model'] : '(default sistem)' }}
+                                    @if ($aiProvider === $catKey)
+                                        ✓
+                                    @endif
+                                    <em style="font-style:normal;font-weight:600;opacity:0.85;">
+                                        (Key: {{ $cat['api_key']['has_db'] ? 'Sistem' : 'belum ada' }})
+                                    </em>
+                                </span>
+                            @endforeach
+                        </div>
+                        <small
+                            style="display:block;color:var(--nb-dark);font-size:0.75rem;margin-top:10px;line-height:1.6;">
+                            Jika model yang dipilih tidak tersedia di API provider (mis. sudah di-retire), sistem otomatis
+                            mencoba fallback lalu menampilkan daftar model tersedia pada pesan error. Perubahan berlaku
+                            langsung tanpa restart.
+                        </small>
+                    </div>
+
+                    <div style="display:flex;justify-content:flex-end;">
+                        <button type="submit" class="btn-primary-solid">
+                            <i class="fas fa-save"></i> Simpan Model AI
+                        </button>
+                    </div>
+                </form>
+
+                <script>
+                    var AI_CATALOG = @json($aiCatalog);
+
+                    function aiDetectProvider(model) {
+                        model = (model || '').toLowerCase().trim();
+                        if (model === '') {
+                            return null;
+                        }
+
+                        // 1) Cek katalog resmi per provider
+                        for (var key in AI_CATALOG) {
+                            if (!Object.prototype.hasOwnProperty.call(AI_CATALOG, key)) {
+                                continue;
+                            }
+                            var models = AI_CATALOG[key].models || [];
+                            for (var i = 0; i < models.length; i++) {
+                                if (models[i].id.toLowerCase() === model) {
+                                    return { label: AI_CATALOG[key].label, free: models[i].free, known: true };
+                                }
+                            }
+                        }
+
+                        // 2) Deteksi dari pola nama model (model custom / baru)
+                        if (model.indexOf('gemini') !== -1) {
+                            return { label: AI_CATALOG.gemini.label, free: null, known: false };
+                        }
+                        if (model.indexOf('gpt') !== -1 || model.indexOf('chatgpt') !== -1
+                            || model.indexOf('openai') !== -1 || model.indexOf('davinci') !== -1
+                            || /^o\d/.test(model)) {
+                            return { label: AI_CATALOG.openai.label, free: null, known: false };
+                        }
+                        if (model.indexOf('claude') !== -1 || model.indexOf('anthropic') !== -1) {
+                            return { label: AI_CATALOG.anthropic.label, free: null, known: false };
+                        }
+
+                        return null;
+                    }
+
+                    function updateAiModelDetect() {
+                        var box = document.getElementById('aiModelDetectBox');
+                        var input = document.getElementById('aiModelInput');
+                        if (!box || !input) {
+                            return;
+                        }
+
+                        var raw = input.value.trim();
+                        if (raw === '') {
+                            box.innerHTML = '';
+                            return;
+                        }
+
+                        var detected = aiDetectProvider(raw);
+                        if (!detected) {
+                            box.innerHTML = '<div style="background:#FDECEC;border:2px solid var(--nb-red);'
+                                + 'border-radius:var(--nb-radius-sm);padding:10px 14px;font-size:0.78rem;font-weight:700;color:#C0392B;">'
+                                + '<i class="fas fa-triangle-exclamation me-1"></i>Tipe API "' + raw
+                                + '" belum dikenali. Gunakan nama model resmi (gemini-*, gpt-*, claude-*).</div>';
+                            return;
+                        }
+
+                        var freeBadge = '';
+                        if (detected.free === true) {
+                            freeBadge = '<span style="background:#EAF7EC;color:#2E7D32;border:2px solid #2E7D32;'
+                                + 'border-radius:999px;padding:2px 10px;font-size:0.65rem;font-weight:700;">GRATIS</span>';
+                        } else if (detected.free === false) {
+                            freeBadge = '<span style="background:var(--nb-offwhite);color:var(--nb-dark);'
+                                + 'border:2px solid var(--nb-gray);border-radius:999px;padding:2px 10px;font-size:0.65rem;font-weight:700;">Berbayar</span>';
+                        }
+
+                        box.innerHTML = '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;'
+                            + 'background:var(--nb-offwhite);border:var(--nb-border);border-radius:var(--nb-radius-sm);'
+                            + 'padding:10px 14px;font-size:0.78rem;color:var(--nb-black);">'
+                            + '<i class="fas fa-wand-magic-sparkles" style="color:var(--nb-purple);"></i>'
+                            + 'Tipe API terdeteksi: <strong style="font-family:var(--font-display);">' + detected.label + '</strong>'
+                            + freeBadge
+                            + '<span style="color:var(--nb-dark);">— otomatis dipakai saat disimpan ✓</span></div>';
+                    }
+
+                    function pickAiModel(id) {
+                        var input = document.getElementById('aiModelInput');
+                        if (!input) {
+                            return;
+                        }
+                        input.value = id;
+                        updateAiModelDetect();
+                    }
+
+                    // Sinkronkan tampilan awal
+                    document.addEventListener('DOMContentLoaded', updateAiModelDetect);
+                </script>
+
+                {{-- Card 5b: API Key AI — dimasukkan langsung dari sistem, tersimpan terenkripsi di database --}}
+                <div class="settings-card" style="margin-top:24px;">
+                    <div class="settings-card-title">
+                        <i class="fas fa-key"></i> API Key AI — Langsung dari Sistem
+                        <span
+                            style="margin-left:auto;background:var(--nb-orange);color:var(--nb-black);border:2px solid var(--nb-black);border-radius:999px;padding:3px 10px;font-size:0.65rem;letter-spacing:0.5px;box-shadow:2px 2px 0 #000;">
+                            SUPERADMIN ONLY
+                        </span>
+                    </div>
+
+                    <div
+                        style="background:var(--nb-offwhite);border:var(--nb-border);border-radius:var(--nb-radius-sm);padding:12px 16px;margin-bottom:18px;font-size:0.78rem;color:var(--nb-black);line-height:1.7;">
+                        <i class="fas fa-shield-halved" style="color:var(--nb-purple);"></i>
+                        API key disimpan <strong>terenkripsi</strong> di database dan <strong>langsung dipakai
+                        sistem</strong> tanpa restart. Database adalah <strong>satu-satunya sumber</strong> API key AI —
+                        konfigurasi AI di file .env sudah tidak dipakai lagi (key lama sudah dimigrasi ke sini).
+                    </div>
+
+                    @foreach ($aiCatalog as $catKey => $cat)
+                        <form method="POST" action="{{ url('/admin/manage-settings/ai-api-key') }}"
+                            style="border:2px dashed var(--nb-gray);border-radius:var(--nb-radius-sm);padding:16px;margin-bottom:14px;">
+                            @csrf
+                            <input type="hidden" name="ai_key_provider" value="{{ $catKey }}">
+                            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+                                <strong style="font-family:var(--font-display);">
+                                    <i class="fas {{ $cat['icon'] }} me-1"></i> {{ $cat['label'] }}
+                                </strong>
+                                @if ($cat['api_key']['has_db'])
+                                    <span
+                                        style="background:#EAF7EC;color:#2E7D32;border:2px solid #2E7D32;border-radius:999px;padding:2px 10px;font-size:0.65rem;font-weight:700;">
+                                        TERSIMPAN DI SISTEM ({{ $cat['api_key']['masked'] }})
+                                    </span>
+                                @else
+                                    <span
+                                        style="background:#FDECEC;color:#C0392B;border:2px solid var(--nb-red);border-radius:999px;padding:2px 10px;font-size:0.65rem;font-weight:700;">
+                                        BELUM ADA
+                                    </span>
+                                @endif
+                            </div>
+                            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:stretch;">
+                                <div style="flex:1;min-width:220px;">
+                                    <input type="password" name="ai_api_key" class="form-control-modern"
+                                        placeholder="Tempel API key {{ $cat['label'] }} di sini..."
+                                        autocomplete="new-password">
+                                </div>
+                                <button type="submit" class="btn-primary-solid" style="padding:10px 18px;">
+                                    <i class="fas fa-save"></i> Simpan
+                                </button>
+                                @if ($cat['api_key']['has_db'])
+                                    <button type="submit" name="action" value="delete"
+                                        style="background:#FDECEC;color:#C0392B;border:2px solid #C0392B;border-radius:var(--nb-radius-sm);padding:10px 16px;font-weight:700;font-family:var(--font-display);box-shadow:2px 2px 0 #000;cursor:pointer;"
+                                        onclick="return confirm('Hapus API key {{ $cat['label'] }} dari sistem? Key tidak dapat dipulihkan setelah dihapus.');">
+                                        <i class="fas fa-trash"></i> Hapus
+                                    </button>
+                                @endif
+                            </div>
+                        </form>
+                    @endforeach
+                </div>
+            @else
+                <div class="settings-card" style="margin-top:24px;">
+                    <div class="settings-card-title">
+                        <i class="fas fa-wand-magic-sparkles"></i> Provider &amp; Model AI — Import Jadwal AI
+                    </div>
+                    <div
+                        style="background:var(--nb-gray);border:var(--nb-border);border-radius:var(--nb-radius-sm);padding:16px;">
+                        <p style="font-size:0.85rem;color:var(--nb-dark);margin:0;">
+                            <i class="fas fa-lock me-1"></i>
+                            Pengaturan provider &amp; model AI hanya dapat diakses oleh <strong>Superadmin</strong>. Silakan
+                            hubungi Superadmin untuk mengubah provider yang dipakai fitur Import Jadwal AI.
+                        </p>
+                    </div>
+                </div>
+            @endif
+
+            <!-- Card 6: Limit Penggunaan AI (Hanya Superadmin) -->
+            @if ($isSuperAdmin)
+                <div class="settings-card" style="margin-top:24px;">
+                    <div class="settings-card-title">
+                        <i class="fas fa-gauge-high"></i> Limit Penggunaan AI — Import Jadwal AI
+                        <span
+                            style="margin-left:auto;background:var(--nb-orange);color:var(--nb-black);border:2px solid var(--nb-black);border-radius:999px;padding:3px 10px;font-size:0.65rem;letter-spacing:0.5px;box-shadow:2px 2px 0 #000;">
+                            SUPERADMIN ONLY
+                        </span>
+                    </div>
+                    <small
+                        style="display:block;color:var(--nb-dark);font-size:0.75rem;margin-bottom:14px;line-height:1.6;">
+                        Limit &amp; counter disimpan <strong>per provider</strong> pada tabel <strong>ai_api_configs</strong> —
+                        pengaturan di bawah berlaku untuk provider yang sedang aktif
+                        (<strong>{{ \App\Models\AiApiConfig::activeProviderKey() }}</strong>).
+                    </small>
+
+                    {{-- Statistik pemakaian saat ini --}}
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+                        <div
+                            style="flex:1;min-width:140px;background:var(--nb-offwhite);border:var(--nb-border);border-radius:var(--nb-radius-sm);padding:14px;text-align:center;">
+                            <div style="font-family:var(--font-display);font-size:1.4rem;font-weight:700;">
+                                {{ $aiUsage['used'] }}</div>
+                            <small style="color:var(--nb-dark);font-weight:600;">Scan Terpakai</small>
+                        </div>
+                        <div
+                            style="flex:1;min-width:140px;background:var(--nb-offwhite);border:var(--nb-border);border-radius:var(--nb-radius-sm);padding:14px;text-align:center;">
+                            <div style="font-family:var(--font-display);font-size:1.4rem;font-weight:700;">
+                                {{ $aiUsage['limit'] > 0 ? $aiUsage['limit'] : '∞' }}</div>
+                            <small style="color:var(--nb-dark);font-weight:600;">Batas ({{ $aiUsage['period_label'] }})</small>
+                        </div>
+                        <div
+                            style="flex:1;min-width:140px;background:{{ $aiUsage['limit_reached'] ? '#FDECEC' : 'var(--nb-offwhite)' }};border:var(--nb-border);border-radius:var(--nb-radius-sm);padding:14px;text-align:center;">
+                            <div style="font-family:var(--font-display);font-size:1.4rem;font-weight:700;">
+                                {{ $aiUsage['remaining'] === null ? '∞' : $aiUsage['remaining'] }}</div>
+                            <small style="color:var(--nb-dark);font-weight:600;">Sisa Kuota</small>
+                        </div>
+                    </div>
+
+                    @if ($aiUsage['limit_reached'])
+                        <div
+                            style="background:#FDECEC;border:2px solid var(--nb-red);border-radius:var(--nb-radius-sm);padding:12px 16px;margin-bottom:16px;color:#C0392B;font-weight:700;font-size:0.82rem;">
+                            <i class="fas fa-triangle-exclamation me-1"></i>
+                            Limit penggunaan AI telah tercapai! Pengguna tidak dapat melakukan Import Jadwal AI sampai direset
+                            atau periode berikutnya.
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ url('/admin/manage-settings/ai-usage') }}">
+                        @csrf
+                        <div class="form-grid-2" style="margin-bottom:20px;">
+                            <div class="form-group-custom">
+                                <label>Batas Scan (per Periode)</label>
+                                <input type="number" name="ai_usage_limit" class="form-control-modern" min="0"
+                                    max="1000000" value="{{ $aiUsage['limit'] }}">
+                                <span class="form-hint">0 = tanpa batas (unlimited)</span>
+                            </div>
+                            <div class="form-group-custom">
+                                <label>Periode</label>
+                                <select name="ai_usage_period" class="form-control-modern">
+                                    <option value="daily" {{ $aiUsage['period'] === 'daily' ? 'selected' : '' }}>Harian</option>
+                                    <option value="monthly" {{ $aiUsage['period'] === 'monthly' ? 'selected' : '' }}>Bulanan</option>
+                                    <option value="total" {{ $aiUsage['period'] === 'total' ? 'selected' : '' }}>Total (selamanya)</option>
+                                </select>
+                                <span class="form-hint">Counter otomatis direset saat periode berganti (hari/bulan baru)</span>
+                            </div>
+                        </div>
+                        <div style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;">
+                            <button type="submit" class="btn-primary-solid">
+                                <i class="fas fa-save"></i> Simpan Limit
+                            </button>
+                        </div>
+                    </form>
+
+                    <form method="POST" action="{{ url('/admin/manage-settings/ai-usage-reset') }}"
+                        onsubmit="return confirm('Yakin reset seluruh penggunaan AI?')">
+                        @csrf
+                        <div style="display:flex;justify-content:flex-end;margin-top:10px;">
+                            <button type="submit" class="btn-destructive-outline">
+                                <i class="fas fa-rotate-left"></i> Reset Penggunaan AI
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            @endif
+
             <!-- Danger Zone -->
             @if ($isSuperAdmin)
                 <div class="danger-zone">

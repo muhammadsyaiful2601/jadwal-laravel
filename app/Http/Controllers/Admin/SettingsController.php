@@ -8,6 +8,13 @@ use Illuminate\Support\Facades\DB;
 
 class SettingsController extends Controller
 {
+    /**
+     * Katalog provider & model AI (beserta flag GRATIS dan status API key)
+     * tidak lagi hardcoded di sini — diambil langsung dari kelas provider:
+     * \App\Services\Ai\AiScheduleImportService::providersCatalog()
+     * sehingga penambahan provider/model baru cukup di satu tempat.
+     */
+
     public function index(Request $request)
     {
         if (!$request->session()->has('user_id')) {
@@ -34,12 +41,28 @@ class SettingsController extends Controller
         $sessionTimeoutMinutes = $settings['session_timeout_minutes'] ?? 30;
         $sessionAutoLogoutEnabled = $settings['session_auto_logout_enabled'] ?? '1';
 
+        // Model AI & API key untuk fitur Import Jadwal AI (superadmin di halaman ini).
+        // Katalog (label, model + flag GRATIS, status API key db/.env) dari kelas provider.
+        $aiCatalog = \App\Services\Ai\AiScheduleImportService::providersCatalog();
+
+        // Provider aktif (dari tabel ai_api_configs)
+        $aiProvider = \App\Models\AiApiConfig::activeProviderKey();
+        if (!isset($aiCatalog[$aiProvider])) {
+            $aiProvider = 'gemini';
+        }
+
+        // Info limit penggunaan AI
+        $aiUsage = (new \App\Services\Ai\AiScheduleImportService())->getUsageInfo();
+
         return view('admin.manage-settings', compact(
             'settings',
             'isMaintenance',
             'isSuperAdmin',
             'sessionTimeoutMinutes',
-            'sessionAutoLogoutEnabled'
+            'sessionAutoLogoutEnabled',
+            'aiCatalog',
+            'aiProvider',
+            'aiUsage'
         ));
     }
 
@@ -460,6 +483,274 @@ class SettingsController extends Controller
             return redirect('/admin/backup-history')->with('success', 'Backup berhasil dihapus!');
         } catch (\Exception $e) {
             return redirect('/admin/backup-history')->with('error', 'Gagal menghapus backup: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * [SUPERADMIN ONLY] Simpan pilihan provider & model AI untuk Import Jadwal AI.
+     *
+     * Provider & model disimpan di tabel "ai_api_configs" (satu baris per provider,
+     * kolom is_active menandai provider aktif) dan dipakai oleh AiScheduleImportService,
+     * meng-override default di config/services.php.
+     */
+    public function updateAiModel(Request $request)
+    {
+        if (!$request->session()->has('user_id')) {
+            return redirect('/login');
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
+        // [SUPERADMIN ONLY] Hanya role superadmin yang boleh mengubah provider/model AI
+        if ($request->session()->get('role') !== 'superadmin') {
+            return redirect('/admin/manage-settings')
+                ->with('error', 'Akses ditolak! Hanya superadmin yang dapat mengubah provider AI.');
+        }
+
+        $request->validate([
+            'ai_model' => 'required|string',
+            'ai_model_custom' => 'nullable|string|max:100',
+        ]);
+
+        // ---- DETEKSI OTOMATIS TIPE API (PROVIDER) DARI NAMA MODEL ----
+        // Superadmin cukup memasukkan/memilih nama model; sistem mengenali
+        // provider-nya sendiri: gemini-* -> Gemini, gpt-* -> OpenAI, claude-* -> Claude.
+        $selected = trim((string) $request->input('ai_model'));
+        $custom = trim((string) $request->input('ai_model_custom', ''));
+        $model = $custom !== '' ? $custom : $selected;
+
+        if ($model === '' || strtolower($model) === 'custom') {
+            return redirect('/admin/manage-settings')
+                ->with('error', 'Pilih salah satu model atau isi nama model custom terlebih dahulu.');
+        }
+
+        // Buang prefix "models/" bila ada, lalu identifikasi provider dari nama model
+        $model = preg_replace('#^models/#i', '', $model) ?? $model;
+        $model = trim($model, "/ \t\n\r");
+
+        if (!preg_match('/^[a-zA-Z0-9][a-zA-Z0-9._:\-]{1,99}$/', $model)) {
+            return redirect('/admin/manage-settings')
+                ->with('error', 'Nama model hanya boleh huruf, angka, titik, titik dua, dan tanda hubung (contoh: gemini-3.6-flash, gpt-4o).');
+        }
+
+        $detected = \App\Services\Ai\AiScheduleImportService::detectProviderForModel($model);
+
+        if ($detected === null) {
+            return redirect('/admin/manage-settings')
+                ->with('error', "Tipe API model \"{$model}\" tidak dikenali. Gunakan nama model resmi, contoh: gemini-3.6-flash, gpt-4o, atau claude-sonnet-4.");
+        }
+
+        $provider = $detected;
+
+        try {
+            // Simpan provider aktif + model untuk provider tersebut (tabel ai_api_configs)
+            \App\Models\AiApiConfig::setActiveProvider($provider);
+            \App\Models\AiApiConfig::updateOrCreate(
+                ['provider' => $provider],
+                ['model' => $model]
+            );
+
+            // Invalidate cache agar perubahan langsung terpakai (pola sama dengan update())
+            if (\Illuminate\Support\Facades\Cache::getStore() instanceof \Illuminate\Cache\NullStore) {
+                // Cache dinonaktifkan, tidak perlu flush
+            } else {
+                \Illuminate\Support\Facades\Cache::flush();
+            }
+
+            $this->logActivity(
+                $request->session()->get('user_id'),
+                'Update Provider AI',
+                "Provider AI untuk Import Jadwal AI diubah menjadi: {$provider} ({$model})"
+            );
+
+            return redirect('/admin/manage-settings')
+                ->with('success', "Provider {$provider} dengan model {$model} berhasil disimpan!");
+        } catch (\Exception $e) {
+            return redirect('/admin/manage-settings')
+                ->with('error', 'Gagal menyimpan provider AI: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * [SUPERADMIN ONLY] Simpan / hapus API key AI langsung dari Pengaturan
+     * Sistem (tersimpan TERENKRIPSI di tabel settings, override nilai .env).
+     */
+    public function updateAiApiKey(Request $request)
+    {
+        if (!$request->session()->has('user_id')) {
+            return redirect('/login');
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
+        if ($request->session()->get('role') !== 'superadmin') {
+            return redirect('/admin/manage-settings')
+                ->with('error', 'Akses ditolak! Hanya superadmin yang dapat mengelola API key AI.');
+        }
+
+        $provider = trim((string) $request->input('ai_key_provider', ''));
+        $known = [
+            'gemini' => \App\Services\Ai\Providers\GeminiProvider::class,
+            'openai' => \App\Services\Ai\Providers\OpenAiProvider::class,
+            'anthropic' => \App\Services\Ai\Providers\AnthropicProvider::class,
+        ];
+
+        if (!isset($known[$provider])) {
+            return redirect('/admin/manage-settings')
+                ->with('error', 'Provider API key tidak dikenali.');
+        }
+
+        $label = $known[$provider]::providerLabel();
+
+        // Tombol "Hapus" -> kembalikan ke .env
+        if ($request->input('action') === 'delete') {
+            try {
+                $known[$provider]::deleteDbApiKey();
+                $this->logActivity(
+                    $request->session()->get('user_id'),
+                    'Hapus API Key AI',
+                    "API key {$label} dihapus dari Pengaturan Sistem (kembali memakai .env)"
+                );
+
+                return redirect('/admin/manage-settings')
+                    ->with('success', "API key {$label} berhasil dihapus. Sistem kembali memakai nilai dari file .env (bila ada).");
+            } catch (\Exception $e) {
+                return redirect('/admin/manage-settings')
+                    ->with('error', 'Gagal menghapus API key: ' . $e->getMessage());
+            }
+        }
+
+        // Simpan key baru
+        $apiKey = trim((string) $request->input('ai_api_key', ''));
+
+        if ($apiKey === '') {
+            return redirect('/admin/manage-settings')
+                ->with('error', "API key {$label} tidak boleh kosong.");
+        }
+
+        if (strlen($apiKey) < 8) {
+            return redirect('/admin/manage-settings')
+                ->with('error', "API key {$label} terlihat tidak valid (terlalu pendek). Periksa kembali.");
+        }
+
+        try {
+            $known[$provider]::storeDbApiKey($apiKey);
+
+            $masked = '••••' . substr($apiKey, -4);
+            $this->logActivity(
+                $request->session()->get('user_id'),
+                'Simpan API Key AI',
+                "API key {$label} diperbarui dari Pengaturan Sistem ({$masked})"
+            );
+
+            return redirect('/admin/manage-settings')
+                ->with('success', "API key {$label} berhasil disimpan (terenkripsi) dan langsung dipakai sistem!");
+        } catch (\Exception $e) {
+            return redirect('/admin/manage-settings')
+                ->with('error', 'Gagal menyimpan API key: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * [SUPERADMIN ONLY] Simpan limit penggunaan AI (jumlah scan per periode).
+     */
+    public function updateAiUsage(Request $request)
+    {
+        if (!$request->session()->has('user_id')) {
+            return redirect('/login');
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
+        if ($request->session()->get('role') !== 'superadmin') {
+            return redirect('/admin/manage-settings')
+                ->with('error', 'Akses ditolak! Hanya superadmin yang dapat mengubah limit penggunaan AI.');
+        }
+
+        $request->validate([
+            'ai_usage_limit' => 'required|integer|min:0|max:1000000',
+            'ai_usage_period' => 'required|in:daily,monthly,total',
+        ]);
+
+        $limit = (int) $request->input('ai_usage_limit');
+        $period = trim((string) $request->input('ai_usage_period'));
+
+        try {
+            // Limit & counter tersimpan per provider pada tabel ai_api_configs
+            // (berlaku untuk provider yang sedang aktif).
+            $row = \App\Models\AiApiConfig::active();
+            $row->usage_limit = $limit;
+            $row->usage_period = $period;
+            // Reset counter karena periode/limit berubah
+            $row->usage_count = 0;
+            $row->usage_period_key = null;
+            $row->save();
+
+            if (\Illuminate\Support\Facades\Cache::getStore() instanceof \Illuminate\Cache\NullStore) {
+                // Cache dinonaktifkan, tidak perlu flush
+            } else {
+                \Illuminate\Support\Facades\Cache::flush();
+            }
+
+            $this->logActivity(
+                $request->session()->get('user_id'),
+                'Update Limit AI',
+                "Limit penggunaan AI diubah menjadi {$limit} per periode {$period}"
+            );
+
+            return redirect('/admin/manage-settings')
+                ->with('success', 'Limit penggunaan AI berhasil disimpan.');
+        } catch (\Exception $e) {
+            return redirect('/admin/manage-settings')
+                ->with('error', 'Gagal menyimpan limit AI: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * [SUPERADMIN ONLY] Reset counter penggunaan AI.
+     */
+    public function resetAiUsage(Request $request)
+    {
+        if (!$request->session()->has('user_id')) {
+            return redirect('/login');
+        }
+
+        $check = $this->checkSuperadminVerified($request);
+        if ($check !== true) {
+            return $check;
+        }
+
+        if ($request->session()->get('role') !== 'superadmin') {
+            return redirect('/admin/manage-settings')
+                ->with('error', 'Akses ditolak! Hanya superadmin yang dapat mereset penggunaan AI.');
+        }
+
+        try {
+            $row = \App\Models\AiApiConfig::active();
+            $row->usage_count = 0;
+            $row->usage_period_key = null;
+            $row->save();
+
+            $this->logActivity(
+                $request->session()->get('user_id'),
+                'Reset Penggunaan AI',
+                'Counter penggunaan AI direset oleh superadmin'
+            );
+
+            return redirect('/admin/manage-settings')
+                ->with('success', 'Penggunaan AI berhasil direset.');
+        } catch (\Exception $e) {
+            return redirect('/admin/manage-settings')
+                ->with('error', 'Gagal mereset penggunaan AI: ' . $e->getMessage());
         }
     }
 

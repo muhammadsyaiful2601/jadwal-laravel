@@ -35,27 +35,38 @@ return [
         ],
     ],
 
-    // Import Jadwal AI (Google Gemini)
-    // [PERMINTAAN #1 & #4] Model utama: Gemini 3.6 Flash (stabil) — penerus
-    // gemini-1.5-flash yang sudah di-retire Google (penyebab error "not found").
-    // Nama model ditulis TANPA prefix "models/".
+    // =====================================================================
+    // Import Jadwal AI — konfigurasi AKTIF dari SISTEM, bukan lagi dari .env
+    // - API key  : Pengaturan Sistem > card "API Key AI" (tabel settings,
+    //              kunci ai_api_key_* — TERENKRIPSI via Crypt::encryptString)
+    // - Model    : Pengaturan Sistem > card "Model AI" (tabel settings,
+    //              kunci ai_model_*) — provider dideteksi otomatis dari nama model
+    // Nilai di bawah hanyalah DEFAULT KODE (fallback terakhir); tidak dibaca
+    // dari file .env.
+    // =====================================================================
     'gemini' => [
-        'key' => env('GEMINI_API_KEY'),
-
-        'model' => env('GEMINI_MODEL', 'gemini-3.6-flash'),
-
-        // [PERMINTAAN #3 — FALLBACK MANUAL, un-comment salah satu baris jika model utama masih gagal]
-        // 'model' => env('GEMINI_MODEL', 'gemini-1.5-pro'),           // model lama 1.5 Pro (sudah di-retire Google, kemungkinan 404)
-        // 'model' => env('GEMINI_MODEL', 'gemini-1.5-flash-latest'),  // alias terakhir generasi 1.5 (juga sudah di-retire)
-        // 'model' => env('GEMINI_MODEL', 'gemini-3.7-flash'),         // generasi terbaru & paling mampu
-        // 'model' => env('GEMINI_MODEL', 'gemini-3.5-flash'),         // generasi 3.5 (stabil)
+        // Default model bila Pengaturan Sistem belum diisi (Gemini 3.6 Flash — stabil).
+        'model' => 'gemini-3.6-flash',
 
         // [FALLBACK OTOMATIS] Dicoba berurutan jika model utama "not found" (404).
         // gemini-flash-latest = alias yang selalu menunjuk Flash terbaru; gemini-3.7-flash = penerus 3.6.
-        'fallback_models' => array_values(array_filter([
-            env('GEMINI_FALLBACK_MODEL_1', 'gemini-flash-latest'),
-            env('GEMINI_FALLBACK_MODEL_2', 'gemini-3.7-flash'),
-        ])),
+        'fallback_models' => ['gemini-flash-latest', 'gemini-3.7-flash'],
+
+        // Budget token output. Thinking model 3.x ikut mengonsumsi token ini;
+        // bila terlalu kecil, JSON bisa terpotong (finishReason MAX_TOKENS).
+        'max_output_tokens' => 65535,
+    ],
+
+    // Import Jadwal AI (OpenAI)
+    'openai' => [
+        'model' => 'gpt-4o',
+        'max_tokens' => 16000,
+    ],
+
+    // Import Jadwal AI (Anthropic Claude)
+    'anthropic' => [
+        'model' => 'claude-3-5-sonnet-latest',
+        'max_tokens' => 16000,
     ],
 
 ];

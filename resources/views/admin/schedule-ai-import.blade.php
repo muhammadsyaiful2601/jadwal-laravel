@@ -422,6 +422,23 @@
                     AI akan membaca dokumen, mengekstrak datanya, dan memeriksa bentrok jadwal secara otomatis.
                 </p>
 
+                <!-- Banner kuota penggunaan AI -->
+                <div id="aiUsageBanner">
+                    <div id="aiUsageBannerOk"
+                        style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--nb-offwhite);border:var(--nb-border);border-radius:var(--nb-radius-sm);padding:10px 14px;margin-bottom:14px;font-size:0.8rem;font-weight:600;color:var(--nb-dark);">
+                        <i class="fas fa-gauge-high" style="color:#8E2DE2;"></i>
+                        Kuota Import AI: <strong id="aiUsageUsedText">0</strong> /
+                        <strong id="aiUsageLimitText">∞</strong> scan <span id="aiUsagePeriodText">(bulan ini)</span>
+                        <span id="aiUsageRemainingText"></span>
+                    </div>
+                    <div id="aiUsageBannerLimit"
+                        style="display:none;align-items:center;gap:10px;background:#FDECEC;border:2px solid var(--nb-red);border-radius:var(--nb-radius-sm);padding:12px 14px;margin-bottom:14px;color:#C0392B;font-weight:700;font-size:0.82rem;">
+                        <i class="fas fa-triangle-exclamation"></i>
+                        Limit penggunaan AI telah tercapai. Hubungi Superadmin untuk menambah kuota atau menunggu periode
+                        berikutnya.
+                    </div>
+                </div>
+
                 <div id="aiDropzone" class="ai-dropzone">
                     <i class="fas fa-cloud-arrow-up"></i>
                     <strong>Klik atau tarik file ke area ini</strong>
@@ -525,6 +542,8 @@
     var AI_TAHUN = @json($tahunAkademikAktif);
     var AI_ALLOWED_EXT = ['pdf', 'xlsx', 'csv', 'png', 'jpg', 'jpeg'];
     var AI_MAX_SIZE = 10 * 1024 * 1024; // 10 MB
+    // Info kuota dari server (dipakai banner & notifikasi limit)
+    var AI_USAGE = @json($aiUsage ?? ['used' => 0, 'limit' => 0, 'period_label' => 'bulan ini', 'remaining' => null, 'limit_reached' => false]);
 
     var aiImportState = {
         items: [],
@@ -590,6 +609,42 @@
             stopAiLoadingMessages();
             setAiProgress(0);
         }
+    }
+
+    /* ============ Banner kuota & notifikasi limit penggunaan AI ============ */
+    function renderAiUsage(usage) {
+        if (!usage) {
+            return;
+        }
+        AI_USAGE = usage;
+
+        var used = usage.used || 0;
+        var limit = usage.limit || 0;
+        var periodLabel = usage.period_label || '';
+        var remaining = (usage.remaining === null || usage.remaining === undefined) ? null : usage.remaining;
+        var reached = !!usage.limit_reached;
+
+        $('#aiUsageUsedText').text(used);
+        $('#aiUsageLimitText').text(limit > 0 ? limit : '∞');
+        $('#aiUsagePeriodText').text(periodLabel ? '(' + periodLabel + ')' : '');
+
+        if (remaining === null) {
+            $('#aiUsageRemainingText').text('');
+        } else {
+            $('#aiUsageRemainingText').text('— sisa ' + remaining + ' scan');
+            if (remaining <= 3) {
+                $('#aiUsageRemainingText').css('color', 'var(--nb-red)');
+            } else {
+                $('#aiUsageRemainingText').css('color', 'var(--nb-dark)');
+            }
+        }
+
+        // Tampilkan peringatan & nonaktifkan tombol scan jika limit tercapai
+        $('#aiUsageBannerOk').css('display', reached ? 'none' : 'flex');
+        $('#aiUsageBannerLimit').css('display', reached ? 'flex' : 'none');
+        $('#btnStartAiScan').prop('disabled', reached || aiImportState.scanning);
+
+        return reached;
     }
 
     /* ===================== Dropzone & File Input ===================== */
@@ -687,6 +742,9 @@
 
         $('#btnStartAiScan').on('click', startAiScan);
         $('#btnAiSaveValid').on('click', saveAiValidRows);
+
+        // Tampilkan banner kuota saat halaman/upload modal siap
+        renderAiUsage(AI_USAGE);
     });
 
     /* ============ Scan AI (kirim file ke backend -> Gemini) ============ */
@@ -746,18 +804,26 @@
                 if (response.success) {
                     aiImportState.items = response.data || [];
                     renderAiPreview();
+                    // Perbarui banner kuota (scan baru terpakai)
+                    if (response.usage) {
+                        renderAiUsage(response.usage);
+                    }
                     $('#aiImportModal').modal('hide');
                     setTimeout(function () {
                         new bootstrap.Modal(document.getElementById('aiPreviewModal')).show();
                     }, 400);
                 } else {
+                    // Notifikasi saat limit tercapai (response.limit_reached / response.usage)
+                    if (response.usage) {
+                        renderAiUsage(response.usage);
+                    }
                     notifyAi('error', response.message || 'Gagal memproses file.');
                 }
             },
             error: function (xhr) {
                 var msg = (xhr.responseJSON && xhr.responseJSON.message)
                     ? xhr.responseJSON.message
-                    : 'Terjadi kesalahan saat menghubungi AI. Periksa koneksi / GEMINI_API_KEY.';
+                    : 'Terjadi kesalahan saat menghubungi AI. Periksa koneksi / API key di Pengaturan Sistem.';
                 notifyAi('error', msg);
             },
             complete: function () {
