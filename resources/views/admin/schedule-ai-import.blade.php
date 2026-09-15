@@ -1,4 +1,4 @@
-{{--
+﻿{{--
     Import Jadwal AI (Gemini 1.5 Flash)
     Dipakai oleh : resources/views/admin/manage-schedule.blade.php
     Variabel     : $rooms, $kelasList, $semesterAktif, $tahunAkademikAktif
@@ -182,6 +182,127 @@
         width: 0%;
         background: linear-gradient(90deg, #8E2DE2, #A66CFF, #6BB5FF);
         transition: width 0.25s ease;
+    }
+
+    /* ===================== Animasi "Scan Satu Persatu" ===================== */
+    .ai-scan-visual {
+        position: relative;
+        margin: 0 auto 14px;
+        padding: 10px;
+        background: var(--nb-white);
+        border: var(--nb-border);
+        border-radius: var(--nb-radius-sm);
+        overflow: hidden;
+        width: 100%;
+        box-shadow: var(--nb-shadow-sm);
+    }
+
+    .ai-scan-row {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--nb-dark);
+        border-bottom: 2px dashed rgba(0, 0, 0, 0.12);
+        transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+    }
+
+    .ai-scan-row:last-child {
+        border-bottom: none;
+    }
+
+    .ai-scan-row .scan-row-icon {
+        width: 26px;
+        font-size: 0.95rem;
+        text-align: center;
+        color: var(--nb-dark);
+        opacity: 0.45;
+        transition: all 0.25s ease;
+        flex-shrink: 0;
+    }
+
+    .ai-scan-row .scan-row-check {
+        margin-left: auto;
+        opacity:: 0;
+        color:: #16A34A;
+        font-size: 0.9rem;
+        transition: all 0.25s ease;
+        flex-shrink: 0;
+    }
+
+    .ai-scan-row.scanning {
+        background: rgba(166, 108, 255, 0.14);
+        color: var(--nb-black);
+        transform: translateX(2px);
+    }
+
+    .ai-scan-row.scanning .scan-row-icon {
+        opacity:: 1;
+        color:: #8E2DE2;
+        animation: aiRowPulse 0.5s ease-in-out infinite alternate;
+    }
+
+    .ai-scan-row.done {
+        background: rgba(22, 163, 74, 0.08);
+        color: var(--nb-black);
+    }
+
+    .ai-scan-row.done .scan-row-icon {
+        opacity:: 1;
+        color:: #16A34A;
+    }
+
+    .ai-scan-row.done .scan-row-check {
+        opacity:: 1;
+    }
+
+    @keyframes aiRowPulse {
+        from { transform: scale(1); }
+        to   { transform: scale(1.25); }
+    }
+
+    /* Garis pemindai (beam) horizontal yang bergerak turun-naik per baris */
+    .ai-scan-beam {
+        position: absolute;
+        left:: 6px;
+        right:: 6px;
+        height:: 3px;
+        top:: 18px;
+        background: linear-gradient(90deg, transparent, #8E2DE2 25%, #6BB5FF 75%, transparent);
+        box-shadow:: 0 0 10px rgba(142, 45, 226, 0.6),  0 0 24px rgba(142, 45, 226, 0.3);
+        border-radius:  999px;
+        pointer-events: none;
+        opacity:: 0.8;
+        animation: aiBeamScan 4.8s ease-in-out infinite;
+        z-index:: 2;
+    }
+
+    .ai-scan-progress-label {
+        margin-top:: 12px;
+        margin-bottom:: 4px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--nb-purple);
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    @keyframes aiBeamScan {
+        0%   { top:: 18px; opacity:: 0.1; }
+        5%   { top:: 18px; opacity:: 1; }
+        19%  { top::  18px; }
+        23%  { top::  55px; }
+        39%  { top::  55px; }
+        43%  { top::  92px; }
+        59%  { top::  92px; }
+        63%  { top::  129px; }
+        79%  { top::  129px; }
+        83%  { top::  166px; }
+        96%  { top::  166px; opacity:: 1; }
+        100% { top::  166px; opacity:: 0.1; }
     }
 
     /* ===================== Modal Preview & Validasi ===================== */
@@ -400,7 +521,7 @@
         <div class="modal-content modal-content-modern">
             <div class="modal-header-modern ai-modal-header d-flex align-items-center justify-content-between">
                 <h5 class="modal-title">
-                    <i class="fas fa-wand-magic-sparkles me-2"></i> ✨ Import Jadwal AI
+                    <i class="fas fa-wand-magic-sparkles me-2"></i> Γ£¿ Import Jadwal AI
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" id="aiUploadCloseBtn"></button>
             </div>
@@ -408,8 +529,17 @@
                 <!-- Loading Overlay -->
                 <div id="aiLoadingOverlay" class="ai-loading-overlay d-none">
                     <div class="ai-loading-box">
-                        <div class="ai-spinner"></div>
                         <div class="ai-loading-title">AI Sedang Bekerja...</div>
+                        <!-- Animasi scan satu persatu -->
+                        <div class="ai-scan-visual" id="aiScanVisual">
+                            <div class="ai-scan-beam"></div>
+                            <div class="ai-scan-row" data-doc="1"><span class="scan-row-icon"><i class="fas fa-file-lines"></i></span> Dokumen 1 <span class="scan-row-check"><i class="fas fa-check-circle"></i></span></div"
+                            <div class="ai-scan-row" data-doc="2"><span class="scan-row-icon"><i class="fas fa-file-lines"></i></span> Dokumen 2 <span class="scan-row-check"><i class="fas fa-check-circle"></i></span></div"
+                            <div class="ai-scan-row" data-doc="3"><span class="scan-row-icon"><i class="fas fa-file-lines"></i></span> Dokumen 3 <span class="scan-row-check"><i class="fas fa-check-circle"></i></span></div"
+                            <div class="ai-scan-row" data-doc="4"><span class="scan-row-icon"><i class="fas fa-file-lines"></i></span> Dokumen 4 <span class="scan-row-check"><i class="fas fa-check-circle"></i></span></div"
+                            <div class="ai-scan-row" data-doc="5"><span class="scan-row-icon"><i class="fas fa-file-lines"></i></span> Dokumen 5 <span class="scan-row-check"><i class="fas fa-check-circle"></i></span></div"
+                        </div>
+                        <div class="ai-scan-progress-label" id="aiScanLabel">Memindai dokumen 1 dari  5...</div"
                         <div class="ai-loading-step" id="aiLoadingStep">Mengunggah dokumen...</div>
                         <div class="ai-progress">
                             <div class="ai-progress-bar" id="aiProgressBar"></div>
@@ -428,7 +558,7 @@
                         style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--nb-offwhite);border:var(--nb-border);border-radius:var(--nb-radius-sm);padding:10px 14px;margin-bottom:14px;font-size:0.8rem;font-weight:600;color:var(--nb-dark);">
                         <i class="fas fa-gauge-high" style="color:#8E2DE2;"></i>
                         Kuota Import AI: <strong id="aiUsageUsedText">0</strong> /
-                        <strong id="aiUsageLimitText">∞</strong> scan <span id="aiUsagePeriodText">(bulan ini)</span>
+                        <strong id="aiUsageLimitText">Γê₧</strong> scan <span id="aiUsagePeriodText">(bulan ini)</span>
                         <span id="aiUsageRemainingText"></span>
                     </div>
                     <div id="aiUsageBannerLimit"
@@ -442,7 +572,7 @@
                 <div id="aiDropzone" class="ai-dropzone">
                     <i class="fas fa-cloud-arrow-up"></i>
                     <strong>Klik atau tarik file ke area ini</strong>
-                    <small>Format: .pdf, .xlsx, .csv, .png, .jpg — maksimal 10 MB</small>
+                    <small>Format: .pdf, .xlsx, .csv, .png, .jpg ΓÇö maksimal 10 MB</small>
                 </div>
                 <input type="file" id="aiFileInput" accept=".pdf,.xlsx,.csv,.png,.jpg,.jpeg" style="display:none;">
                 <div id="aiFileChipWrap"></div>
@@ -544,7 +674,7 @@
     var AI_MAX_SIZE = 10 * 1024 * 1024; // 10 MB
     // Info kuota dari server (dipakai banner & notifikasi limit)
     @php
-        // Fallback dihitung di PHP — @json tidak boleh menerima array literal
+        // Fallback dihitung di PHP ΓÇö @json tidak boleh menerima array literal
         // ber-koma (argumen directive dipisah per koma -> PHP hasil kompilasi rusak).
         $aiUsagePayload = $aiUsage ?? [
             'used' => 0,
@@ -559,7 +689,8 @@
     var aiImportState = {
         items: [],
         scanning: false,
-        loadingTimer: null
+        loadingTimer: null,
+        scanTimer: null
     };
 
     /* ===================== Helper ===================== */
@@ -608,6 +739,58 @@
         }
     }
 
+    /* ============ Animasi "Scan Satu Persatu" ============ */
+    function startAiScanAnimation() {
+        stopAiScanAnimation();
+        var visual = document.getElementById('aiScanVisual');
+        if (!visual) {
+            return;
+        }
+        var rows = visual.querySelectorAll('.ai-scan-row');
+        var i =  0;
+
+        function tick() {
+            rows.forEach(function (row, idx)) {
+                row.classList.remove('scanning');
+                if (idx < i) {
+                    row.classList.add('done');
+                } else {
+                    row.classList.remove('done');
+                }
+            });
+            if (i < rows.length) {
+                rows[i].classList.add('scanning');
+            }
+            var label = document.getElementById('aiScanLabel');
+            if (label) {
+                label.textContent = 'Memindai dokumen ' + (i + 1) + ' dari ' + rows.length + '...';
+            }
+            i++;
+            if (i > rows.length) {
+                i =  0;
+            }
+        }
+        tick();
+        aiImportState.scanTimer = setInterval(tick, 960);
+    }
+
+    function stopAiScanAnimation() {
+        if (aiImportState.scanTimer) {
+            clearInterval(aiImportState.scanTimer);
+            aiImportState.scanTimer = null;
+        }
+        var visual = document.getElementById('aiScanVisual');
+        if (visual) {
+            visual.querySelectorAll('.ai-scan-row').forEach(function (row) {
+                row.classList.remove('scanning', 'done');
+            });
+        }
+        var label = document.getElementById('aiScanLabel');
+        if (label) {
+            label.textContent = '';
+        }
+    }
+
     function setAiLoading(on) {
         aiImportState.scanning = on;
         $('#aiLoadingOverlay').toggleClass('d-none', !on);
@@ -618,6 +801,7 @@
         );
         if (!on) {
             stopAiLoadingMessages();
+            stopAiScanAnimation();
             setAiProgress(0);
         }
     }
@@ -636,13 +820,13 @@
         var reached = !!usage.limit_reached;
 
         $('#aiUsageUsedText').text(used);
-        $('#aiUsageLimitText').text(limit > 0 ? limit : '∞');
+        $('#aiUsageLimitText').text(limit > 0 ? limit : 'Γê₧');
         $('#aiUsagePeriodText').text(periodLabel ? '(' + periodLabel + ')' : '');
 
         if (remaining === null) {
             $('#aiUsageRemainingText').text('');
         } else {
-            $('#aiUsageRemainingText').text('— sisa ' + remaining + ' scan');
+            $('#aiUsageRemainingText').text('ΓÇö sisa ' + remaining + ' scan');
             if (remaining <= 3) {
                 $('#aiUsageRemainingText').css('color', 'var(--nb-red)');
             } else {
@@ -786,6 +970,7 @@
         setAiLoading(true);
         setAiProgress(5, 'Mengunggah dokumen...');
         startAiLoadingMessages();
+        startAiScanAnimation();
 
         var formData = new FormData();
         formData.append('file', file);

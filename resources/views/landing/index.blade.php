@@ -2996,6 +2996,456 @@
             }
         }
     </style>
+    <style>
+        /* Minimal white dashboard theme */
+        :root {
+            --nb-black: #0f172a;
+            --nb-white: #ffffff;
+            --nb-offwhite: #f8fafc;
+            --nb-yellow: #eef2ff;
+            --nb-red: #ef4444;
+            --nb-teal: #4f46e5;
+            --nb-pink: #ec4899;
+            --nb-green: #10b981;
+            --nb-purple: #4f46e5;
+            --nb-orange: #f59e0b;
+            --nb-blue: #3b82f6;
+            --nb-gray: #e2e8f0;
+            --nb-dark: #ffffff;
+            --nb-border: 1px solid #e2e8f0;
+            --nb-border-thick: 1px solid #e2e8f0;
+            --nb-shadow: 0 10px 25px -12px rgba(15, 23, 42, 0.22);
+            --nb-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+            --nb-shadow-lg: 0 20px 40px -20px rgba(15, 23, 42, 0.28);
+            --nb-shadow-hover: 0 16px 30px -16px rgba(15, 23, 42, 0.3);
+            --nb-radius: 12px;
+            --nb-radius-sm: 8px;
+        }
+
+        body {
+            background: #f8fafc;
+            color: #334155;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 45%, #f1f5f9 100%);
+            animation: none;
+        }
+
+        .app-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 0;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+            background-image: none;
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+        }
+
+        .header-container,
+        .main-container {
+            max-width: 1280px;
+        }
+
+        .logo-img {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+        }
+
+        .logo-img:hover {
+            transform: none;
+            box-shadow: var(--nb-shadow-sm);
+        }
+
+        .header-title-row,
+        .section-title,
+        .filter-title,
+        .schedule-card-title,
+        .schedule-course-name,
+        .schedule-course,
+        .footer-section h5 {
+            font-family: var(--font-body);
+            letter-spacing: normal;
+        }
+
+        .header-title-row {
+            color: #0f172a;
+            font-weight: 700;
+            text-transform: none;
+            text-shadow: none;
+        }
+
+        .header-title-row .title-divider,
+        .header-sub-row,
+        .section-subtitle,
+        .filter-meta {
+            color: #64748b;
+        }
+
+        .header-sub-row strong,
+        .filter-meta strong {
+            background: #eef2ff;
+            color: #4338ca;
+            border: 0;
+            border-radius: 6px;
+        }
+
+        .header-info-bar {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 999px;
+            box-shadow: var(--nb-shadow-sm);
+        }
+
+        .header-info-bar .info-segment,
+        .header-info-bar .clock-date-header {
+            color: #64748b;
+        }
+
+        .header-info-bar .info-segment i,
+        .header-info-bar .clock-time-header {
+            color: #4f46e5;
+        }
+
+        .filter-section,
+        .schedule-list-header,
+        .info-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: var(--nb-shadow-sm);
+            background-image: none;
+        }
+
+        .filter-section {
+            padding: 24px;
+        }
+
+        .filter-section::before,
+        .filter-section::after,
+        .schedule-list-section::before,
+        .schedule-list-section::after,
+        .header-container::before,
+        .header-container::after,
+        .current-next-grid::before {
+            display: none;
+        }
+
+        .filter-header {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .filter-title,
+        .section-title,
+        .filter-label {
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .filter-title i,
+        .section-title i,
+        .filter-label i {
+            color: #4f46e5;
+            transform: none;
+        }
+
+        .btn-filter-action,
+        .filter-pill,
+        .btn-icon,
+        .btn-reset,
+        .filter-toggle-btn {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: var(--nb-shadow-sm);
+            font-family: var(--font-body);
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-filter-action:hover,
+        .filter-pill:hover,
+        .btn-icon:hover,
+        .btn-reset:hover {
+            transform: none;
+            box-shadow: var(--nb-shadow);
+        }
+
+        .btn-primary-action,
+        .filter-pill.active {
+            background: #4f46e5;
+            color: #ffffff;
+            border-color: #4f46e5;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
+        }
+
+        .btn-outline-action,
+        .filter-pill,
+        .btn-icon,
+        .btn-reset {
+            background: #ffffff;
+            color: #475569;
+        }
+
+        .btn-outline-action:hover,
+        .filter-pill:hover,
+        .btn-icon:hover,
+        .btn-reset:hover {
+            background: #f8fafc;
+            color: #4338ca;
+        }
+
+        .filter-pill::before,
+        .btn-filter-action::before,
+        .btn-icon::before {
+            display: none;
+        }
+
+        .schedule-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: var(--nb-shadow);
+            transform-style: flat;
+        }
+
+        .schedule-card::before,
+        .schedule-card::after,
+        .schedule-list-card::after {
+            display: none;
+        }
+
+        .schedule-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--nb-shadow-hover);
+        }
+
+        .schedule-card-header,
+        .schedule-card-header.primary-bg,
+        .schedule-card-header.success-bg {
+            background: #ffffff;
+            color: #0f172a;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .schedule-card-header {
+            padding: 20px 24px;
+        }
+
+        .schedule-card-body,
+        .schedule-card-body.flex-center {
+            background: #ffffff;
+            color: #475569;
+        }
+
+        .schedule-card-body.flex-center::before {
+            display: none;
+        }
+
+        .schedule-card-title,
+        .empty-state-title {
+            color: #0f172a;
+            text-shadow: none;
+        }
+
+        .schedule-course-name {
+            color: #0f172a;
+            text-shadow: none;
+        }
+
+        .schedule-course-name::after {
+            background: #4f46e5;
+        }
+
+        .schedule-info-row,
+        .schedule-info-row span {
+            color: #64748b;
+        }
+
+        .schedule-info-row i,
+        .empty-state-icon {
+            background: #eef2ff;
+            color: #4f46e5;
+            border: 0;
+            box-shadow: none;
+        }
+
+        .schedule-info-row strong {
+            color: #334155;
+        }
+
+        .schedule-time-badge .time-number {
+            color: #4f46e5;
+            text-shadow: none;
+        }
+
+        .schedule-time-badge .time-label {
+            background: #eef2ff;
+            color: #4338ca;
+            border: 0;
+            box-shadow: none;
+        }
+
+        .empty-state-text {
+            color: #64748b;
+        }
+
+        .badge-pill,
+        .schedule-count-badge,
+        .info-tag {
+            border: 0;
+            box-shadow: none;
+        }
+
+        .badge-pill.success-pill {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .badge-pill.warning-pill {
+            background: #fffbeb;
+            color: #b45309;
+        }
+
+        .schedule-list-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            box-shadow: var(--nb-shadow-sm);
+        }
+
+        .schedule-list-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--nb-shadow);
+        }
+
+        .app-footer {
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .maintenance-content {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: var(--nb-shadow-lg);
+        }
+
+        body {
+            font-size: 15px;
+        }
+
+        .header-sub-row,
+        .section-subtitle,
+        .filter-meta,
+        .empty-state-text,
+        .schedule-meta-item,
+        .schedule-info-row,
+        .footer-info-item {
+            font-size: 0.875rem;
+            color: #475569;
+        }
+
+        .info-box {
+            color: #334155;
+        }
+
+        .info-box-icon,
+        .info-box-title,
+        .info-tag,
+        .info-tag span,
+        .info-tag strong {
+            color: #334155;
+        }
+
+        .info-tag strong {
+            background: #0f172a;
+            color: #ffffff !important;
+            border-radius: 4px;
+            padding: 2px 6px;
+        }
+
+        .info-box-title {
+            font-size: 0.95rem;
+            text-shadow: none;
+        }
+
+        .info-tag {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .info-tag i,
+        .footer-section h5 i,
+        .footer-info-item i {
+            color: #4f46e5;
+        }
+
+        .schedule-meta-item,
+        .schedule-meta-item span,
+        .schedule-meta-item a {
+            color: #475569;
+        }
+
+        .schedule-meta-item i {
+            background: #eef2ff;
+            color: #4f46e5;
+            border: 0;
+            box-shadow: none;
+        }
+
+        .footer-section h5 {
+            color: #0f172a;
+            font-size: 1rem;
+        }
+
+        .footer-info-item {
+            color: #64748b;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+
+        .footer-copyright,
+        .footer-version {
+            color: #64748b !important;
+            text-shadow: none !important;
+            box-shadow: none !important;
+        }
+
+        .app-footer::before {
+            height: 2px;
+            background: #4f46e5;
+            animation: none;
+        }
+
+        .app-footer::after {
+            display: none;
+        }
+
+        .footer-bottom::before,
+        .footer-bottom .btn-suggestion::before {
+            display: none;
+        }
+
+        .footer-bottom .btn-suggestion,
+        .footer-bottom .btn-suggestion:hover,
+        .footer-bottom .btn-suggestion:active {
+            box-shadow: none;
+            text-shadow: none;
+            transform: none;
+        }
+
+        @media (max-width: 767.98px) {
+            .app-header {
+                padding: 12px 0;
+            }
+
+            .main-container {
+                padding: 24px 16px;
+            }
+        }
+    </style>
 </head>
 
 <body class="{{ $maintenanceMode == '1' ? 'maintenance-active' : '' }}">
@@ -3043,8 +3493,8 @@
                         <span>{{ $headerTitle2 ?? $institusiLokasi }}</span>
                     </div>
                     <div class="header-sub-row">
-                        {{ $programStudi }} &nbsp;Â·&nbsp; <strong>Tahun Akademik {{ $tahunAkademik }}</strong>
-                        &nbsp;Â·&nbsp; Semester <strong>{{ $semesterAktif }}</strong>
+                        {{ $programStudi }} &nbsp;&middot;&nbsp; <strong>Tahun Akademik {{ $tahunAkademik }}</strong>
+                        &nbsp;&middot;&nbsp; Semester <strong>{{ $semesterAktif }}</strong>
                     </div>
                 </div>
 
@@ -3061,7 +3511,6 @@
             <div style="display: flex; justify-content: center; margin-top: 6px;">
                 <div class="header-info-bar" id="headerInfoBar">
                     <span class="info-segment">
-                        <span class="greeting-emoji-header" id="headerGreetingEmoji">â˜€ï¸</span>
                         <span id="headerGreetingText">Selamat pagi</span>
                     </span>
                     <span class="info-sep"></span>
@@ -3601,7 +4050,7 @@
                                         <div class="schedule-time-box">
                                             <div class="time-start">
                                                 {{ explode(' - ', $item['waktu'])[0] ?? $item['waktu'] }}</div>
-                                            <div class="time-separator">â€”</div>
+                                            <div class="time-separator">&mdash;</div>
                                             <div class="time-end">{{ explode(' - ', $item['waktu'])[1] ?? '' }}</div>
                                         </div>
                                         <div class="schedule-content">
@@ -3657,7 +4106,7 @@
                             <div class="schedule-time-box">
                                 <div class="time-start">{{ explode(' - ', $item['waktu'])[0] ?? $item['waktu'] }}
                                 </div>
-                                <div class="time-separator">â€”</div>
+                                <div class="time-separator">&mdash;</div>
                                 <div class="time-end">{{ explode(' - ', $item['waktu'])[1] ?? '' }}</div>
                             </div>
                             <div class="schedule-content">
@@ -3759,7 +4208,7 @@
                     </button>
                 </div>
                 <p class="footer-copyright">
-                    <span class="fw-semibold">Â© {{ date('Y') }} Sistem Informasi Jadwal Kuliah v2.0</span>
+                    <span class="fw-semibold">&copy; {{ date('Y') }} Sistem Informasi Jadwal Kuliah v2.0</span>
                 </p>
                 <p class="footer-version">
                     Sistem menampilkan {{ count($jadwal) }} jadwal untuk semester {{ $semesterAktif }}
@@ -4288,41 +4737,30 @@
         // TIME-BASED GREETING
         // =============================================
         function initGreeting() {
-            const emojiEl = document.getElementById('greetingEmoji');
             const textEl = document.getElementById('greetingText');
-            const headerEmojiEl = document.getElementById('headerGreetingEmoji');
             const headerTextEl = document.getElementById('headerGreetingText');
 
             function updateGreeting() {
                 const hour = new Date().getHours();
-                let emoji, text;
+                let text;
 
                 if (hour >= 3 && hour < 6) {
-                    emoji = 'ðŸŒ…';
                     text = 'Selamat subuh';
                 } else if (hour >= 6 && hour < 10) {
-                    emoji = 'â˜€ï¸';
                     text = 'Selamat pagi';
                 } else if (hour >= 10 && hour < 12) {
-                    emoji = 'ðŸŒ¤ï¸';
                     text = 'Selamat siang';
                 } else if (hour >= 12 && hour < 15) {
-                    emoji = 'ðŸŒž';
                     text = 'Selamat siang';
                 } else if (hour >= 15 && hour < 18) {
-                    emoji = 'ðŸŒ…';
                     text = 'Selamat sore';
                 } else if (hour >= 18 && hour < 21) {
-                    emoji = 'ðŸŒ†';
                     text = 'Selamat petang';
                 } else {
-                    emoji = 'ðŸŒ™';
                     text = 'Selamat malam';
                 }
 
-                if (emojiEl) emojiEl.textContent = emoji;
                 if (textEl) textEl.textContent = text;
-                if (headerEmojiEl) headerEmojiEl.textContent = emoji;
                 if (headerTextEl) headerTextEl.textContent = text;
             }
 
